@@ -15,7 +15,18 @@ import { authFetch } from '@/lib/eilps-auth'
 
 export const PROXY_BASE = process.env.NEXT_PUBLIC_EILPS_PROXY_BASE ?? ''
 
-export type DataSource = 'live' | 'sample' | 'loading'
+/**
+ * 'forbidden' is distinct from 'sample' on purpose. A 403 means the endpoint is
+ * real and working but this role may not read it — telling the user "Sample"
+ * there would suggest the feature is unbuilt, when in fact they are simply
+ * signed in as the wrong role.
+ */
+export type DataSource = 'live' | 'sample' | 'loading' | 'forbidden'
+
+/** Thrown by proxyFetch so the hook can distinguish "not allowed" from "failed". */
+class ForbiddenError extends Error {
+  readonly forbidden = true
+}
 
 type FetchState<T> = {
   data: T
@@ -33,6 +44,7 @@ async function proxyFetch(path: string) {
     const message =
       (parsed && (parsed.reason || parsed.message || parsed.error)) ||
       `status_${res.status}`
+    if (res.status === 403) throw new ForbiddenError(message)
     throw new Error(message)
   }
   return parsed
@@ -92,6 +104,8 @@ export function useEilps<T>(
 
   if (isLoading) {
     source = 'loading'
+  } else if (error && (error as ForbiddenError).forbidden) {
+    source = 'forbidden'
   } else if (data && !error) {
     try {
       const next = select ? select(data) : (data as T)

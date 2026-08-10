@@ -48,7 +48,7 @@ export function Panel({
     ? panel.fetchPath || panel.endpoint!.path
     : null
 
-  const { data, source } = useEilps<unknown>(
+  const { data, source, error } = useEilps<unknown>(
     fetchPath,
     panel.sample,
     panel.transform
@@ -85,9 +85,35 @@ export function Panel({
       </header>
 
       <div className="flex-1">
-        <PanelBody panel={panel} data={data} accent={accent} />
+        {source === 'forbidden' ? (
+          <ForbiddenBody message={error} />
+        ) : (
+          <PanelBody panel={panel} data={data} accent={accent} />
+        )}
       </div>
     </section>
+  )
+}
+
+/**
+ * A 403 is not a failure to show sample data through — the endpoint works, this
+ * role just may not read it. Say so plainly, and pass the server's own reason
+ * through rather than paraphrasing it.
+ */
+function ForbiddenBody({ message }: { message?: string }) {
+  return (
+    <div className="flex gap-3 rounded-xl border border-dashed border-border p-4">
+      <ShieldCheck className="size-5 shrink-0 text-muted-foreground" aria-hidden />
+      <div>
+        <p className="text-sm font-medium text-card-foreground">
+          Administrator role required
+        </p>
+        <p className="mt-0.5 text-sm text-muted-foreground">
+          {message || 'This account may not read this endpoint.'} Sign in with an
+          administrator account to see the live data here.
+        </p>
+      </div>
+    </div>
   )
 }
 

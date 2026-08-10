@@ -1,6 +1,6 @@
 'use client'
 
-import { Radio, WifiOff, Loader2 } from 'lucide-react'
+import { Radio, WifiOff, Loader2, Lock } from 'lucide-react'
 import type { DataSource } from '@/lib/use-eilps'
 import { cn } from '@/lib/utils'
 
@@ -10,6 +10,17 @@ export function SourceBadge({ source }: { source: DataSource }) {
       <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
         <Loader2 className="size-3 animate-spin" aria-hidden />
         Loading
+      </span>
+    )
+  }
+  if (source === 'forbidden') {
+    return (
+      <span
+        className="inline-flex items-center gap-1 rounded-full bg-gold/25 px-2 py-0.5 text-[10px] font-medium text-indigo"
+        title="The endpoint is live, but your role may not read it. Sign in with an administrator account."
+      >
+        <Lock className="size-3" aria-hidden />
+        Admin only
       </span>
     )
   }

@@ -4,6 +4,7 @@ import {
   FolderKanban,
   BookCopy,
   Sparkles,
+  ShieldCheck,
 } from 'lucide-react'
 import type { AccountApp } from './types'
 
@@ -234,6 +235,241 @@ export const studio: AccountApp = {
         },
       ],
     },
+    {
+      slug: 'governance',
+      label: 'AI Governance',
+      icon: ShieldCheck,
+      title: 'AI governance',
+      description:
+        'Model usage, prompt control, evaluation and the human review queues that gate published content.',
+      panels: [
+        {
+          id: 'quota',
+          title: 'AI quota and usage',
+          kind: 'stat',
+          endpoint: { method: 'GET', path: '/api/tutor/quota' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as {
+              tier?: string
+              limits?: Record<string, number>
+              usage?: Record<string, number>
+            }
+            if (!o.limits) return []
+            const limits = o.limits
+            const usage = o.usage ?? {}
+            const pct = (key: string) => {
+              const limit = Number(limits[key] ?? 0)
+              if (!limit) return '—'
+              return `${Math.round((Number(usage[key] ?? 0) / limit) * 100)}%`
+            }
+            return [
+              { label: 'Tier', value: String(o.tier ?? 'free') },
+              {
+                label: 'Daily messages',
+                value: `${usage.dailyMessages ?? 0} / ${limits.dailyMessages ?? 0}`,
+                hint: pct('dailyMessages') + ' used',
+              },
+              {
+                label: 'Input tokens',
+                value: `${usage.monthlyInputTokens ?? 0} / ${limits.monthlyInputTokens ?? 0}`,
+                hint: 'This month',
+              },
+              {
+                label: 'Voice characters',
+                value: `${usage.monthlyVoiceCharacters ?? 0} / ${limits.monthlyVoiceCharacters ?? 0}`,
+                hint: 'This month',
+              },
+            ]
+          },
+          sample: [
+            { label: 'Tier', value: 'premium' },
+            { label: 'Daily messages', value: '0 / 120', hint: '0% used' },
+            { label: 'Input tokens', value: '0 / 500000', hint: 'This month' },
+            { label: 'Voice characters', value: '0 / 60000', hint: 'This month' },
+          ],
+          span: 3,
+        },
+        {
+          id: 'quota-detail',
+          title: 'Usage against limits',
+          kind: 'table',
+          endpoint: { method: 'GET', path: '/api/tutor/quota' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as { limits?: Record<string, number>; usage?: Record<string, number> }
+            const limits = o.limits ?? {}
+            const usage = o.usage ?? {}
+            const label: Record<string, string> = {
+              dailyMessages: 'Messages per day',
+              monthlyInputTokens: 'Input tokens per month',
+              monthlyOutputTokens: 'Output tokens per month',
+              monthlyVoiceCharacters: 'Voice characters per month',
+            }
+            const rows = Object.keys(limits).map((key) => {
+              const limit = Number(limits[key] ?? 0)
+              const used = Number(usage[key] ?? 0)
+              return [
+                label[key] ?? key,
+                String(used),
+                String(limit),
+                limit ? `${Math.round((used / limit) * 100)}%` : '—',
+              ]
+            })
+            return { columns: ['Resource', 'Used', 'Limit', 'Consumed'], rows }
+          },
+          sample: {
+            columns: ['Resource', 'Used', 'Limit', 'Consumed'],
+            rows: [['Messages per day', '0', '120', '0%']],
+          },
+          span: 2,
+        },
+        {
+          id: 'providers',
+          title: 'AI provider readiness',
+          kind: 'list',
+          endpoint: { method: 'GET', path: '/api/integrations/status' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as {
+              aiTutor?: boolean
+              voiceAgent?: boolean
+              mode?: string
+              checks?: Record<string, unknown>[]
+            }
+            const aiChecks = (o.checks ?? []).filter((c) =>
+              /ai|tutor|voice|eleven|openai|anthropic|speech/i.test(String(c.id ?? '')),
+            )
+            const rows = [
+              { title: 'AI tutor', subtitle: o.aiTutor ? 'Configured' : 'Not configured', status: o.aiTutor ? 'ok' : 'alert' },
+              { title: 'Voice agent', subtitle: o.voiceAgent ? 'Configured' : 'Not configured', status: o.voiceAgent ? 'ok' : 'alert' },
+              { title: 'Environment', subtitle: String(o.mode ?? 'unknown'), status: 'info' },
+            ]
+            for (const c of aiChecks.slice(0, 5)) {
+              rows.push({
+                title: String(c.label ?? c.id),
+                subtitle: String(c.detail || (c.ok ? 'Configured' : 'Not configured')),
+                status: c.ok ? 'ok' : 'alert',
+              })
+            }
+            return rows
+          },
+          sample: [
+            { title: 'AI tutor', subtitle: 'Configured', status: 'ok' },
+            { title: 'Voice agent', subtitle: 'Configured', status: 'ok' },
+          ],
+          span: 1,
+        },
+        {
+          id: 'prompts',
+          title: 'Prompt versions',
+          kind: 'table',
+          // Administrator-only on the server. A Studio account gets 403, and the
+          // panel says so rather than showing invented prompt history.
+          endpoint: { method: 'GET', path: '/api/tutor/admin/prompts' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as { prompts?: Record<string, unknown>[]; items?: Record<string, unknown>[] }
+            const prompts = o.prompts ?? o.items ?? []
+            const rows = prompts.map((p) => [
+              String(p.name ?? p.key ?? p.id ?? '—'),
+              String(p.version ?? '—'),
+              p.active || p.is_active ? 'Active' : 'Inactive',
+              String(p.updated_at ?? p.created_at ?? '—').slice(0, 10),
+            ])
+            return { columns: ['Prompt', 'Version', 'State', 'Updated'], rows }
+          },
+          sample: { columns: ['Prompt', 'Version', 'State', 'Updated'], rows: [] },
+          span: 2,
+        },
+        {
+          id: 'evaluations',
+          title: 'Evaluation runs',
+          kind: 'list',
+          // Same administrator gate: evaluations are triggered with
+          // POST /api/tutor/admin/prompts/:id/evaluate.
+          endpoint: { method: 'GET', path: '/api/tutor/admin/prompts' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as { prompts?: Record<string, unknown>[]; items?: Record<string, unknown>[] }
+            const prompts = o.prompts ?? o.items ?? []
+            const evaluated = prompts.filter((p) => p.last_evaluation || p.evaluation)
+            if (!evaluated.length) return []
+            return evaluated.slice(0, 6).map((p) => ({
+              title: String(p.name ?? p.id),
+              subtitle: `Score ${String((p.last_evaluation as Record<string, unknown>)?.score ?? '—')}`,
+              status: 'info',
+            }))
+          },
+          sample: [],
+          span: 1,
+        },
+        {
+          id: 'moderation-activity',
+          title: 'Activity moderation queue',
+          kind: 'list',
+          endpoint: { method: 'GET', path: '/api/activities/moderation' },
+          transform: (raw) => {
+            const items = asArray(raw) as Record<string, unknown>[]
+            if (!items.length)
+              return [{ title: 'Queue clear', subtitle: 'No learner work awaiting review', status: 'ok' }]
+            return items.slice(0, 6).map((m) => ({
+              title: String(m.learner_name ?? m.learner_email ?? 'Learner submission'),
+              subtitle: `${String(m.level ?? '')} · ${String(m.status ?? 'open')}`.trim(),
+              status: String(m.status) === 'approved' ? 'ok' : 'pending',
+            }))
+          },
+          sample: [{ title: 'Queue clear', subtitle: 'No learner work awaiting review', status: 'ok' }],
+          span: 1,
+        },
+        {
+          id: 'moderation-practice',
+          title: 'Practice moderation',
+          kind: 'list',
+          endpoint: { method: 'GET', path: '/api/practice/moderation' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as { items?: Record<string, unknown>[]; scope?: string }
+            const items = o.items ?? []
+            if (!items.length)
+              return [
+                {
+                  title: 'Queue clear',
+                  subtitle: `Scope: ${String(o.scope ?? 'assigned learners').replace(/_/g, ' ')}`,
+                  status: 'ok',
+                },
+              ]
+            return items.slice(0, 6).map((m) => ({
+              title: String(m.title ?? m.item_id ?? 'Practice response'),
+              subtitle: String(m.status ?? 'open'),
+              status: 'pending',
+            }))
+          },
+          sample: [{ title: 'Queue clear', subtitle: 'Scope: assigned learners', status: 'ok' }],
+          span: 1,
+        },
+        {
+          id: 'moderation-checkpoint',
+          title: 'Checkpoint moderation',
+          kind: 'list',
+          endpoint: { method: 'GET', path: '/api/assessment/checkpoint/moderation/queue' },
+          transform: (raw) => {
+            const items = asArray(raw) as Record<string, unknown>[]
+            if (!items.length)
+              return [{ title: 'Queue clear', subtitle: 'No checkpoints awaiting review', status: 'ok' }]
+            return items.slice(0, 6).map((m) => ({
+              title: String(m.learner_name ?? 'Checkpoint'),
+              subtitle: `${String(m.level ?? '')} · ${String(m.status ?? 'open')}`.trim(),
+              status: 'pending',
+            }))
+          },
+          sample: [{ title: 'Queue clear', subtitle: 'No checkpoints awaiting review', status: 'ok' }],
+          span: 1,
+        },
+        {
+          id: 'review-gate',
+          title: 'Human review gate',
+          kind: 'note',
+          sample: null,
+          note: 'Generated lessons are validated and must be reviewed by a person before they can be applied or set live. Learner speaking and writing evidence is held for teacher review before it counts towards a certificate. Prompt versions are evaluated and activated under administrator control.',
+          span: 2,
+        },
+      ],
+    },
   ],
   endpoints: [
     { method: 'GET', path: '/api/authoring/projects' },
@@ -245,5 +481,13 @@ export const studio: AccountApp = {
     { method: 'POST', path: '/api/studio/coursebook/projects/:projectId/generations' },
     { method: 'GET', path: '/api/addons/starpath/resources' },
     { method: 'POST', path: '/api/addons/starpath/assignments' },
+    { method: 'GET', path: '/api/tutor/quota' },
+    { method: 'GET', path: '/api/tutor/admin/prompts' },
+    { method: 'POST', path: '/api/tutor/admin/prompts/:id/evaluate' },
+    { method: 'POST', path: '/api/tutor/admin/prompts/:id/activate' },
+    { method: 'GET', path: '/api/activities/moderation' },
+    { method: 'PATCH', path: '/api/activities/moderation/:id' },
+    { method: 'GET', path: '/api/practice/moderation' },
+    { method: 'GET', path: '/api/assessment/checkpoint/moderation/queue' },
   ],
 }

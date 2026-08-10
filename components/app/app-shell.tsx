@@ -8,6 +8,7 @@ import type { AccountApp } from '@/lib/apps/types'
 import { ACCENT } from '@/lib/apps/accent'
 import { PLAYER_VARIANTS } from '@/lib/lesson-player/variants'
 import { cn } from '@/lib/utils'
+import { BrandMark } from '@/components/brand-mark'
 
 export function AppShell({
   app,
@@ -31,8 +32,9 @@ export function AppShell({
           open ? 'translate-x-0' : '-translate-x-full',
         )}
       >
-        <div className="flex items-center gap-3 border-b border-border p-4">
-          <span className={cn('flex size-10 items-center justify-center rounded-xl', a.solid)}>
+        <div className="flex items-center gap-2 border-b border-border p-4">
+          <BrandMark className="size-8 shrink-0" />
+          <span className={cn('flex size-10 shrink-0 items-center justify-center rounded-xl', a.solid)}>
             <Icon className="size-5" aria-hidden />
           </span>
           <div className="min-w-0">

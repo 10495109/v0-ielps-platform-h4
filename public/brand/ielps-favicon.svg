@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="IELPS favicon">
+  <path d="M12 0 H64 V52 A12 12 0 0 1 52 64 H0 V12 A12 12 0 0 1 12 0 Z" fill="#512EAB"/>
+  <circle cx="23" cy="20" r="6" fill="#FFCE00"/>
+  <rect x="18" y="31" width="10" height="26" rx="5" fill="#FFFFFF"/>
+  <rect x="36" y="20" width="19" height="7" rx="3.5" fill="#22C7C6"/>
+  <rect x="36" y="32" width="19" height="7" rx="3.5" fill="#FFFFFF" opacity="0.85"/>
+  <rect x="36" y="44" width="12" height="7" rx="3.5" fill="#FFFFFF" opacity="0.55"/>
+</svg>

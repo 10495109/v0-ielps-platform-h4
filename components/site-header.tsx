@@ -1,4 +1,5 @@
 import { SessionBadge } from '@/components/session-badge'
+import { BrandMark } from '@/components/brand-mark'
 
 const NAV = [
   { label: 'Placement', href: '#placement' },
@@ -11,9 +12,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 border-b border-border/70 bg-background/95 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 lg:px-8">
         <a href="#top" className="flex items-center gap-2.5">
-          <span className="grid h-10 w-10 place-items-center rounded-[12px_5px_12px_5px] bg-primary font-display text-xl font-black text-gold">
-            i
-          </span>
+          <BrandMark className="size-10" />
           <span className="font-display text-2xl font-black tracking-tight text-foreground">
             IELPS
           </span>

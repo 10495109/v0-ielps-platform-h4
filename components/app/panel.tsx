@@ -19,7 +19,7 @@ import type {
   AccentToken,
 } from '@/lib/apps/types'
 import { ACCENT } from '@/lib/apps/accent'
-import { SourceBadge, EndpointChip } from './source-badge'
+import { SourceBadge } from './source-badge'
 import { cn } from '@/lib/utils'
 
 const SPAN: Record<number, string> = {
@@ -75,11 +75,6 @@ export function Panel({
           <h3 className="font-display text-sm font-semibold text-foreground">
             {panel.title}
           </h3>
-          {panel.endpoint && (
-            <div className="mt-1.5">
-              <EndpointChip method={panel.endpoint.method} path={panel.endpoint.path} />
-            </div>
-          )}
         </div>
         {displaySource && <SourceBadge source={displaySource} />}
       </header>

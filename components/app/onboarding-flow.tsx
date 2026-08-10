@@ -8,7 +8,6 @@ import { getApp } from '@/lib/apps'
 import type { OnboardingField } from '@/lib/apps/types'
 import { ACCENT } from '@/lib/apps/accent'
 import { useEilpsAction } from '@/lib/use-eilps'
-import { EndpointChip } from './source-badge'
 import { cn } from '@/lib/utils'
 import { notFound } from 'next/navigation'
 
@@ -133,14 +132,9 @@ export function OnboardingFlow({ slug }: { slug: string }) {
                 key={step.key}
                 className="flex flex-col animate-rise"
               >
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-xs font-medium text-muted-foreground">
-                    Step {current + 1} of {steps.length}
-                  </p>
-                  {step.endpoint && (
-                    <EndpointChip method={step.endpoint.method} path={step.endpoint.path} />
-                  )}
-                </div>
+                <p className="text-xs font-medium text-muted-foreground">
+                  Step {current + 1} of {steps.length}
+                </p>
                 <h2 className="mt-3 font-display text-xl font-bold text-foreground">
                   {step.title}
                 </h2>

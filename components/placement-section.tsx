@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { Check, X, ClipboardList } from 'lucide-react'
 import { PLACEMENT, SAMPLE_QUESTION } from '@/lib/ielps-data'
 
@@ -31,17 +32,29 @@ export function PlacementSection() {
 
   return (
     <section id="placement" className="mx-auto max-w-7xl scroll-mt-20 px-5 py-16 lg:px-8">
-      <div className="max-w-2xl">
-        <span className="inline-flex items-center rounded-full border border-border bg-card px-3 py-1 text-xs font-bold text-muted-foreground">
-          Expanded placement contract
-        </span>
-        <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-balance text-foreground sm:text-4xl">
-          The placement test page
-        </h2>
-        <p className="mt-3 text-lg leading-relaxed text-muted-foreground text-pretty">
-          {PLACEMENT.items} original diagnostic items — {PLACEMENT.perLevel} per CEFR level —
-          spanning nine skill areas from grammar to integrated evidence.
-        </p>
+      <div className="grid items-center gap-8 lg:grid-cols-[1fr_0.85fr]">
+        <div className="max-w-2xl">
+          <span className="inline-flex items-center rounded-full border border-border bg-card px-3 py-1 text-xs font-bold text-muted-foreground">
+            Expanded placement contract
+          </span>
+          <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-balance text-foreground sm:text-4xl">
+            The placement test page
+          </h2>
+          <p className="mt-3 text-lg leading-relaxed text-muted-foreground text-pretty">
+            {PLACEMENT.items} original diagnostic items — {PLACEMENT.perLevel} per CEFR level —
+            spanning nine skill areas from grammar to integrated evidence.
+          </p>
+        </div>
+
+        <div className="relative overflow-hidden rounded-2xl border border-border bg-muted shadow-[0_20px_44px_-28px_rgba(13,0,77,0.4)]">
+          <Image
+            src="/placement-test.png"
+            alt="A learner taking the IELPS English placement assessment on a tablet"
+            width={640}
+            height={420}
+            className="h-full max-h-[300px] w-full object-cover"
+          />
+        </div>
       </div>
 
       <div className="mt-10 grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">

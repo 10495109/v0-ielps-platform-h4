@@ -1,6 +1,10 @@
 import { notFound } from 'next/navigation'
-import { getApp } from '@/lib/apps'
+import { getApp, ACCOUNT_APPS } from '@/lib/apps'
 import { OnboardingFlow } from '@/components/app/onboarding-flow'
+
+export function generateStaticParams() {
+  return ACCOUNT_APPS.map((app) => ({ slug: app.slug }))
+}
 
 export default async function OnboardingPage({
   params,

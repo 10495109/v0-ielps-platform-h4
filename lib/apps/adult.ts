@@ -8,6 +8,21 @@ import {
 } from 'lucide-react'
 import type { AccountApp } from './types'
 
+/** Flatten the live deep-catalog (levels -> units -> lessons). */
+function catalogLessons(raw: unknown): Record<string, unknown>[] {
+  const root = raw as { levels?: unknown[] } | null
+  if (!root || !Array.isArray(root.levels)) return []
+  const out: Record<string, unknown>[] = []
+  for (const level of root.levels as Record<string, unknown>[]) {
+    for (const unit of (level.units as Record<string, unknown>[]) ?? []) {
+      for (const lesson of (unit.lessons as Record<string, unknown>[]) ?? []) {
+        out.push({ ...lesson, level: lesson.level ?? level.level })
+      }
+    }
+  }
+  return out
+}
+
 function asArray(raw: unknown): unknown[] {
   if (Array.isArray(raw)) return raw
   if (raw && typeof raw === 'object') {
@@ -105,16 +120,18 @@ export const adult: AccountApp = {
           title: 'Continue lesson',
           kind: 'cards',
           endpoint: { method: 'GET', path: '/api/curriculum/deep-catalog' },
+          // deep-catalog nests levels -> units -> lessons, so flatten before mapping.
           transform: (raw) =>
-            asArray(raw).slice(0, 2).map((l) => {
-              const o = l as Record<string, unknown>
-              return {
+            catalogLessons(raw)
+              .slice(0, 2)
+              .map((o, i) => ({
                 title: String(o.title ?? 'Lesson'),
-                subtitle: String(o.level ?? 'B1'),
-                body: String(o.summary ?? 'Resume in the integrated lesson player.'),
-                tag: 'Resume',
-              }
-            }),
+                subtitle: `${String(o.level ?? 'A1')} · ${String(o.unitTitle ?? 'Course unit')}`,
+                body: String(
+                  o.lessonAim ?? o.cefrCanDo ?? 'Resume in the integrated A1–C2 lesson player.',
+                ),
+                tag: i === 0 ? 'Resume' : 'Start',
+              })),
           sample: [
             { title: 'Making a complaint politely', subtitle: 'B1 · Functional language', body: 'Resume in the integrated A1–C2 lesson player.', tag: 'Resume' },
             { title: 'Past experiences', subtitle: 'B1 · Grammar in use', body: 'Present perfect vs. past simple.', tag: 'Start' },

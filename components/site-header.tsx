@@ -1,4 +1,4 @@
-import { IELPS_API_BASE } from '@/lib/ielps-api'
+import { SessionBadge } from '@/components/session-badge'
 
 const NAV = [
   { label: 'Placement', href: '#placement' },
@@ -34,12 +34,9 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <a
-          href={`${IELPS_API_BASE}/dashboard`}
-          className="inline-flex min-h-9 items-center rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground shadow-sm transition-transform hover:-translate-y-0.5"
-        >
-          Sign in
-        </a>
+        {/* Shows the signed-in learner and a working sign out, rather than a
+            link that always says "Sign in" even when a session is open. */}
+        <SessionBadge />
       </div>
     </header>
   )

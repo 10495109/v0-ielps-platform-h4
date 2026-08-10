@@ -52,7 +52,7 @@ function StepShell({
           {step.step}
         </span>
         <div>
-          <h2 className={`font-serif font-semibold text-foreground ${junior ? 'text-2xl' : 'text-xl'}`}>
+          <h2 className={`font-display font-semibold text-foreground ${junior ? 'text-2xl' : 'text-xl'}`}>
             {step.title}
           </h2>
           <p className={`text-muted-foreground ${junior ? 'text-base' : 'text-sm'}`}>
@@ -151,7 +151,7 @@ function IntroStep({ step, lesson, accent, junior, onDone, juniorReadability }: 
           <span className={`rounded-full px-2.5 py-0.5 ${a.solid}`}>{lesson.level}</span>
           <span className="text-muted-foreground">{lesson.topic}</span>
         </div>
-        <h3 className="mt-3 font-serif text-2xl font-semibold text-foreground text-balance">{lesson.title}</h3>
+        <h3 className="mt-3 font-display text-2xl font-semibold text-foreground text-balance">{lesson.title}</h3>
         <p className="mt-2 max-w-xl text-sm text-muted-foreground">{lesson.intro}</p>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <AudioChip text="Play lesson intro" accent={accent} />
@@ -288,7 +288,7 @@ function DefinitionsStep({ step, lesson, accent, juniorReadability, onDone }: St
               ].join(' ')}
             >
               <div className="flex items-center justify-between">
-                <span className="font-serif text-lg font-semibold text-card-foreground">{k.word}</span>
+                <span className="font-display text-lg font-semibold text-card-foreground">{k.word}</span>
                 <AudioChip text="Hear" accent={accent} />
               </div>
               {k.ipa ? <span className="text-xs text-muted-foreground">{k.ipa}</span> : null}
@@ -345,7 +345,7 @@ function MemoryReviewStep({ step, lesson, accent, juniorReadability, onDone }: S
             <p className="mt-2 text-sm text-foreground">“{card?.example}”</p>
           </div>
         ) : (
-          <span className="font-serif text-2xl font-semibold text-foreground">{card?.word}</span>
+          <span className="font-display text-2xl font-semibold text-foreground">{card?.word}</span>
         )}
       </button>
       <div className="flex items-center justify-between gap-3">
@@ -396,7 +396,7 @@ function SpeakingStep({ step, lesson, accent, juniorReadability, aiHelpEnabled, 
     <StepShell step={step} accent={accent} junior={juniorReadability}>
       <div className="rounded-2xl border border-border bg-card p-5">
         <p className="text-sm text-card-foreground">Say this clearly:</p>
-        <p className="mt-2 font-serif text-lg font-semibold text-foreground">“{lesson.audioModels[0]?.text}”</p>
+        <p className="mt-2 font-display text-lg font-semibold text-foreground">“{lesson.audioModels[0]?.text}”</p>
         <div className="mt-4 flex items-center gap-3">
           <AudioChip text="Hear the model" accent={accent} />
           <button

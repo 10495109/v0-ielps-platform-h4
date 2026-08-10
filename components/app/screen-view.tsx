@@ -1,10 +1,12 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { getApp, getScreen } from '@/lib/apps'
 import { AppShell } from './app-shell'
 import { Panel } from './panel'
 import { WiringDrawer } from './wiring-drawer'
 import { notFound } from 'next/navigation'
+import { fetchCurrentUser } from '@/lib/eilps-auth'
 
 export function ScreenView({
   slug,
@@ -13,10 +15,24 @@ export function ScreenView({
   slug: string
   screenSlug: string
 }) {
+  const [name, setName] = useState<string | null>(null)
+  useEffect(() => {
+    let cancelled = false
+    fetchCurrentUser().then((u) => {
+      if (!cancelled && u?.name) setName(u.name)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   const app = getApp(slug)
   if (!app) return notFound()
   const screen = getScreen(app, screenSlug)
   if (!screen) return notFound()
+
+  // Greeting titles carry a placeholder name; use the signed-in learner's.
+  const title = name ? screen.title.replace(/,\s*[A-Z][\w'-]*$/, `, ${name}`) : screen.title
 
   return (
     <AppShell app={app} activeScreen={screen.slug}>
@@ -24,7 +40,7 @@ export function ScreenView({
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="text-balance font-display text-2xl font-bold text-foreground lg:text-3xl">
-              {screen.title}
+              {title}
             </h1>
             <p className="mt-1 max-w-2xl text-pretty text-sm text-muted-foreground">
               {screen.description}

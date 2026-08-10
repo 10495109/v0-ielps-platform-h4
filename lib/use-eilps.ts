@@ -2,14 +2,18 @@
 
 import useSWR from 'swr'
 import { useCallback, useState } from 'react'
+import { authFetch } from '@/lib/eilps-auth'
 
 /**
- * Client-side access to the live EILPS server via the same-origin proxy.
+ * Client-side access to the live EILPS server.
+ * Deployed on eilps.com itself, so the API is same-origin and is called
+ * directly - the /api/eilps proxy is only needed off-server (set
+ * NEXT_PUBLIC_EILPS_PROXY_BASE=/api/eilps to restore it).
  * Every hook returns a `source` flag so the UI can honestly show whether the
  * card is hydrated from the live server or from a local fallback sample.
  */
 
-export const PROXY_BASE = '/api/eilps'
+export const PROXY_BASE = process.env.NEXT_PUBLIC_EILPS_PROXY_BASE ?? ''
 
 export type DataSource = 'live' | 'sample' | 'loading'
 
@@ -22,10 +26,7 @@ type FetchState<T> = {
 }
 
 async function proxyFetch(path: string) {
-  const res = await fetch(`${PROXY_BASE}${path.startsWith('/') ? path : `/${path}`}`, {
-    credentials: 'include',
-    headers: { accept: 'application/json' },
-  })
+  const res = await authFetch(`${PROXY_BASE}${path.startsWith('/') ? path : `/${path}`}`)
   const text = await res.text()
   const parsed = text ? safeJson(text) : null
   if (!res.ok || (parsed && parsed.error === 'upstream_unreachable')) {
@@ -107,12 +108,10 @@ export function useEilpsAction(): MutationState {
       setError(undefined)
       setDone(false)
       try {
-        const res = await fetch(
+        const res = await authFetch(
           `${PROXY_BASE}${path.startsWith('/') ? path : `/${path}`}`,
           {
             method,
-            credentials: 'include',
-            headers: { 'content-type': 'application/json', accept: 'application/json' },
             body: body ? JSON.stringify(body) : undefined,
           },
         )

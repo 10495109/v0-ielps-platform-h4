@@ -1,6 +1,12 @@
 import { notFound } from 'next/navigation'
-import { getApp, getScreen } from '@/lib/apps'
+import { getApp, getScreen, ACCOUNT_APPS } from '@/lib/apps'
 import { ScreenView } from '@/components/app/screen-view'
+
+export function generateStaticParams() {
+  return ACCOUNT_APPS.flatMap((app) =>
+    app.screens.map((screen) => ({ slug: app.slug, screen: screen.slug })),
+  )
+}
 
 export default async function ScreenPage({
   params,

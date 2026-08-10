@@ -5,12 +5,14 @@
  * backend route is duplicated across feature files and no production URL is
  * hardcoded — the proxy base is the single seam to the live EILPS server.
  *
- * The proxy (`/api/eilps/[...path]`) forwards to `EILPS_UPSTREAM`
- * (defaults to https://eilps.com) and injects credentials, matching the
- * spec env vars VITE_API_BASE_URL=https://eilps.com/api.
+ * Deployed on eilps.com itself, so the API is same-origin and called directly.
+ * Set NEXT_PUBLIC_EILPS_PROXY_BASE=/api/eilps to route through a proxy when
+ * hosting this shell off-server.
  */
 
-export const PROXY_BASE = '/api/eilps'
+import { authFetch } from '@/lib/eilps-auth'
+
+export const PROXY_BASE = process.env.NEXT_PUBLIC_EILPS_PROXY_BASE ?? ''
 
 function path(p: string): string {
   return `${PROXY_BASE}${p.startsWith('/') ? p : `/${p}`}`
@@ -22,12 +24,7 @@ async function call<T = unknown>(
 ): Promise<T | null> {
   const { body, ...rest } = init ?? {}
   try {
-    const res = await fetch(path(endpoint), {
-      credentials: 'include',
-      headers: {
-        accept: 'application/json',
-        ...(body ? { 'content-type': 'application/json' } : {}),
-      },
+    const res = await authFetch(path(endpoint), {
       ...rest,
       body: body ? JSON.stringify(body) : undefined,
     })
@@ -134,11 +131,15 @@ export const discoveryApi = {
   addToPractice: (body: unknown) => post('/api/practice/add', body),
 }
 
+/**
+ * Lesson content is served by the curriculum catalogue, not by a per-lesson
+ * route — the live server has no /api/lessons/:id. `lesson-adapter.ts` reads
+ * GET /api/curriculum/deep-catalog and selects the lesson by id.
+ */
 export const lessonApi = {
-  getLesson: (id: string) => get(withParams('/api/lessons/:id', { id })),
+  getLesson: (id: string) =>
+    import('@/lib/lesson-adapter').then((m) => m.fetchLessonById(id).catch(() => null)),
   getOutcomes: (id: string) => get(withParams('/api/curriculum/lessons/:id/outcomes', { id })),
-  getVocabulary: (id: string) => get(withParams('/api/lessons/:id/vocabulary', { id })),
-  getLanguageFocus: (id: string) => get(withParams('/api/lessons/:id/language-focus', { id })),
   getAudioManifest: (id: string) => get(withParams('/api/audio/lesson/:id/manifest', { id })),
 }
 

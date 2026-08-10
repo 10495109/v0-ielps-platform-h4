@@ -34,10 +34,6 @@ export function AdultFlowSection() {
             </li>
           ))}
         </ol>
-
-        <p className="mt-6 font-mono text-sm text-white/60">
-          Lesson player: IELPS-A1-C2-LESSON PLAYER-Integrated-Final-2026-07-30
-        </p>
       </div>
     </section>
   )

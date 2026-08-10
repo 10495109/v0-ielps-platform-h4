@@ -1,6 +1,5 @@
 import Image from 'next/image'
-import { ArrowRight, Clock, BarChart3, Users, Award } from 'lucide-react'
-import { IELPS_API_BASE } from '@/lib/ielps-api'
+import { ArrowRight, BarChart3, Users, Award } from 'lucide-react'
 
 /** Secondary rail — BBC-style "more from this hub" tile list beside the lead story. */
 const SECONDARY = [
@@ -48,23 +47,6 @@ export function Hero() {
               into the correct lesson player — every route wired to the live server.
             </p>
 
-            {/* Byline-style meta row */}
-            <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 border-y border-border py-3 text-xs font-bold text-muted-foreground">
-              <span className="inline-flex items-center gap-1.5">
-                <Clock className="h-3.5 w-3.5 text-primary" />
-                12 min placement
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <BarChart3 className="h-3.5 w-3.5 text-primary" />
-                6 CEFR levels
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <Users className="h-3.5 w-3.5 text-primary" />
-                7 account pathways
-              </span>
-              <span className="inline-flex items-center gap-1.5">144 diagnostic items</span>
-            </div>
-
             <div className="relative mt-6 overflow-hidden rounded-xl border border-border bg-muted shadow-[0_20px_44px_-28px_rgba(13,0,77,0.4)]">
               <Image
                 src="/hero-learning.png"
@@ -90,9 +72,6 @@ export function Hero() {
               >
                 Preview placement
               </a>
-              <span className="text-xs font-medium text-muted-foreground">
-                Base API: <code className="font-mono text-foreground">{IELPS_API_BASE}</code>
-              </span>
             </div>
           </article>
 

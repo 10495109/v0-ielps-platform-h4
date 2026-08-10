@@ -15,7 +15,6 @@ export function MiniAppHome({ slug }: { slug: string }) {
   const a = ACCENT[app.accent]
   const Icon = app.icon
   const variant = PLAYER_VARIANTS[app.slug]
-  const journey = ['Landing', 'Onboarding', 'Dashboard', '15-step lesson', 'Completion']
 
   return (
     <div className="min-h-dvh bg-background">
@@ -83,19 +82,6 @@ export function MiniAppHome({ slug }: { slug: string }) {
                 <ArrowRight className="size-4" aria-hidden />
               </Link>
             ) : null}
-            {/* Full journey strip */}
-            <div className="mt-6 flex flex-wrap items-center gap-1.5">
-              {journey.map((step, i) => (
-                <span key={step} className="flex items-center gap-1.5">
-                  <span className="rounded-full bg-card px-2.5 py-1 text-[11px] font-medium text-muted-foreground ring-1 ring-border">
-                    {step}
-                  </span>
-                  {i < journey.length - 1 ? (
-                    <ArrowRight className="size-3 text-muted-foreground" aria-hidden />
-                  ) : null}
-                </span>
-              ))}
-            </div>
           </div>
           <div className="flex items-center justify-center">
             <Image

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IELPS PiP Mascot Preview</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      color: #10123d;
+      background: linear-gradient(135deg, #f7fbff, #eef5ff);
+      min-height: 100vh;
+    }
+    main {
+      width: min(1040px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 56px 0;
+    }
+    h1 { font-size: clamp(40px, 6vw, 72px); line-height: 1; margin: 0 0 16px; }
+    p { color: #5d6475; max-width: 680px; font-size: 18px; }
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 36px; }
+    .card { background: white; border: 1px solid #d7dbea; border-radius: 18px; padding: 18px; min-height: 140px; }
+    .card strong { display: block; margin-bottom: 8px; }
+    .pip-launcher {
+      position: fixed; right: 20px; bottom: 20px; display: inline-flex; align-items: center; gap: 10px;
+      border: 0; border-radius: 999px; background: #071341; color: #fff; padding: 10px 16px 10px 10px;
+      box-shadow: 0 18px 44px rgba(7,19,65,.24); font-weight: 900; cursor: pointer;
+    }
+    .pip-launcher img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; background: #fff; }
+    .pip-panel {
+      position: fixed; right: 20px; bottom: 92px; width: min(380px, calc(100vw - 32px));
+      background: #fff; border: 1px solid #d7dbea; border-radius: 22px; box-shadow: 0 24px 70px rgba(7,19,65,.2);
+      overflow: hidden; display: none;
+    }
+    .pip-panel.open { display: block; }
+    .pip-head { display: grid; grid-template-columns: 58px 1fr auto; gap: 12px; align-items: center; padding: 14px; background: #eaf5ff; }
+    .pip-head img { width: 58px; height: 58px; border-radius: 18px; object-fit: cover; background: #fff; }
+    .pip-head button { border: 1px solid #d7dbea; background: white; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; }
+    .langs { display: flex; gap: 6px; padding: 12px 14px; overflow-x: auto; }
+    .langs button { border: 1px solid #d7dbea; background: #fff; border-radius: 999px; padding: 8px 10px; font-weight: 800; cursor: pointer; }
+    .langs button.active { background: #1d5fa8; color: white; border-color: #1d5fa8; }
+    .caption { margin: 0 14px 14px; background: #f7f9ff; border: 1px solid #d7dbea; border-radius: 18px; padding: 14px; }
+    .actions { padding: 0 14px 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .actions button { border: 1px solid #d7dbea; background: white; border-radius: 999px; padding: 9px 10px; font-weight: 850; cursor: pointer; }
+    .actions button.primary { background: #1d5fa8; color: white; border-color: #1d5fa8; }
+    @media (max-width: 780px) { .cards { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main>
+    <p><strong>IELPS Preview</strong></p>
+    <h1>Meet PiP, your IELPS guide.</h1>
+    <p>PiP adapts to the learner’s browser or country language, explains the current pathway, suggests the next action, and keeps users connected to the main A1-C2 learning route.</p>
+    <div class="cards">
+      <div class="card"><strong>Language aware</strong><span>English, Spanish, Arabic, Chinese, French, Portuguese.</span></div>
+      <div class="card"><strong>Pathway aware</strong><span>Junior, parent, teacher, school, Studio, tutor, learner.</span></div>
+      <div class="card"><strong>Safe by design</strong><span>No scoring, no completion writes, no admin-only data.</span></div>
+    </div>
+  </main>
+
+  <section class="pip-panel" id="pipPanel" aria-label="PiP preview">
+    <div class="pip-head">
+      <img src="../assets/pip-mascot.png" alt="">
+      <div><strong>PiP</strong><br><span>IELPS guide</span></div>
+      <button type="button" onclick="togglePip()">×</button>
+    </div>
+    <div class="langs">
+      <button class="active" type="button" onclick="setLang('en', this)">English</button>
+      <button type="button" onclick="setLang('es', this)">Español</button>
+      <button type="button" onclick="setLang('ar', this)">العربية</button>
+      <button type="button" onclick="setLang('zh', this)">中文</button>
+      <button type="button" onclick="setLang('fr', this)">Français</button>
+      <button type="button" onclick="setLang('pt', this)">Português</button>
+    </div>
+    <div class="caption" id="caption">Hi, I’m PiP. I can help you choose the right IELPS pathway and find your next learning step.</div>
+    <div class="actions">
+      <button type="button">My course</button>
+      <button type="button">Practice</button>
+      <button type="button">Discover</button>
+      <button class="primary" type="button">Next step</button>
+    </div>
+  </section>
+
+  <button class="pip-launcher" type="button" onclick="togglePip()">
+    <img src="../assets/pip-mascot.png" alt="">
+    <span>Hi, I’m PiP!</span>
+  </button>
+
+  <script>
+    const captions = {
+      en: "Hi, I’m PiP. I can help you choose the right IELPS pathway and find your next learning step.",
+      es: "Hola, soy PiP. Puedo ayudarte a elegir la ruta correcta de IELPS y encontrar tu próximo paso de aprendizaje.",
+      ar: "مرحباً، أنا PiP. يمكنني مساعدتك في اختيار مسار IELPS المناسب والعثور على خطوتك التعليمية التالية.",
+      zh: "你好，我是 PiP。我可以帮助你选择合适的 IELPS 路径，并找到下一步学习任务。",
+      fr: "Bonjour, je suis PiP. Je peux vous aider à choisir le bon parcours IELPS et votre prochaine étape.",
+      pt: "Olá, sou o PiP. Posso ajudar você a escolher o caminho IELPS certo e encontrar o próximo passo."
+    };
+    function togglePip() {
+      document.getElementById("pipPanel").classList.toggle("open");
+    }
+    function setLang(lang, button) {
+      document.getElementById("caption").textContent = captions[lang];
+      document.getElementById("pipPanel").dir = lang === "ar" ? "rtl" : "ltr";
+      document.querySelectorAll(".langs button").forEach((item) => item.classList.remove("active"));
+      button.classList.add("active");
+    }
+  </script>
+</body>
+</html>
+

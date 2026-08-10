@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">PiP mascot fallback</title>
+  <desc id="desc">A rounded abstract AI guide mascot with a speech bubble body, compass shape, and small sparkle.</desc>
+  <defs>
+    <linearGradient id="body" x1="42" y1="30" x2="210" y2="226" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#eaf5ff"/>
+      <stop offset=".48" stop-color="#78c8ff"/>
+      <stop offset="1" stop-color="#1d5fa8"/>
+    </linearGradient>
+    <linearGradient id="face" x1="83" y1="64" x2="181" y2="158" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#132e63"/>
+      <stop offset="1" stop-color="#071341"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="130" y1="30" x2="192" y2="119" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffe08a"/>
+      <stop offset="1" stop-color="#ffb81c"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="14" stdDeviation="10" flood-color="#10123d" flood-opacity=".18"/>
+    </filter>
+  </defs>
+  <ellipse cx="128" cy="224" rx="70" ry="12" fill="#10123d" opacity=".12"/>
+  <g filter="url(#shadow)">
+    <path d="M51 94c0-39 32-70 71-70h11c39 0 71 31 71 70v20c0 37-28 67-64 70l-35 35c-7 7-19 2-19-8v-31c-21-12-35-34-35-60V94z" fill="url(#body)"/>
+    <path d="M68 89c0-24 20-44 44-44h33c24 0 44 20 44 44v20c0 24-20 44-44 44h-33c-24 0-44-20-44-44V89z" fill="#fff"/>
+    <rect x="82" y="63" width="94" height="70" rx="31" fill="url(#face)"/>
+    <circle cx="111" cy="99" r="9" fill="#fff"/>
+    <circle cx="148" cy="99" r="9" fill="#fff"/>
+    <path d="M104 171l62-51c6-5 15 2 11 9l-34 72c-4 8-16 5-16-4v-25h-17c-5 0-8-7-6-11z" fill="#16b7b9"/>
+    <path d="M150 119l41-29c6-4 13 3 9 9l-28 42z" fill="url(#gold)"/>
+    <path d="M134 30l8 16 16 8-16 8-8 16-8-16-16-8 16-8z" fill="url(#gold)"/>
+    <path d="M205 143l5 10 10 5-10 5-5 10-5-10-10-5 10-5z" fill="url(#gold)"/>
+  </g>
+</svg>
+

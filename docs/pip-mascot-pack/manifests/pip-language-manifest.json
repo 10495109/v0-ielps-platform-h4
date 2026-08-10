@@ -1,0 +1,45 @@
+{
+  "name": "PiP",
+  "purpose": "Multilingual IELPS platform guide and learning-support assistant",
+  "supportedLanguages": {
+    "en": { "label": "English", "dir": "ltr", "voiceEnvVar": "ELEVENLABS_VOICE_ID_EN" },
+    "es": { "label": "Español", "dir": "ltr", "voiceEnvVar": "ELEVENLABS_VOICE_ID_ES" },
+    "ar": { "label": "العربية", "dir": "rtl", "voiceEnvVar": "ELEVENLABS_VOICE_ID_AR" },
+    "zh": { "label": "中文", "dir": "ltr", "voiceEnvVar": "ELEVENLABS_VOICE_ID_ZH" },
+    "fr": { "label": "Français", "dir": "ltr", "voiceEnvVar": "ELEVENLABS_VOICE_ID_FR" },
+    "pt": { "label": "Português", "dir": "ltr", "voiceEnvVar": "ELEVENLABS_VOICE_ID_PT" }
+  },
+  "detectionPriority": [
+    "manual_user_choice",
+    "browser_accept_language",
+    "cloudflare_country_ip_headers",
+    "english_fallback"
+  ],
+  "commonCaptions": {
+    "welcome": {
+      "en": "Hi, I’m PiP. I can help you choose the right IELPS pathway and find your next learning step.",
+      "es": "Hola, soy PiP. Puedo ayudarte a elegir la ruta correcta de IELPS y encontrar tu próximo paso de aprendizaje.",
+      "ar": "مرحباً، أنا PiP. يمكنني مساعدتك في اختيار مسار IELPS المناسب والعثور على خطوتك التعليمية التالية.",
+      "zh": "你好，我是 PiP。我可以帮助你选择合适的 IELPS 路径，并找到下一步学习任务。",
+      "fr": "Bonjour, je suis PiP. Je peux vous aider à choisir le bon parcours IELPS et votre prochaine étape.",
+      "pt": "Olá, sou o PiP. Posso ajudar você a escolher o caminho IELPS certo e encontrar o próximo passo."
+    },
+    "course": {
+      "en": "Your main course stays first. Discover and StarPath are optional practice after your required lesson.",
+      "es": "Tu curso principal va primero. Discover y StarPath son práctica opcional después de tu lección obligatoria.",
+      "ar": "يبقى مسارك الأساسي أولاً. Discover وStarPath تدريب اختياري بعد الدرس المطلوب.",
+      "zh": "你的主课程始终优先。Discover 和 StarPath 是完成必修课后的可选练习。",
+      "fr": "Votre cours principal reste prioritaire. Discover et StarPath sont des activités optionnelles après la leçon obligatoire.",
+      "pt": "Seu curso principal vem primeiro. Discover e StarPath são práticas opcionais após a aula obrigatória."
+    },
+    "junior": {
+      "en": "Enter your class code or scan your QR code. I will only show safe learner actions.",
+      "es": "Introduce tu código de clase o escanea tu código QR. Solo mostraré acciones seguras para estudiantes.",
+      "ar": "أدخل رمز الصف أو امسح رمز QR. سأعرض فقط إجراءات آمنة للمتعلمين.",
+      "zh": "输入班级代码或扫描二维码。我只会显示安全的学习操作。",
+      "fr": "Saisissez votre code de classe ou scannez votre QR code. Je montrerai seulement des actions sûres.",
+      "pt": "Digite o código da turma ou escaneie o QR code. Mostrarei apenas ações seguras para o aluno."
+    }
+  }
+}
+

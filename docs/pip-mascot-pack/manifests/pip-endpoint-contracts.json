@@ -1,0 +1,46 @@
+{
+  "agentName": "PiP",
+  "basePath": "/api/agent",
+  "endpoints": {
+    "config": {
+      "method": "GET",
+      "endpoint": "/api/agent/config",
+      "purpose": "Load supported languages, common paths, cached voice availability, and provider state"
+    },
+    "chat": {
+      "method": "POST",
+      "endpoint": "/api/agent/chat",
+      "purpose": "Return caption, role hint, quick actions, route suggestion, and cached audio metadata",
+      "request": {
+        "message": "How do I start?",
+        "route": "/dashboard",
+        "role": "learner",
+        "language": "es",
+        "browserLanguage": "es-ES",
+        "context": {
+          "accountPathway": "student_12_plus",
+          "cefrLevel": "B1",
+          "lessonId": "b1d01l1"
+        }
+      }
+    },
+    "voice": {
+      "method": "POST",
+      "endpoint": "/api/agent/voice",
+      "purpose": "Return cached or dynamic ElevenLabs audio for a script and language",
+      "request": {
+        "scriptId": "welcome",
+        "language": "fr",
+        "cache": true
+      }
+    }
+  },
+  "frontendTruthStates": {
+    "live": "Response came from /api/agent",
+    "cached": "Pre-rendered voice audio is available",
+    "caption_only": "No voice file available or dynamic TTS disabled",
+    "admin_only": "Backend returned 403",
+    "unavailable": "Endpoint/provider missing or not configured"
+  }
+}
+

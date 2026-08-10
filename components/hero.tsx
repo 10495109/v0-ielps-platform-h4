@@ -71,13 +71,17 @@ export function Hero() {
         {/* ── Image panel ── */}
         <div className="animate-rise relative [animation-delay:120ms]">
           <div className="relative overflow-hidden rounded-2xl border border-white/12 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.7)]">
+            {/* The artwork is square. Cropping it to a landscape panel cut the
+                top and bottom off — the headphones and the learners' hands went
+                with them — and how much was lost changed with the viewport.
+                Rendered at its own ratio it is always whole. */}
             <Image
               src="/hero-learning.png"
               alt="Illustration of young English learners from around the world studying together on the IELPS platform"
-              width={900}
-              height={620}
+              width={1024}
+              height={1024}
               priority
-              className="h-full w-full object-cover"
+              className="h-auto w-full"
             />
             <div
               className="pointer-events-none absolute inset-0 bg-gradient-to-t from-indigo/50 to-transparent"

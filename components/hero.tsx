@@ -75,7 +75,7 @@ export function Hero() {
           <div className="relative overflow-hidden rounded-2xl border border-white/12 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.7)]">
             <Image
               src="/hero-learning.png"
-              alt="Diverse English learners connected to one IELPS learning platform with a placement compass and CEFR level ladder"
+              alt="English-as-a-second-language learners from around the world studying together on the IELPS platform"
               width={900}
               height={620}
               priority

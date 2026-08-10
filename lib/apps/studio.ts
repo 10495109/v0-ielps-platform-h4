@@ -99,8 +99,18 @@ export const studio: AccountApp = {
           title: 'Projects',
           kind: 'cards',
           endpoint: { method: 'GET', path: '/api/authoring/projects' },
-          transform: (raw) =>
-            asArray(raw).slice(0, 4).map((p) => {
+          transform: (raw) => {
+            const projects = asArray(raw)
+            // A new studio really does have no projects; say that rather than
+            // dropping back to a sample list of lessons that do not exist.
+            if (!projects.length)
+              return [{
+                title: 'No projects yet',
+                subtitle: 'Authoring',
+                body: 'Create a project to start authoring, or convert a coursebook PDF.',
+                tag: 'New',
+              }]
+            return projects.slice(0, 4).map((p) => {
               const o = p as Record<string, unknown>
               return {
                 title: String(o.name ?? 'Project'),
@@ -108,7 +118,8 @@ export const studio: AccountApp = {
                 body: `${o.blockCount ?? 0} blocks`,
                 tag: 'Open',
               }
-            }),
+            })
+          },
           sample: [
             { title: 'B1 Business English', subtitle: 'Published', body: '18 lessons · live', tag: 'Open' },
             { title: 'A2 Travel Pack', subtitle: 'In review', body: '9 lessons · validating', tag: 'Open' },

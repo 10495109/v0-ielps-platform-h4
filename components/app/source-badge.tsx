@@ -1,6 +1,6 @@
 'use client'
 
-import { Radio, WifiOff, Loader2, Lock } from 'lucide-react'
+import { Radio, WifiOff, Loader2, Lock, CircleSlash } from 'lucide-react'
 import type { DataSource } from '@/lib/use-eilps'
 import { cn } from '@/lib/utils'
 
@@ -21,6 +21,17 @@ export function SourceBadge({ source }: { source: DataSource }) {
       >
         <Lock className="size-3" aria-hidden />
         Admin only
+      </span>
+    )
+  }
+  if (source === 'unavailable') {
+    return (
+      <span
+        className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
+        title="This endpoint or its provider is not available on the server yet."
+      >
+        <CircleSlash className="size-3" aria-hidden />
+        Unavailable
       </span>
     )
   }

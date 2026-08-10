@@ -1,0 +1,79 @@
+{
+  "package": "ielps-tutor-live-classroom-developer-pack",
+  "generated": "2026-08-10",
+  "frontendRoutes": {
+    "marketplace": "/tutors",
+    "profile": "/tutors/:tutorId",
+    "booking": "/tutors/:tutorId/book",
+    "tutorWorkspace": "/tutor",
+    "onboarding": "/tutor/onboarding",
+    "schedule": "/tutor/schedule",
+    "liveRoom": "/tutor/live/:bookingId",
+    "sessionSummary": "/tutor/session/:bookingId/summary",
+    "progress": "/progress",
+    "dashboard": "/dashboard"
+  },
+  "backendContracts": {
+    "listTutors": {
+      "method": "GET",
+      "endpoint": "/api/tutors",
+      "purpose": "Marketplace tutor cards and filters"
+    },
+    "getTutor": {
+      "method": "GET",
+      "endpoint": "/api/tutors/:id",
+      "purpose": "Tutor profile detail"
+    },
+    "getAvailability": {
+      "method": "GET",
+      "endpoint": "/api/tutors/:id/availability",
+      "purpose": "Available lesson slots"
+    },
+    "createBooking": {
+      "method": "POST",
+      "endpoint": "/api/tutor/bookings",
+      "purpose": "Create confirmed or pending tutor booking"
+    },
+    "getBooking": {
+      "method": "GET",
+      "endpoint": "/api/tutor/bookings/:bookingId",
+      "purpose": "Live lobby and booking status"
+    },
+    "getSubscription": {
+      "method": "GET",
+      "endpoint": "/api/billing/subscription",
+      "purpose": "Check entitlement before booking"
+    },
+    "createCheckout": {
+      "method": "POST",
+      "endpoint": "/api/billing/checkout",
+      "purpose": "Payment gate for paid tutoring"
+    },
+    "createLiveRoomToken": {
+      "method": "POST",
+      "endpoint": "/api/live-room/:bookingId/token",
+      "purpose": "Secure WebRTC token for confirmed participants only"
+    },
+    "saveTutorNotes": {
+      "method": "POST",
+      "endpoint": "/api/tutor/session/:bookingId/notes",
+      "purpose": "Tutor session notes and learner support evidence"
+    },
+    "endTutorSession": {
+      "method": "POST",
+      "endpoint": "/api/tutor/session/:bookingId/end",
+      "purpose": "Close session and write support record"
+    },
+    "getProgressSummary": {
+      "method": "GET",
+      "endpoint": "/api/progress/summary",
+      "purpose": "Show learner evidence after session"
+    }
+  },
+  "environmentVariables": {
+    "VITE_TUTOR_APP_URL": "https://eilps.com/tutors",
+    "VITE_TUTOR_LIVE_URL": "https://eilps.com/tutor/live",
+    "VITE_API_BASE_URL": "https://eilps.com/api"
+  }
+}
+

@@ -1,0 +1,51 @@
+{
+  "bookingStates": [
+    "draft",
+    "payment_pending",
+    "confirmed",
+    "lobby_open",
+    "in_progress",
+    "completed",
+    "cancelled",
+    "no_show",
+    "refunded"
+  ],
+  "tutorOnboardingStates": [
+    "profile_started",
+    "identity_pending",
+    "identity_verified",
+    "background_pending",
+    "background_clear",
+    "safeguarding_acknowledged",
+    "approved",
+    "rejected",
+    "suspended"
+  ],
+  "liveRoomStates": [
+    "not_available",
+    "precheck",
+    "waiting_for_tutor",
+    "waiting_for_learner",
+    "ready_to_join",
+    "connected",
+    "reconnecting",
+    "ended"
+  ],
+  "handoffStates": {
+    "afterBooking": "confirmed lesson or payment pending",
+    "afterLiveSession": "session summary",
+    "afterSummary": "learner dashboard",
+    "afterSupportEvidence": "next required course lesson remains primary CTA"
+  },
+  "stateRules": [
+    "Tutor marketplace can be standalone.",
+    "Tutor cards inside IELPS core app should hand off through configurable frontend URL.",
+    "Booking requires authenticated learner or parent.",
+    "Payment or entitlement must pass before confirmed booking.",
+    "Live room token must only be issued for confirmed booking participants.",
+    "Tutor cannot enter learner progress as course completion.",
+    "Tutor session can create support evidence, notes, and recommendations.",
+    "Learner always returns to the A1-C2 course spine after session."
+  ]
+}
+

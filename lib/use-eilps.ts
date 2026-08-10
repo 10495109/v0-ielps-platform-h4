@@ -21,11 +21,20 @@ export const PROXY_BASE = process.env.NEXT_PUBLIC_EILPS_PROXY_BASE ?? ''
  * there would suggest the feature is unbuilt, when in fact they are simply
  * signed in as the wrong role.
  */
-export type DataSource = 'live' | 'sample' | 'loading' | 'forbidden'
+export type DataSource = 'live' | 'sample' | 'loading' | 'forbidden' | 'unavailable'
 
 /** Thrown by proxyFetch so the hook can distinguish "not allowed" from "failed". */
 class ForbiddenError extends Error {
   readonly forbidden = true
+}
+
+/**
+ * The route or the provider behind it does not exist yet: a 404, or a 503 from a
+ * provider that has not been configured. Distinct from 'sample' because there is
+ * nothing to fall back to and nothing the current user can do about it.
+ */
+export class UnavailableError extends Error {
+  readonly unavailable = true
 }
 
 type FetchState<T> = {
@@ -45,6 +54,7 @@ async function proxyFetch(path: string) {
       (parsed && (parsed.reason || parsed.message || parsed.error)) ||
       `status_${res.status}`
     if (res.status === 403) throw new ForbiddenError(message)
+    if (res.status === 404 || res.status === 503) throw new UnavailableError(message)
     throw new Error(message)
   }
   return parsed
@@ -106,6 +116,8 @@ export function useEilps<T>(
     source = 'loading'
   } else if (error && (error as ForbiddenError).forbidden) {
     source = 'forbidden'
+  } else if (error && (error as UnavailableError).unavailable) {
+    source = 'unavailable'
   } else if (data && !error) {
     try {
       const next = select ? select(data) : (data as T)

@@ -27,8 +27,7 @@ export function Hero() {
           </span>
 
           <h1 className="mt-5 text-balance font-display text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-[3.4rem]">
-            Welcome to IELPS, your structured path to{' '}
-            <span className="text-turquoise">confident English.</span>
+            Welcome to <span className="text-turquoise">IELPS</span>,
           </h1>
 
           <p className="mt-5 max-w-xl text-pretty font-display text-lg font-bold text-white/90 lg:text-xl">
@@ -37,8 +36,7 @@ export function Hero() {
 
           <p className="mt-4 max-w-xl text-pretty text-base leading-relaxed text-white/70 lg:text-lg">
             Intelligent English Learning &amp; Progress System — designed to help you build real
-            English skills at your own pace, with learning that adapts to you. Whether you start at
-            A1 Beginner or progress towards C2 Advanced, your pathway guides you step by step.
+            English skills at your own pace, with learning that adapts to you.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -75,7 +73,7 @@ export function Hero() {
           <div className="relative overflow-hidden rounded-2xl border border-white/12 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.7)]">
             <Image
               src="/hero-learning.png"
-              alt="English-as-a-second-language learners from around the world studying together on the IELPS platform"
+              alt="Illustration of young English learners from around the world studying together on the IELPS platform"
               width={900}
               height={620}
               priority

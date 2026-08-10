@@ -23,23 +23,22 @@ export function Hero() {
         <div className="animate-rise">
           <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3 py-1 text-[11px] font-black uppercase tracking-widest text-gold">
             <span className="h-1.5 w-1.5 rounded-full bg-gold" aria-hidden />
-            Welcome to IELPS
+            Integrated English Learning Platform Studio
           </span>
 
           <h1 className="mt-5 text-balance font-display text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-[3.4rem]">
-            Your structured path to{' '}
+            Welcome to IELPS, your structured path to{' '}
             <span className="text-turquoise">confident English.</span>
           </h1>
 
-          <p className="mt-6 max-w-xl text-pretty text-base leading-relaxed text-white/75 lg:text-lg">
-            Start at the right level and follow one continuous A1–C2 learning journey. Build real
-            skills step by step through lessons, practice, speaking support, progress reports, and
-            certificates when you&apos;re ready.
+          <p className="mt-5 max-w-xl text-pretty font-display text-lg font-bold text-white/90 lg:text-xl">
+            Your English. Your level. Your learning journey.
           </p>
 
-          <p className="mt-4 max-w-xl text-pretty text-sm leading-relaxed text-white/55 lg:text-base">
-            Explore extra activities, StarPath missions, and Discover content anytime — while your
-            main course keeps you moving forward.
+          <p className="mt-4 max-w-xl text-pretty text-base leading-relaxed text-white/70 lg:text-lg">
+            Intelligent English Learning &amp; Progress System — designed to help you build real
+            English skills at your own pace, with learning that adapts to you. Whether you start at
+            A1 Beginner or progress towards C2 Advanced, your pathway guides you step by step.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ChevronLeft, Check, PhoneOff, Mic, Video, Radio, Bell } from 'lucide-react'
 import { useLessonEngine } from '../use-lesson-engine'
 import { StepScreen } from '../step-screens'
+import { ActivityStep } from '../activity-step'
 import { CompletionScreen } from '../completion'
 
 function useSessionClock() {
@@ -103,7 +104,7 @@ export function TutorPlayer({ slug }: { slug: string }) {
 
         <main className="min-w-0">
           {e.finished ? (
-            <CompletionScreen slug={slug} lesson={e.lesson} accent={e.accent} score={e.score} stars={e.stars} mastery={e.mastery} certificateEligible={e.progress >= 100} onNextLesson={e.restart} saveResult={e.saveResult} />
+            <CompletionScreen slug={slug} lesson={e.lesson} accent={e.accent} score={e.score} stars={e.stars} mastery={e.mastery} certificateEligible={e.progress >= 100} onNextLesson={e.restart} saveResult={e.saveResult} submission={e.submission} />
           ) : (
             <div key={e.current} className="animate-slide-in-right rounded-2xl border border-border bg-card p-5 sm:p-7">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
@@ -119,16 +120,20 @@ export function TutorPlayer({ slug }: { slug: string }) {
                   <Bell className="size-3.5" /> {nudged === e.current ? 'Nudged to learner' : 'Nudge learner here'}
                 </button>
               </div>
-              <StepScreen
-                step={e.activeStep}
-                lesson={e.lesson}
-                accent={e.accent}
-                juniorReadability={false}
-                aiHelpEnabled={e.variant.aiHelpEnabled}
-                supportLanguage={e.supportLanguage}
-                setSupportLanguage={e.setSupportLanguage}
-                onDone={e.completeStep}
-              />
+              {e.activityScreens.length ? (
+                <ActivityStep e={e} />
+              ) : (
+                <StepScreen
+                  step={e.activeStep}
+                  lesson={e.lesson}
+                  accent={e.accent}
+                  juniorReadability={false}
+                  aiHelpEnabled={e.variant.aiHelpEnabled}
+                  supportLanguage={e.supportLanguage}
+                  setSupportLanguage={e.setSupportLanguage}
+                  onDone={e.completeStep}
+                />
+              )}
             </div>
           )}
         </main>

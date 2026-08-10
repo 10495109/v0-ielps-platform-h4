@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ChevronLeft, Monitor, Smartphone, Rocket, Check, Blocks, Code2 } from 'lucide-react'
 import { useLessonEngine } from '../use-lesson-engine'
 import { StepScreen } from '../step-screens'
+import { ActivityStep } from '../activity-step'
 import { CompletionScreen } from '../completion'
 
 /**
@@ -92,7 +93,9 @@ export function StudioPlayer({ slug }: { slug: string }) {
               </div>
               <div key={e.current} className="animate-fade-in p-5 sm:p-6">
                 {e.finished ? (
-                  <CompletionScreen slug={slug} lesson={e.lesson} accent={e.accent} score={e.score} stars={e.stars} mastery={e.mastery} certificateEligible={e.progress >= 100} onNextLesson={e.restart} saveResult={e.saveResult} />
+                  <CompletionScreen slug={slug} lesson={e.lesson} accent={e.accent} score={e.score} stars={e.stars} mastery={e.mastery} certificateEligible={e.progress >= 100} onNextLesson={e.restart} saveResult={e.saveResult} submission={e.submission} />
+                ) : e.activityScreens.length ? (
+                  <ActivityStep e={e} />
                 ) : (
                   <StepScreen
                     step={e.activeStep}

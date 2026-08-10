@@ -10,15 +10,19 @@ import { ActivityScreenView } from './activity-screens'
  * illustrative content, because this is the evidence the server actually
  * grades — the rest of the spine stays as the surrounding lesson experience.
  */
-export function ActivityStep({ e }: { e: LessonEngine }) {
+export function ActivityStep({ e, junior = false }: { e: LessonEngine; junior?: boolean }) {
   const a = ACCENT[e.accent]
   const screens = e.activityScreens
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className={`flex flex-col gap-5 ${junior ? 'text-[1.0625rem] leading-relaxed' : ''}`}>
       <div>
-        <h2 className="font-display text-xl font-semibold text-foreground">{e.activeStep.title}</h2>
-        <p className="mt-1 text-sm text-muted-foreground">{e.activeStep.instruction}</p>
+        <h2 className={`font-display font-semibold text-foreground ${junior ? 'text-2xl' : 'text-xl'}`}>
+          {e.activeStep.title}
+        </h2>
+        <p className={`mt-1 text-muted-foreground ${junior ? 'text-base' : 'text-sm'}`}>
+          {e.activeStep.instruction}
+        </p>
       </div>
 
       {screens.map((screen) => (

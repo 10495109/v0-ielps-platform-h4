@@ -73,6 +73,18 @@ export const studio: AccountApp = {
           title: 'Studio activity',
           kind: 'stat',
           endpoint: { method: 'GET', path: '/api/authoring/projects' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as { projects?: unknown[] }
+            const projects = Array.isArray(o.projects) ? o.projects : Array.isArray(raw) ? (raw as unknown[]) : []
+            const by = (state: string) =>
+              projects.filter((p) => String((p as Record<string, unknown>).status ?? '') === state).length
+            return [
+              { label: 'Projects', value: String(projects.length) },
+              { label: 'Published', value: String(by('published')) },
+              { label: 'In review', value: String(by('review')) },
+              { label: 'Drafts', value: String(by('draft')) },
+            ]
+          },
           sample: [
             { label: 'Projects', value: '6' },
             { label: 'Published lessons', value: '54' },
@@ -118,6 +130,16 @@ export const studio: AccountApp = {
           title: 'Default sequence',
           kind: 'list',
           endpoint: { method: 'GET', path: '/api/studio/coursebook/sequence/default' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as { sequence?: Record<string, unknown>[]; steps?: Record<string, unknown>[] }
+            const steps = o.sequence ?? o.steps ?? []
+            if (!steps.length) return []
+            return steps.slice(0, 8).map((s, i) => ({
+              title: `${i + 1}. ${String(s.label ?? s.title ?? s.id ?? 'Step')}`,
+              subtitle: String(s.description ?? s.mode ?? ''),
+              status: 'info',
+            }))
+          },
           sample: [
             { title: '1. Upload PDF or text', subtitle: 'Source ingest', status: 'ok' },
             { title: '2. Generate lesson blocks', subtitle: 'AI draft', status: 'ok' },
@@ -183,6 +205,15 @@ export const studio: AccountApp = {
           title: 'Resources',
           kind: 'cards',
           endpoint: { method: 'GET', path: '/api/addons/starpath/resources' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as { results?: Record<string, unknown>[] }
+            return (o.results ?? []).slice(0, 4).map((r) => ({
+              title: String(r.title ?? 'Resource'),
+              subtitle: `${String(r.subject ?? '')} · Grade ${String(r.grade ?? '')}`.trim(),
+              body: String(r.skillTitle ?? r.domain ?? ''),
+              tag: String(r.type ?? 'open'),
+            }))
+          },
           sample: [
             { title: 'Phonics flashcards', subtitle: 'A1', body: 'Printable + digital', tag: 'Edit' },
             { title: 'Debate prompts', subtitle: 'B2', body: '20 topic cards', tag: 'Edit' },

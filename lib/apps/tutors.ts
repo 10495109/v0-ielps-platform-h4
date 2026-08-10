@@ -70,6 +70,16 @@ export const tutors: AccountApp = {
           title: 'Snapshot',
           kind: 'stat',
           endpoint: { method: 'GET', path: '/api/tutoring/application' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as { steps?: Record<string, boolean>; application?: unknown }
+            const steps = Object.values(o.steps ?? {})
+            const done = steps.filter(Boolean).length
+            return [
+              { label: 'Application', value: o.application ? 'Submitted' : 'In progress' },
+              { label: 'Steps complete', value: `${done}/${steps.length || 6}` },
+              { label: 'Verified', value: o.application ? 'Pending review' : 'Not yet' },
+            ]
+          },
           sample: [
             { label: 'Status', value: 'Verified' },
             { label: 'Upcoming', value: '4' },
@@ -83,6 +93,19 @@ export const tutors: AccountApp = {
           title: 'Today\u2019s bookings',
           kind: 'timeline',
           endpoint: { method: 'GET', path: '/api/tutoring/bookings' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as { bookings?: Record<string, unknown>[] }
+            const today = new Date().toDateString()
+            const mine = (o.bookings ?? []).filter(
+              (b) => b.starts_at && new Date(String(b.starts_at)).toDateString() === today,
+            )
+            if (!mine.length) return [{ time: '—', title: 'No bookings today', detail: 'Your calendar is clear' }]
+            return mine.map((b) => ({
+              time: new Date(String(b.starts_at)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              title: String(b.learner_name ?? 'Session'),
+              detail: String(b.status ?? ''),
+            }))
+          },
           sample: [
             { time: '14:00', title: 'Lucia — B1 conversation', detail: '30 min · 1:1' },
             { time: '16:30', title: 'Group — exam speaking', detail: '45 min · 3 learners' },
@@ -174,6 +197,13 @@ export const tutors: AccountApp = {
           title: 'Balance',
           kind: 'stat',
           endpoint: { method: 'GET', path: '/api/billing/connect/status' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as { connected?: boolean; status?: string }
+            return [
+              { label: 'Payouts', value: o.connected ? 'Connected' : 'Not connected' },
+              { label: 'Status', value: String(o.status ?? 'not_started').replace(/_/g, ' ') },
+            ]
+          },
           sample: [
             { label: 'Available', value: '$420' },
             { label: 'Pending', value: '$200' },

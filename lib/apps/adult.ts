@@ -7,21 +7,7 @@ import {
   BarChart3,
 } from 'lucide-react'
 import type { AccountApp } from './types'
-
-/** Flatten the live deep-catalog (levels -> units -> lessons). */
-function catalogLessons(raw: unknown): Record<string, unknown>[] {
-  const root = raw as { levels?: unknown[] } | null
-  if (!root || !Array.isArray(root.levels)) return []
-  const out: Record<string, unknown>[] = []
-  for (const level of root.levels as Record<string, unknown>[]) {
-    for (const unit of (level.units as Record<string, unknown>[]) ?? []) {
-      for (const lesson of (unit.lessons as Record<string, unknown>[]) ?? []) {
-        out.push({ ...lesson, level: lesson.level ?? level.level })
-      }
-    }
-  }
-  return out
-}
+import { catalogLessons, lessonBlurb } from './catalog'
 
 function asArray(raw: unknown): unknown[] {
   if (Array.isArray(raw)) return raw
@@ -127,9 +113,7 @@ export const adult: AccountApp = {
               .map((o, i) => ({
                 title: String(o.title ?? 'Lesson'),
                 subtitle: `${String(o.level ?? 'A1')} · ${String(o.unitTitle ?? 'Course unit')}`,
-                body: String(
-                  o.lessonAim ?? o.cefrCanDo ?? 'Resume in the integrated A1–C2 lesson player.',
-                ),
+                body: lessonBlurb(o, 'Resume in the integrated A1–C2 lesson player.'),
                 tag: i === 0 ? 'Resume' : 'Start',
               })),
           sample: [
@@ -143,6 +127,18 @@ export const adult: AccountApp = {
           title: 'Today\u2019s plan',
           kind: 'list',
           endpoint: { method: 'GET', path: '/api/engine/schedule' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as { items?: Record<string, unknown>[] }
+            const items = o.items ?? []
+            if (!items.length) return [{ title: 'Nothing scheduled', subtitle: 'Start a lesson to build your plan', status: 'info' }]
+            const dueToday = items.filter(
+              (i) => i.due_at && new Date(String(i.due_at)) <= new Date(Date.now() + 864e5),
+            ).length
+            return [
+              { title: `${items.length} scheduled ${items.length === 1 ? 'item' : 'items'}`, subtitle: 'From the adaptive engine', status: 'info' },
+              { title: `${dueToday} due in the next 24 hours`, subtitle: 'Spaced repetition', status: dueToday ? 'pending' : 'ok' },
+            ]
+          },
           sample: [
             { title: '1 lesson', subtitle: 'Making a complaint politely', status: 'pending' },
             { title: '12 review cards', subtitle: 'Spaced repetition due', status: 'pending' },
@@ -172,6 +168,20 @@ export const adult: AccountApp = {
           title: 'Adaptive next steps',
           kind: 'list',
           endpoint: { method: 'GET', path: '/api/engine/next' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as { action?: string; reason?: string }
+            if (!o.action) return []
+            const label: Record<string, string> = {
+              continue: 'Continue the course',
+              review: 'Clear your review queue first',
+              placement: 'Take the placement check',
+            }
+            return [{
+              title: label[o.action] ?? String(o.action),
+              subtitle: String(o.reason ?? 'Recommended by the adaptive engine'),
+              status: 'info',
+            }]
+          },
           sample: [
             { title: 'Vocabulary consolidation', subtitle: 'Recommended after this lesson', status: 'info' },
             { title: 'Listening booster', subtitle: 'Targets your weakest skill', status: 'pending' },
@@ -224,6 +234,11 @@ export const adult: AccountApp = {
           title: 'Due today',
           kind: 'stat',
           endpoint: { method: 'GET', path: '/api/review/due' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as { items?: unknown[]; due?: number }
+            const due = Array.isArray(o.items) ? o.items.length : Number(o.due ?? 0)
+            return [{ label: 'Cards due', value: String(due) }]
+          },
           sample: [
             { label: 'Cards due', value: '12' },
             { label: 'Mastery', value: '68%' },
@@ -268,6 +283,15 @@ export const adult: AccountApp = {
           title: 'Skill mastery',
           kind: 'table',
           endpoint: { method: 'GET', path: '/api/engine/mastery' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as { items?: Record<string, unknown>[] }
+            const rows = (o.items ?? []).slice(0, 8).map((m) => [
+              String(m.name ?? m.kc ?? '—'),
+              String(m.level ?? '—'),
+              `${Math.round(Number(m.pKnown ?? 0) * 100)}%`,
+            ])
+            return { columns: ['Skill', 'Level', 'Mastery'], rows }
+          },
           sample: {
             columns: ['Skill', 'Level', 'Mastery'],
             rows: [

@@ -47,8 +47,30 @@ function safeJson(text: string) {
 }
 
 /**
+ * Is this value actually renderable in place of the sample, or would the panel
+ * silently show sample content while claiming to be live?
+ *
+ * A 200 response is not the same thing as usable data. Without a transform the
+ * raw API payload is almost never the shape a panel renders — the parent
+ * dashboard returns `{ children: [...] }` where the panel wants an array of
+ * stats — so the panel falls back to its sample but the badge still says Live.
+ * That reads as real family data when it is placeholder text, which is exactly
+ * the kind of claim this UI must not make.
+ */
+function matchesFallbackShape<T>(value: unknown, fallback: T): boolean {
+  if (Array.isArray(fallback)) return Array.isArray(value) && value.length > 0
+  if (fallback && typeof fallback === 'object') {
+    return Boolean(value) && typeof value === 'object' && !Array.isArray(value)
+  }
+  return value !== null && value !== undefined
+}
+
+/**
  * Fetch a live endpoint, transparently falling back to a provided sample
  * payload if the live server is unreachable (e.g. CORS-free preview sandbox).
+ *
+ * `source` is only reported as 'live' when the panel is genuinely rendering
+ * server data. Anything else is labelled 'sample', even on a 200.
  */
 export function useEilps<T>(
   path: string | null,
@@ -72,8 +94,11 @@ export function useEilps<T>(
     source = 'loading'
   } else if (data && !error) {
     try {
-      value = select ? select(data) : (data as T)
-      source = 'live'
+      const next = select ? select(data) : (data as T)
+      if (matchesFallbackShape(next, fallback)) {
+        value = next
+        source = 'live'
+      }
     } catch {
       value = fallback
       source = 'sample'

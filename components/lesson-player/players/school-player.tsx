@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ChevronLeft, ShieldCheck, CircleCheck, Flag, CircleDashed, FileDown } from 'lucide-react'
 import { useLessonEngine } from '../use-lesson-engine'
 import { StepScreen } from '../step-screens'
+import { ActivityStep } from '../activity-step'
 import { CompletionScreen } from '../completion'
 import type { LessonStepNumber } from '@/lib/lesson-player/spec'
 
@@ -83,22 +84,26 @@ export function SchoolPlayer({ slug }: { slug: string }) {
         {/* Lesson under inspection */}
         <main className="min-w-0">
           {e.finished ? (
-            <CompletionScreen slug={slug} lesson={e.lesson} accent={e.accent} score={e.score} stars={e.stars} mastery={e.mastery} certificateEligible={e.progress >= 100} onNextLesson={e.restart} saveResult={e.saveResult} />
+            <CompletionScreen slug={slug} lesson={e.lesson} accent={e.accent} score={e.score} stars={e.stars} mastery={e.mastery} certificateEligible={e.progress >= 100} onNextLesson={e.restart} saveResult={e.saveResult} submission={e.submission} />
           ) : (
             <div key={e.current} className="animate-fade-in rounded-xl border border-border bg-card p-5 sm:p-6">
               <div className="mb-4 flex items-center justify-between border-b border-border pb-3">
                 <span className="font-mono text-xs text-muted-foreground">STEP {String(e.activeStep.step).padStart(2, '0')} / 15 · {e.isRequired(e.activeStep.step) ? 'REQUIRED' : 'OPTIONAL'}</span>
               </div>
-              <StepScreen
-                step={e.activeStep}
-                lesson={e.lesson}
-                accent={e.accent}
-                juniorReadability={false}
-                aiHelpEnabled={e.variant.aiHelpEnabled}
-                supportLanguage={e.supportLanguage}
-                setSupportLanguage={e.setSupportLanguage}
-                onDone={e.completeStep}
-              />
+              {e.activityScreens.length ? (
+                <ActivityStep e={e} />
+              ) : (
+                <StepScreen
+                  step={e.activeStep}
+                  lesson={e.lesson}
+                  accent={e.accent}
+                  juniorReadability={false}
+                  aiHelpEnabled={e.variant.aiHelpEnabled}
+                  supportLanguage={e.supportLanguage}
+                  setSupportLanguage={e.setSupportLanguage}
+                  onDone={e.completeStep}
+                />
+              )}
             </div>
           )}
         </main>

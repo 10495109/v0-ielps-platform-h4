@@ -7,6 +7,7 @@ import {
   TrendingUp,
 } from 'lucide-react'
 import type { AccountApp } from './types'
+import { catalogLessons, lessonBlurb } from './catalog'
 
 function asArray(raw: unknown): unknown[] {
   if (Array.isArray(raw)) return raw
@@ -91,17 +92,14 @@ export const junior: AccountApp = {
           kind: 'cards',
           endpoint: { method: 'GET', path: '/api/curriculum/deep-catalog' },
           transform: (raw) =>
-            asArray(raw)
+            catalogLessons(raw)
               .slice(0, 3)
-              .map((l) => {
-                const o = l as Record<string, unknown>
-                return {
-                  title: String(o.title ?? 'Lesson'),
-                  subtitle: String(o.level ?? 'A1'),
-                  body: String(o.summary ?? 'Tap to keep going.'),
-                  tag: 'Play',
-                }
-              }),
+              .map((o, i) => ({
+                title: String(o.title ?? 'Lesson'),
+                subtitle: `${String(o.level ?? 'A1')} · ${String(o.unitTitle ?? 'Course unit')}`,
+                body: lessonBlurb(o, 'Tap to keep going.'),
+                tag: i === 0 ? 'Continue' : 'Play',
+              })),
           sample: [
             { title: 'At the Zoo', subtitle: 'A1 · Animals', body: 'Learn animal names and sounds.', tag: 'Continue' },
             { title: 'My Family', subtitle: 'A1 · People', body: 'Talk about who is in your family.', tag: 'Play' },
@@ -151,15 +149,12 @@ export const junior: AccountApp = {
           kind: 'cards',
           endpoint: { method: 'GET', path: '/api/curriculum/deep-catalog' },
           transform: (raw) =>
-            asArray(raw).slice(0, 6).map((l) => {
-              const o = l as Record<string, unknown>
-              return {
-                title: String(o.title ?? 'Lesson'),
-                subtitle: String(o.level ?? 'A1'),
-                body: String(o.summary ?? ''),
-                tag: 'Open',
-              }
-            }),
+            catalogLessons(raw).slice(0, 6).map((o) => ({
+              title: String(o.title ?? 'Lesson'),
+              subtitle: String(o.level ?? 'A1'),
+              body: lessonBlurb(o),
+              tag: 'Open',
+            })),
           sample: [
             { title: 'At the Zoo', subtitle: 'A1', body: 'Animals and sounds', tag: 'Open' },
             { title: 'My Family', subtitle: 'A1', body: 'People around me', tag: 'Open' },
@@ -201,6 +196,16 @@ export const junior: AccountApp = {
           title: 'Suggested next',
           kind: 'cards',
           endpoint: { method: 'GET', path: '/api/practice/next' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as { item?: Record<string, unknown>; reason?: string }
+            if (!o.item) return []
+            return [{
+              title: String(o.item.title ?? 'Practice'),
+              subtitle: `${String(o.item.level ?? 'A1')} · ${String(o.item.skillFocus ?? 'Practice')}`,
+              body: String(o.item.topic ?? ''),
+              tag: 'Play',
+            }]
+          },
           sample: [
             { title: 'Word Splash', subtitle: 'Vocabulary', body: 'Pop the correct words!', tag: 'Play' },
             { title: 'Sound Safari', subtitle: 'Listening', body: 'Match the sound to the animal.', tag: 'Play' },
@@ -241,6 +246,15 @@ export const junior: AccountApp = {
           title: 'This month',
           kind: 'stat',
           endpoint: { method: 'GET', path: '/api/progress' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as { state?: Record<string, unknown>; completions?: unknown[] }
+            const s = o.state ?? {}
+            return [
+              { label: 'Lessons done', value: String(o.completions?.length ?? 0) },
+              { label: 'Day streak', value: String(s.streak ?? 0) },
+              { label: 'Stars', value: String(s.xp ?? 0) },
+            ]
+          },
           sample: [
             { label: 'Minutes learned', value: '320' },
             { label: 'Lessons', value: '18' },

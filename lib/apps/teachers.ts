@@ -78,6 +78,16 @@ export const teachers: AccountApp = {
           title: 'At a glance',
           kind: 'stat',
           endpoint: { method: 'GET', path: '/api/school/dashboard' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as Record<string, unknown[]>
+            const n = (k: string) => (Array.isArray(o[k]) ? o[k].length : 0)
+            return [
+              { label: 'Classes', value: String(n('classes')) },
+              { label: 'Assignments', value: String(n('assignments')) },
+              { label: 'Awaiting review', value: String(n('moderation')) },
+              { label: 'Projects', value: String(n('projects')) },
+            ]
+          },
           sample: [
             { label: 'Classes', value: '3' },
             { label: 'Students', value: '78' },
@@ -113,6 +123,16 @@ export const teachers: AccountApp = {
           title: 'Needs grading',
           kind: 'list',
           endpoint: { method: 'GET', path: '/api/school/dashboard' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as { moderation?: Record<string, unknown>[] }
+            const items = o.moderation ?? []
+            if (!items.length) return [{ title: 'Nothing waiting', subtitle: 'No submissions need review', status: 'ok' }]
+            return items.slice(0, 6).map((m) => ({
+              title: String(m.learner_name ?? 'Learner submission'),
+              subtitle: String(m.status ?? 'open'),
+              status: 'pending',
+            }))
+          },
           sample: [
             { title: 'Writing: My weekend', subtitle: 'Grade 6 · 8 submissions', status: 'pending' },
             { title: 'Speaking task 3', subtitle: 'Grade 7 · 6 submissions', status: 'pending' },

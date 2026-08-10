@@ -63,6 +63,17 @@ export const schools: AccountApp = {
           title: 'Key metrics',
           kind: 'stat',
           endpoint: { method: 'GET', path: '/api/school/admin/overview' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as { organizations?: Record<string, unknown>[]; licenses?: unknown[] }
+            const org = o.organizations?.[0]
+            if (!org) return []
+            return [
+              { label: 'Organisation', value: String(org.name ?? '—') },
+              { label: 'Members', value: String(org.member_count ?? 0) },
+              { label: 'Licensed seats', value: String(org.licensed_seats ?? 0) },
+              { label: 'Licences', value: String(o.licenses?.length ?? 0) },
+            ]
+          },
           sample: [
             { label: 'Active learners', value: '486' },
             { label: 'Classes', value: '22' },
@@ -76,6 +87,17 @@ export const schools: AccountApp = {
           title: 'Usage by year group',
           kind: 'table',
           endpoint: { method: 'GET', path: '/api/school/admin/overview' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as { organizations?: Record<string, unknown>[] }
+            const rows = (o.organizations ?? []).map((org) => [
+              String(org.name ?? '—'),
+              String(org.org_type ?? 'school'),
+              String(org.member_count ?? 0),
+              String(org.licensed_seats ?? 0),
+            ])
+            if (!rows.length) return { columns: ['Organisation', 'Type', 'Members', 'Seats'], rows: [] }
+            return { columns: ['Organisation', 'Type', 'Members', 'Seats'], rows }
+          },
           sample: {
             columns: ['Year group', 'Learners', 'Avg. progress', 'Weekly active'],
             rows: [
@@ -92,6 +114,16 @@ export const schools: AccountApp = {
           title: 'Integrations',
           kind: 'list',
           endpoint: { method: 'GET', path: '/api/integrations/status' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as { checks?: Record<string, unknown>[]; releaseStatus?: string }
+            const checks = o.checks ?? []
+            if (!checks.length) return []
+            return checks.slice(0, 8).map((c) => ({
+              title: String(c.label ?? c.id ?? 'Check'),
+              subtitle: String(c.detail || (c.ok ? 'Configured' : 'Not configured')),
+              status: c.ok ? 'ok' : String(c.severity) === 'required' ? 'alert' : 'pending',
+            }))
+          },
           sample: [
             { title: 'SSO (SAML)', subtitle: 'Connected', status: 'ok' },
             { title: 'Roster sync', subtitle: 'Nightly', status: 'ok' },
@@ -113,6 +145,15 @@ export const schools: AccountApp = {
           title: 'Classes',
           kind: 'table',
           endpoint: { method: 'GET', path: '/api/school/classes' },
+          transform: (raw) => {
+            const o = (raw ?? {}) as { classes?: Record<string, unknown>[] }
+            const rows = (o.classes ?? []).map((c) => [
+              String(c.name ?? '—'),
+              String(c.level ?? '—'),
+              String(c.join_code ?? '—'),
+            ])
+            return { columns: ['Class', 'Level', 'Join code'], rows }
+          },
           sample: {
             columns: ['Class', 'Teacher', 'Learners', 'Level'],
             rows: [

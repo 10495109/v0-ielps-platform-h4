@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Home, Lock, Star, Sparkles, Trophy, Volume2 } from 'lucide-react'
 import { useLessonEngine } from '../use-lesson-engine'
 import { StepScreen } from '../step-screens'
+import { ActivityStep } from '../activity-step'
 import { CompletionScreen } from '../completion'
 
 /**
@@ -100,7 +101,7 @@ export function JuniorPlayer({ slug }: { slug: string }) {
             mastery={e.mastery}
             certificateEligible={e.progress >= 100}
             onNextLesson={e.restart}
-            saveResult={e.saveResult}
+            saveResult={e.saveResult} submission={e.submission}
           />
         ) : (
           <>
@@ -113,16 +114,20 @@ export function JuniorPlayer({ slug }: { slug: string }) {
                   </span>
                 ) : null}
               </div>
-              <StepScreen
-                step={e.activeStep}
-                lesson={e.lesson}
-                accent={e.accent}
-                juniorReadability
-                aiHelpEnabled={e.variant.aiHelpEnabled}
-                supportLanguage={e.supportLanguage}
-                setSupportLanguage={e.setSupportLanguage}
-                onDone={e.completeStep}
-              />
+              {e.activityScreens.length ? (
+                <ActivityStep e={e} junior />
+              ) : (
+                <StepScreen
+                  step={e.activeStep}
+                  lesson={e.lesson}
+                  accent={e.accent}
+                  juniorReadability
+                  aiHelpEnabled={e.variant.aiHelpEnabled}
+                  supportLanguage={e.supportLanguage}
+                  setSupportLanguage={e.setSupportLanguage}
+                  onDone={e.completeStep}
+                />
+              )}
             </div>
 
             {/* Grown-up info, tucked away */}

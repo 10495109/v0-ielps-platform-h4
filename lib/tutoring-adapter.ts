@@ -275,12 +275,123 @@ export function liveRoomState(booking: Booking | null, now = Date.now()): LiveRo
 
 export const SAFEGUARDING_PATH = '/api/tutoring/safeguarding-policy'
 
+/* ── Session notes and completion ────────────────────────────────────────── */
+
+export type NoteVisibility = 'private' | 'shared' | 'internal'
+
+export type SessionNote = {
+  id: string
+  bookingId: string
+  authorId: string
+  role: 'tutor' | 'learner'
+  visibility: NoteVisibility
+  notes: string
+  learnerSummary?: string | null
+  targets?: { strengths?: string[]; nextSteps?: string[]; homework?: string[] } | null
+  createdAt: string
+}
+
+export type SessionSummary = {
+  endedByRole?: string
+  focus?: string | null
+  learnerSummary?: string | null
+  strengths?: string[]
+  nextSteps?: string[]
+  homework?: string[]
+}
+
+export type SessionView = {
+  booking: {
+    id: string
+    status: string
+    paymentStatus: string
+    startsAt: string
+    endsAt: string
+    sessionEndedAt?: string | null
+    tutorName?: string
+    learnerName?: string
+  }
+  role: 'tutor' | 'learner'
+  summary: SessionSummary
+  notes: SessionNote[]
+}
+
+/** GET /api/tutoring/bookings/:id/summary — the booking, its summary and every note this user may see. */
+export async function getSessionView(bookingId: string): Promise<SessionView | null> {
+  const r = await get<SessionView>(`/api/tutoring/bookings/${encodeURIComponent(bookingId)}/summary`)
+  return r.ok ? r.body : null
+}
+
+export type SaveNoteResult =
+  | { ok: true; note: SessionNote }
+  | { ok: false; reason: string; status: number }
+
 /**
- * Session notes and end-of-session both correspond to routes the pack specifies
- * but the server does not implement. Exported so the summary screen can state
- * that plainly instead of appearing to save something.
+ * Visibility is the server's decision to police, not ours: a learner asking for
+ * an internal note is refused with 403, and notes can only be saved against a
+ * confirmed or completed booking.
  */
-export const SESSION_ROUTES_UNAVAILABLE = {
-  notes: 'POST /api/tutor/session/:bookingId/notes',
-  end: 'POST /api/tutor/session/:bookingId/end',
-} as const
+export async function saveSessionNote(
+  bookingId: string,
+  input: { notes: string; visibility?: NoteVisibility; learnerSummary?: string },
+): Promise<SaveNoteResult> {
+  const r = await post<{ note: SessionNote }>(
+    `/api/tutoring/bookings/${encodeURIComponent(bookingId)}/notes`,
+    {
+      notes: input.notes,
+      visibility: input.visibility ?? 'private',
+      learnerSummary: input.learnerSummary,
+    },
+  )
+  if (!r.ok || !r.body?.note) {
+    return { ok: false, reason: r.error ?? `status_${r.status}`, status: r.status }
+  }
+  return { ok: true, note: r.body.note }
+}
+
+export type EndSessionResult =
+  | { ok: true; status: string; sessionEndedAt?: string; summary: SessionSummary; notes: SessionNote[]; alreadyCompleted?: boolean }
+  | { ok: false; reason: string; status: number }
+
+/**
+ * Ends the session and writes the support record. The server refuses unless the
+ * booking is confirmed and paid, and is idempotent once completed — so this is
+ * safe to press twice.
+ */
+export async function endSession(
+  bookingId: string,
+  input: {
+    focus?: string
+    learnerSummary?: string
+    strengths?: string[]
+    nextSteps?: string[]
+    homework?: string[]
+    notes?: string
+  },
+): Promise<EndSessionResult> {
+  const r = await post<{
+    status: string
+    sessionEndedAt?: string
+    summary: SessionSummary
+    notes: SessionNote[]
+    alreadyCompleted?: boolean
+  }>(`/api/tutoring/bookings/${encodeURIComponent(bookingId)}/end`, input)
+  if (!r.ok || !r.body) return { ok: false, reason: r.error ?? `status_${r.status}`, status: r.status }
+  return {
+    ok: true,
+    status: r.body.status,
+    sessionEndedAt: r.body.sessionEndedAt,
+    summary: r.body.summary ?? {},
+    notes: r.body.notes ?? [],
+    alreadyCompleted: r.body.alreadyCompleted,
+  }
+}
+
+/** The server's own refusal codes, so the UI can explain rather than guess. */
+export const SESSION_ERROR_COPY: Record<string, string> = {
+  booking_not_active: 'Notes and completion are only available for a confirmed or completed session.',
+  booking_not_paid: 'Only a paid or prepaid session can be ended.',
+  notes_required: 'Write a note before saving.',
+  internal_notes_tutor_only: 'Only tutors can save internal notes.',
+  booking_not_found: 'That booking is not on your account.',
+}

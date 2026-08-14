@@ -87,6 +87,13 @@ the client later approved specifically as public-landing changes.
 - Backend: `GET /api/discovery/catalogue` — returns 200 live.
 - Current state: the deployed `/learner/discover` reads a curriculum file baked in at build time and makes **no API call**. The Access Panel's Discover screen does call the real endpoint. Reconciling the approved Discover UI onto the real backend is outstanding work.
 
+### LEVEL_BAND_CANONICAL — ported 2026-08-14
+- `components/level-band.tsx` in the Access Panel repo, mounted on the panel home.
+- **FUNCTION APPROVED** 2026-08-13, live since then on the r4 release. It was built there and not in this repo, so a swap would have lost it. Now moved, as instructed.
+- Rules preserved: with no `?level=` in the address it renders **nothing**, so the approved page is untouched — verified, document height 5017 with and without the band absent. Every figure is read from `GET /api/curriculum/deep-catalog` at run time, not counted at build time, so it cannot drift from the server.
+- ⚠️ One deliberate change from the r4 version: the level title now comes from the live catalogue (`C1 Advanced English for Academic, Professional and Civic Impact`) rather than a build-time copy (`Advanced: Academic and Professional English`). Server data over a local copy, per the pathway-title decision.
+- Its "Start the first C1 lesson" button points at `/learner/lesson?level=C1` — the route that works today. It moves to `/learner?lesson=:lessonId` when that route is built.
+
 ### PALETTE_CANONICAL — resolved
 - `#0D004D` deep navy · `#512EAB` primary purple · `#3860BE` learning blue · **`#22C7C6` turquoise** · `#FFCE00` gold
 - Turquoise **is** canonical. The earlier shortened list that omitted it was incomplete. Confirmed by the client 2026-08-14; the build already uses `#22C7C6`.

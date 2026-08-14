@@ -22,13 +22,40 @@ import {
   type LessonStepNumber,
   type SupportLanguage,
 } from '@/lib/lesson-player/spec'
-import { SAMPLE_LESSON } from '@/lib/lesson-player/content'
+// SAMPLE_LESSON is deliberately NOT imported here. A live lesson is built from
+// the catalogue and the 15-stage engine only; demonstration content has no path
+// into this screen.
+import { parseEngine15, type LessonEngine15 } from '@/lib/lesson-player/engine'
 import { useEilps } from '@/lib/use-eilps'
 import { SourceBadge } from '@/components/app/source-badge'
 import { StepScreen } from './step-screens'
 import { CompletionScreen } from './completion'
 import type { PlayableActivity, ServerSubmission } from './verified-activity-runner'
 import { progressApi } from '@/lib/adapters'
+
+/**
+ * What the catalogue tells us about this lesson. Identity only — the teaching
+ * content comes from the 15-stage engine, and neither has a sample fallback.
+ */
+export type LessonIdentity = {
+  lessonId: string
+  title: string
+  level: string
+  topic: string
+  intro: string
+  timeEstimate: string
+  outcomes: { canDo: string; speaking: string; review: string; aims: string[] }
+}
+
+const EMPTY_IDENTITY: LessonIdentity = {
+  lessonId: '',
+  title: '',
+  level: '',
+  topic: '',
+  intro: '',
+  timeEstimate: '',
+  outcomes: { canDo: '', speaking: '', review: '', aims: [] },
+}
 
 /**
  * Shared 15-step lesson player. One engine, adapted per account type via the
@@ -49,9 +76,9 @@ export function LessonPlayer({ slug }: { slug: string }) {
 
   // The backend remains authoritative. The adapter fills the approved visual
   // model without replacing the canonical lesson, adaptive or scoring data.
-  const { data: lesson, source } = useEilps(
+  const { data: lesson, source } = useEilps<LessonIdentity>(
     '/api/curriculum/deep-catalog',
-    SAMPLE_LESSON,
+    EMPTY_IDENTITY,
     (raw) => {
       const root = (raw ?? {}) as Record<string, unknown>
       const levels = Array.isArray(root.levels) ? root.levels : []
@@ -72,22 +99,39 @@ export function LessonPlayer({ slug }: { slug: string }) {
       const body = (record.body ?? record) as Record<string, unknown>
       const canDo = Array.isArray(body.canDo) ? body.canDo.map(String) : []
       const objectives = Array.isArray(body.objectives) ? body.objectives.map(String) : []
+      // Server fields only. Nothing is spread in from SAMPLE_LESSON: a live
+      // lesson must never inherit vocabulary, grammar, models, mistakes,
+      // practice, checks, review or a next lesson from demonstration content.
+      // Anything the server did not send stays empty and is labelled on screen.
       return {
-        ...SAMPLE_LESSON,
         lessonId: String(record.id || body.id || lessonId),
-        title: String(record.title || body.title || SAMPLE_LESSON.title),
-        level: String(record.level || body.level || SAMPLE_LESSON.level) as typeof SAMPLE_LESSON.level,
-        topic: String(record.unit_title || body.unitTitle || body.unitFocus || SAMPLE_LESSON.topic),
-        intro: String(body.lessonAim || canDo[0] || SAMPLE_LESSON.intro),
+        title: String(record.title || body.title || ''),
+        level: String(record.level || body.level || '') as LessonIdentity['level'],
+        topic: String(record.unit_title || body.unitTitle || body.unitFocus || ''),
+        intro: String(body.lessonAim || canDo[0] || ''),
+        timeEstimate: String(body.timeEstimate || record.time_estimate || ''),
         outcomes: {
-          ...SAMPLE_LESSON.outcomes,
-          canDo: String(body.cefrCanDo || canDo[0] || SAMPLE_LESSON.outcomes.canDo),
-          speaking: String(canDo[1] || SAMPLE_LESSON.outcomes.speaking),
-          aims: objectives.length ? objectives : SAMPLE_LESSON.outcomes.aims,
+          canDo: String(body.cefrCanDo || canDo[0] || ''),
+          speaking: String(canDo[1] || ''),
+          review: String(Array.isArray(body.progressCriteria) ? body.progressCriteria[0] ?? '' : ''),
+          aims: objectives,
         },
       }
     },
   )
+
+  // The real 15-stage engine. The approved player is populated from this
+  // contract rather than merely declaring it in adapter metadata. A 200 whose
+  // shape does not match is an error, so the screen says Unavailable instead of
+  // inventing content.
+  const { data: engine, source: engineSource } = useEilps<LessonEngine15 | null>(
+    `/api/lesson-support/lessons/${lessonId}/engine-15`,
+    null,
+    parseEngine15,
+  )
+
+  // The next lesson is the server's decision, never a value carried in content.
+  const [nextLessonId, setNextLessonId] = useState<string | null>(null)
 
   const [current, setCurrent] = useState<LessonStepNumber>(1)
   const [completed, setCompleted] = useState<Set<LessonStepNumber>>(new Set())
@@ -139,6 +183,18 @@ export function LessonPlayer({ slug }: { slug: string }) {
         await progressApi.completeLesson({ lessonId, accuracy: submission.accuracy, submissionId: submission.id })
         setCompleted((previous) => new Set(previous).add(15))
         setFinished(true)
+        // The continuation is server-assigned. Nothing here guesses it.
+        try {
+          const raw = (await progressApi.next()) as Record<string, unknown>
+          const candidate =
+            (raw?.nextLesson as Record<string, unknown> | undefined)?.id ??
+            (raw?.lesson as Record<string, unknown> | undefined)?.id ??
+            raw?.lessonId ??
+            raw?.nextLessonId
+          setNextLessonId(candidate ? String(candidate) : null)
+        } catch {
+          setNextLessonId(null)
+        }
       } catch (caught) {
         setCompletionError(caught instanceof Error ? caught.message : 'Progress could not be saved.')
       }
@@ -160,7 +216,12 @@ export function LessonPlayer({ slug }: { slug: string }) {
     setCompletionError(undefined)
   }
 
-  if (source !== 'live') {
+  // The approved player is a 15-stage experience. Without the 15-stage engine
+  // there is no lesson to show, so the engine's state gates the screen exactly
+  // as the catalogue's does. Whichever is not live is the one reported.
+  const blocking = source !== 'live' ? source : engineSource !== 'live' ? engineSource : null
+  if (blocking) {
+    const source = blocking
     const message: Partial<Record<typeof source, string>> = {
       loading: 'Loading this lesson from IELPS…',
       authentication: 'Sign in to open this lesson.',
@@ -172,6 +233,10 @@ export function LessonPlayer({ slug }: { slug: string }) {
       unavailable: 'The lesson service is unavailable.',
       not_implemented: 'The canonical lesson source was not found.',
       sample: 'Demonstration content is not used for operational lessons.',
+    }
+    if (source === 'entitlement') {
+      message.entitlement =
+        'This lesson is behind the trial or membership gate, so the 15-stage engine is not released to this account yet.'
     }
     return (
       <div className="min-h-screen bg-background p-4 sm:p-8">
@@ -278,7 +343,7 @@ export function LessonPlayer({ slug }: { slug: string }) {
             <>
               <CompletionScreen
                 slug={app.slug}
-                lesson={lesson}
+                nextLessonId={nextLessonId}
                 accent={app.accent}
                 score={score}
                 stars={stars}
@@ -298,6 +363,7 @@ export function LessonPlayer({ slug }: { slug: string }) {
               <StepScreen
                 step={activeStep}
                 lesson={lesson}
+                engine={engine}
                 accent={app.accent}
                 juniorReadability={variant.juniorReadability}
                 aiHelpEnabled={variant.aiHelpEnabled}

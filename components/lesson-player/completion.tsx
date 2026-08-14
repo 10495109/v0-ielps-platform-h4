@@ -14,7 +14,6 @@ import {
 import type { AccentToken } from '@/lib/apps/types'
 import { ACCENT } from '@/lib/apps/accent'
 import { SECONDARY_HANDOFFS } from '@/lib/lesson-player/spec'
-import type { SampleLesson } from '@/lib/lesson-player/content'
 
 const HANDOFF_ICONS: Record<string, typeof Gamepad2> = {
   '/starpath': Gamepad2,
@@ -31,16 +30,17 @@ const HANDOFF_ICONS: Record<string, typeof Gamepad2> = {
  */
 export function CompletionScreen({
   slug,
-  lesson,
   accent,
   score,
   stars,
   mastery,
   certificateEligible,
   onNextLesson,
+  nextLessonId,
 }: {
   slug: string
-  lesson: SampleLesson
+  /** Assigned by GET /api/engine/next after a verified completion. Never guessed. */
+  nextLessonId: string | null
   accent: AccentToken
   score: number
   stars: number
@@ -91,7 +91,11 @@ export function CompletionScreen({
         <span>
           <span className="block text-xs font-semibold uppercase tracking-wide opacity-80">Primary next step</span>
           <span className="mt-0.5 block text-lg font-semibold">Continue to next lesson</span>
-          <span className="mt-0.5 block text-xs opacity-80">Assigned lesson · {lesson.nextLessonId}</span>
+          <span className="mt-0.5 block text-xs opacity-80">
+            {nextLessonId
+              ? `Assigned lesson · ${nextLessonId}`
+              : 'The server has not assigned the next lesson yet'}
+          </span>
         </span>
         <ArrowRight className="size-6" />
       </button>

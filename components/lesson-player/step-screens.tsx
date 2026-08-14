@@ -19,7 +19,13 @@ import {
   type LessonStep,
   type SupportLanguage,
 } from '@/lib/lesson-player/spec'
-import type { SampleLesson } from '@/lib/lesson-player/content'
+import type { VocabCard, QuizItem } from '@/lib/lesson-player/spec'
+import {
+  engineKeywords,
+  engineStepFor,
+  type LessonEngine15,
+} from '@/lib/lesson-player/engine'
+import type { LessonIdentity } from './lesson-player'
 import { QuizRunner } from './quiz-runner'
 import { SourceBadge } from '@/components/app/source-badge'
 import { VerifiedActivityRunner, type PlayableActivity, type ServerSubmission } from './verified-activity-runner'
@@ -27,7 +33,9 @@ import type { DataSource } from '@/lib/use-eilps'
 
 type StepProps = {
   step: LessonStep
-  lesson: SampleLesson
+  lesson: LessonIdentity
+  engine: LessonEngine15 | null
+  content: LessonContent
   accent: AccentToken
   juniorReadability: boolean
   aiHelpEnabled: boolean
@@ -113,7 +121,99 @@ function AudioChip({ text, accent, src }: { text: string; accent: AccentToken; s
   )
 }
 
-export function StepScreen(props: StepProps) {
+/**
+ * Everything the 15-stage engine actually gives us for this lesson, in the
+ * shapes the approved screens already render.
+ *
+ * There is no fallback anywhere in here. The engine supplies the vocabulary
+ * cards and, for the practice steps, the *requirements* an activity has to meet
+ * — it does not ship ready-made quiz items. So those arrays stay empty and the
+ * screen says so, rather than borrowing demonstration questions. The graded,
+ * server-marked activity is step 14.
+ */
+export type LessonContent = {
+  keywords: VocabCard[]
+  meaningPractice: QuizItem[]
+  grammar: { pattern: string; examples: string[]; items: QuizItem[] }
+  audioModels: { id: string; text: string; seconds: number }[]
+  writingPrompts: string[]
+  errorFixes: { wrong: string; fixed: string; note: string }[]
+  supportedPractice: string[]
+  checkItems: QuizItem[]
+}
+
+export function serverContent(engine: LessonEngine15 | null): LessonContent {
+  const keywords: VocabCard[] = engineKeywords(engine).map((card) => ({
+    word: card.word,
+    definition: card.definition ?? '',
+    example: card.usageExample ?? '',
+  }))
+  return {
+    keywords,
+    meaningPractice: [],
+    grammar: { pattern: '', examples: [], items: [] },
+    audioModels: [],
+    writingPrompts: [],
+    errorFixes: [],
+    supportedPractice: [],
+    checkItems: [],
+  }
+}
+
+/**
+ * Shown where the server has not sent playable items for a step. It prints the
+ * server's own first-person instruction for that step so the learner still gets
+ * real guidance, and points at the graded activity.
+ */
+function ServerNotProvided({
+  engine,
+  uiStep,
+  accent,
+  onDone,
+}: {
+  engine: LessonEngine15 | null
+  uiStep: number
+  accent: AccentToken
+  onDone: () => void | Promise<void>
+}) {
+  const engineStep = engineStepFor(engine, uiStep)
+  return (
+    <>
+      <div className="rounded-2xl border border-border bg-soft p-4">
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            From the lesson engine
+          </span>
+          <SourceBadge source={engineStep ? 'live' : 'not_implemented'} />
+        </div>
+        {engineStep ? (
+          <>
+            <p className="mt-2 text-sm text-foreground">{engineStep.instructionFirstPerson}</p>
+            {engineStep.instructionLanguage?.supportText ? (
+              <p className="mt-1.5 text-sm text-muted-foreground">
+                {engineStep.instructionLanguage.supportText}
+              </p>
+            ) : null}
+          </>
+        ) : (
+          <p className="mt-2 text-sm text-muted-foreground">
+            The lesson engine did not send this step.
+          </p>
+        )}
+        <p className="mt-3 text-xs text-muted-foreground">
+          The server does not publish practice items for this step. The graded
+          activity for this lesson is the verified check at step 14, which the
+          server marks.
+        </p>
+      </div>
+      <PrimaryButton accent={accent} onClick={onDone}>Continue</PrimaryButton>
+    </>
+  )
+}
+
+export function StepScreen(input: Omit<StepProps, 'content'>) {
+  // Everything the screens render is derived from the engine here, once.
+  const props: StepProps = { ...input, content: serverContent(input.engine) }
   const { step } = props
   switch (step.kind) {
     case 'intro':
@@ -127,7 +227,7 @@ export function StepScreen(props: StepProps) {
     case 'definitions':
       return <DefinitionsStep {...props} />
     case 'quiz':
-      return <QuizStep {...props} items={props.lesson.meaningPractice} />
+      return <QuizStep {...props} items={props.content.meaningPractice} />
     case 'memory-review':
       return <MemoryReviewStep {...props} />
     case 'grammar':
@@ -269,15 +369,22 @@ function LanguageSupportStep({ step, accent, juniorReadability, supportLanguage,
   )
 }
 
-function KeywordsStep({ step, lesson, accent, juniorReadability, onDone }: StepProps) {
+function KeywordsStep({ step, accent, juniorReadability, onDone, content, engine }: StepProps) {
   const a = ACCENT[accent]
   const [tapped, setTapped] = useState<Set<string>>(new Set())
-  const allTapped = tapped.size >= lesson.keywords.length
+  const allTapped = tapped.size >= content.keywords.length
+  if (!content.keywords.length) {
+    return (
+      <StepShell step={step} accent={accent} junior={juniorReadability}>
+        <ServerNotProvided engine={engine} uiStep={4} accent={accent} onDone={onDone} />
+      </StepShell>
+    )
+  }
   return (
     <StepShell step={step} accent={accent} junior={juniorReadability}>
       <p className="text-sm text-muted-foreground">Tap each word to hear it. Cards show the English word only.</p>
       <div className="flex flex-wrap gap-2.5">
-        {lesson.keywords.map((k) => {
+        {content.keywords.map((k) => {
           const on = tapped.has(k.word)
           return (
             <button
@@ -300,13 +407,20 @@ function KeywordsStep({ step, lesson, accent, juniorReadability, onDone }: StepP
   )
 }
 
-function DefinitionsStep({ step, lesson, accent, juniorReadability, onDone }: StepProps) {
+function DefinitionsStep({ step, accent, juniorReadability, onDone, content, engine }: StepProps) {
   const a = ACCENT[accent]
-  const [open, setOpen] = useState<string | null>(lesson.keywords[0]?.word ?? null)
+  const [open, setOpen] = useState<string | null>(content.keywords[0]?.word ?? null)
+  if (!content.keywords.length) {
+    return (
+      <StepShell step={step} accent={accent} junior={juniorReadability}>
+        <ServerNotProvided engine={engine} uiStep={5} accent={accent} onDone={onDone} />
+      </StepShell>
+    )
+  }
   return (
     <StepShell step={step} accent={accent} junior={juniorReadability}>
       <div className="grid gap-3 sm:grid-cols-2">
-        {lesson.keywords.map((k) => {
+        {content.keywords.map((k) => {
           const isOpen = open === k.word
           return (
             <button
@@ -340,7 +454,14 @@ function DefinitionsStep({ step, lesson, accent, juniorReadability, onDone }: St
   )
 }
 
-function QuizStep(props: StepProps & { items: SampleLesson['meaningPractice'] }) {
+function QuizStep(props: StepProps & { items: QuizItem[] }) {
+  if (!props.items.length) {
+    return (
+      <StepShell step={props.step} accent={props.accent} junior={props.juniorReadability}>
+        <ServerNotProvided engine={props.engine} uiStep={6} accent={props.accent} onDone={props.onDone} />
+      </StepShell>
+    )
+  }
   const { step, accent, juniorReadability, items, onDone } = props
   return (
     <StepShell step={step} accent={accent} junior={juniorReadability}>
@@ -349,15 +470,22 @@ function QuizStep(props: StepProps & { items: SampleLesson['meaningPractice'] })
   )
 }
 
-function MemoryReviewStep({ step, lesson, accent, juniorReadability, onDone }: StepProps) {
+function MemoryReviewStep({ step, accent, juniorReadability, onDone, content, engine }: StepProps) {
   const a = ACCENT[accent]
   const [i, setI] = useState(0)
-  const card = lesson.keywords[i]
+  const card = content.keywords[i]
   const [flipped, setFlipped] = useState(false)
   function grade() {
-    if (i + 1 >= lesson.keywords.length) return onDone()
+    if (i + 1 >= content.keywords.length) return onDone()
     setI((n) => n + 1)
     setFlipped(false)
+  }
+  if (!content.keywords.length) {
+    return (
+      <StepShell step={step} accent={accent} junior={juniorReadability}>
+        <ServerNotProvided engine={engine} uiStep={7} accent={accent} onDone={onDone} />
+      </StepShell>
+    )
   }
   return (
     <StepShell step={step} accent={accent} junior={juniorReadability}>
@@ -377,7 +505,7 @@ function MemoryReviewStep({ step, lesson, accent, juniorReadability, onDone }: S
         )}
       </button>
       <div className="flex items-center justify-between gap-3">
-        <span className="text-xs text-muted-foreground">Card {i + 1} of {lesson.keywords.length}</span>
+        <span className="text-xs text-muted-foreground">Card {i + 1} of {content.keywords.length}</span>
         <div className="flex gap-2">
           <button type="button" onClick={grade} className="rounded-full border border-border px-4 py-2 text-sm font-medium hover:bg-soft">
             Hard
@@ -391,18 +519,25 @@ function MemoryReviewStep({ step, lesson, accent, juniorReadability, onDone }: S
   )
 }
 
-function GrammarStep({ step, lesson, accent, juniorReadability, onDone }: StepProps) {
+function GrammarStep({ step, accent, juniorReadability, onDone, content, engine }: StepProps) {
   const a = ACCENT[accent]
   const [showQuiz, setShowQuiz] = useState(false)
+  if (!content.grammar.items.length) {
+    return (
+      <StepShell step={step} accent={accent} junior={juniorReadability}>
+        <ServerNotProvided engine={engine} uiStep={8} accent={accent} onDone={onDone} />
+      </StepShell>
+    )
+  }
   return (
     <StepShell step={step} accent={accent} junior={juniorReadability}>
       {!showQuiz ? (
         <>
           <div className="rounded-2xl border border-border bg-card p-5">
             <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Language pattern</p>
-            <p className="mt-1 font-medium text-card-foreground">{lesson.grammar.pattern}</p>
+            <p className="mt-1 font-medium text-card-foreground">{content.grammar.pattern}</p>
             <div className="mt-3 space-y-1.5">
-              {lesson.grammar.examples.map((ex) => (
+              {content.grammar.examples.map((ex) => (
                 <p key={ex} className={`rounded-lg px-3 py-2 text-sm ${a.soft}`}>{ex}</p>
               ))}
             </div>
@@ -410,21 +545,28 @@ function GrammarStep({ step, lesson, accent, juniorReadability, onDone }: StepPr
           <PrimaryButton accent={accent} onClick={() => setShowQuiz(true)}>Practise the pattern</PrimaryButton>
         </>
       ) : (
-        <QuizRunner items={lesson.grammar.items} accent={accent} onComplete={onDone} />
+        <QuizRunner items={content.grammar.items} accent={accent} onComplete={onDone} />
       )}
     </StepShell>
   )
 }
 
-function SpeakingStep({ step, lesson, accent, juniorReadability, aiHelpEnabled, onDone }: StepProps) {
+function SpeakingStep({ step, accent, juniorReadability, aiHelpEnabled, onDone, content, engine }: StepProps) {
   const a = ACCENT[accent]
   const [recording, setRecording] = useState(false)
   const [recorded, setRecorded] = useState(false)
+  if (!content.audioModels.length) {
+    return (
+      <StepShell step={step} accent={accent} junior={juniorReadability}>
+        <ServerNotProvided engine={engine} uiStep={9} accent={accent} onDone={onDone} />
+      </StepShell>
+    )
+  }
   return (
     <StepShell step={step} accent={accent} junior={juniorReadability}>
       <div className="rounded-2xl border border-border bg-card p-5">
         <p className="text-sm text-card-foreground">Say this clearly:</p>
-        <p className="mt-2 font-serif text-lg font-semibold text-foreground">“{lesson.audioModels[0]?.text}”</p>
+        <p className="mt-2 font-serif text-lg font-semibold text-foreground">“{content.audioModels[0]?.text}”</p>
         <div className="mt-4 flex items-center gap-3">
           <AudioChip text="Hear the model" accent={accent} />
           <button
@@ -454,14 +596,21 @@ function SpeakingStep({ step, lesson, accent, juniorReadability, aiHelpEnabled, 
   )
 }
 
-function ListenRepeatStep({ step, lesson, accent, juniorReadability, onDone }: StepProps) {
+function ListenRepeatStep({ step, accent, juniorReadability, onDone, content, engine }: StepProps) {
   const [done, setDone] = useState<Set<string>>(new Set())
-  const all = done.size >= lesson.audioModels.length
+  const all = done.size >= content.audioModels.length
+  if (!content.audioModels.length) {
+    return (
+      <StepShell step={step} accent={accent} junior={juniorReadability}>
+        <ServerNotProvided engine={engine} uiStep={10} accent={accent} onDone={onDone} />
+      </StepShell>
+    )
+  }
   return (
     <StepShell step={step} accent={accent} junior={juniorReadability}>
       <p className="text-sm text-muted-foreground">Listen to each model, then repeat. Play/pause only.</p>
       <div className="grid gap-2.5">
-        {lesson.audioModels.map((m, idx) => (
+        {content.audioModels.map((m, idx) => (
           <div key={m.id} className="flex items-center justify-between gap-3 rounded-xl border border-border bg-card p-3">
             <div className="flex items-center gap-3">
               <span className="text-xs font-semibold text-muted-foreground">{idx + 1}</span>
@@ -482,26 +631,33 @@ function ListenRepeatStep({ step, lesson, accent, juniorReadability, onDone }: S
   )
 }
 
-function WritingStep({ step, lesson, accent, juniorReadability, onDone }: StepProps) {
+function WritingStep({ step, accent, juniorReadability, onDone, content, engine }: StepProps) {
   const [i, setI] = useState(0)
   const [text, setText] = useState('')
   const [tries, setTries] = useState(0)
-  const prompt = lesson.writingPrompts[i]
+  const prompt = content.writingPrompts[i]
   const showSupport = tries >= 3
   function submit() {
     if (text.trim().length < 3) {
       setTries((t) => t + 1)
       return
     }
-    if (i + 1 >= lesson.writingPrompts.length) return onDone()
+    if (i + 1 >= content.writingPrompts.length) return onDone()
     setI((n) => n + 1)
     setText('')
     setTries(0)
   }
+  if (!content.writingPrompts.length) {
+    return (
+      <StepShell step={step} accent={accent} junior={juniorReadability}>
+        <ServerNotProvided engine={engine} uiStep={11} accent={accent} onDone={onDone} />
+      </StepShell>
+    )
+  }
   return (
     <StepShell step={step} accent={accent} junior={juniorReadability}>
       <div className="rounded-2xl border border-border bg-card p-5">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Prompt {i + 1} of {lesson.writingPrompts.length}</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Prompt {i + 1} of {content.writingPrompts.length}</p>
         <p className="mt-1 font-medium text-card-foreground">{prompt}</p>
         <textarea
           value={text}
@@ -522,19 +678,26 @@ function WritingStep({ step, lesson, accent, juniorReadability, onDone }: StepPr
   )
 }
 
-function ErrorFixStep({ step, lesson, accent, juniorReadability, onDone }: StepProps) {
+function ErrorFixStep({ step, accent, juniorReadability, onDone, content, engine }: StepProps) {
   const a = ACCENT[accent]
   const [i, setI] = useState(0)
   const [revealed, setRevealed] = useState(false)
-  const item = lesson.errorFixes[i]
+  const item = content.errorFixes[i]
   function next() {
-    if (i + 1 >= lesson.errorFixes.length) return onDone()
+    if (i + 1 >= content.errorFixes.length) return onDone()
     setI((n) => n + 1)
     setRevealed(false)
   }
+  if (!content.errorFixes.length) {
+    return (
+      <StepShell step={step} accent={accent} junior={juniorReadability}>
+        <ServerNotProvided engine={engine} uiStep={12} accent={accent} onDone={onDone} />
+      </StepShell>
+    )
+  }
   return (
     <StepShell step={step} accent={accent} junior={juniorReadability}>
-      <p className="text-sm text-muted-foreground">Find and fix the mistake ({i + 1} of {lesson.errorFixes.length}).</p>
+      <p className="text-sm text-muted-foreground">Find and fix the mistake ({i + 1} of {content.errorFixes.length}).</p>
       <div className="rounded-2xl border border-border bg-card p-5">
         <p className="rounded-lg bg-destructive/10 px-3 py-2 font-mono text-sm text-foreground line-through decoration-destructive/60">
           {item?.wrong}
@@ -552,7 +715,7 @@ function ErrorFixStep({ step, lesson, accent, juniorReadability, onDone }: StepP
             </button>
           ) : (
             <button type="button" onClick={next} className={`rounded-full px-5 py-2 text-sm font-semibold ${a.solid}`}>
-              {i + 1 >= lesson.errorFixes.length ? 'Finish' : 'Next mistake'}
+              {i + 1 >= content.errorFixes.length ? 'Finish' : 'Next mistake'}
             </button>
           )}
         </div>
@@ -561,14 +724,21 @@ function ErrorFixStep({ step, lesson, accent, juniorReadability, onDone }: StepP
   )
 }
 
-function SupportedPracticeStep({ step, lesson, accent, juniorReadability, onDone }: StepProps) {
+function SupportedPracticeStep({ step, accent, juniorReadability, onDone, content, engine }: StepProps) {
   const a = ACCENT[accent]
   const [done, setDone] = useState<Set<number>>(new Set())
+  if (!content.supportedPractice.length) {
+    return (
+      <StepShell step={step} accent={accent} junior={juniorReadability}>
+        <ServerNotProvided engine={engine} uiStep={13} accent={accent} onDone={onDone} />
+      </StepShell>
+    )
+  }
   return (
     <StepShell step={step} accent={accent} junior={juniorReadability}>
       <p className="text-sm text-muted-foreground">Practise with support. Help fades as you succeed.</p>
       <div className="grid gap-2">
-        {lesson.supportedPractice.map((task, idx) => {
+        {content.supportedPractice.map((task, idx) => {
           const on = done.has(idx)
           return (
             <button
@@ -614,18 +784,18 @@ function VerifiedCheckStep({ step, accent, juniorReadability, activity, activity
   )
 }
 
-function RecapStep({ step, lesson, accent, juniorReadability, onDone }: StepProps) {
+function RecapStep({ step, lesson, accent, juniorReadability, onDone, content }: StepProps) {
   const a = ACCENT[accent]
   return (
     <StepShell step={step} accent={accent} junior={juniorReadability}>
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="rounded-xl border border-border bg-card p-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Words</p>
-          <p className="mt-1 text-sm text-card-foreground">{lesson.keywords.map((k) => k.word).join(', ')}</p>
+          <p className="mt-1 text-sm text-card-foreground">{content.keywords.map((k) => k.word).join(', ')}</p>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Language</p>
-          <p className="mt-1 text-sm text-card-foreground">{lesson.grammar.pattern}</p>
+          <p className="mt-1 text-sm text-card-foreground">{content.grammar.pattern}</p>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Skill</p>

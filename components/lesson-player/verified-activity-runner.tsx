@@ -99,19 +99,32 @@ export function VerifiedActivityRunner({
     setPending(true)
     setError(undefined)
     try {
-      const reviewEvidence = currentEvidence
+      // Smart Review evidence is resolved by mechanic, not by position. The
+      // save screen is not always the last one the server sends, and assuming
+      // it is would attach the wrong phrase — or none — to the submission.
+      const reviewScreen = activity.screens.find(
+        (candidate) => candidate.mechanic === 'save_phrase_to_review_deck',
+      )
+      if (!reviewScreen) throw new Error('smart_review_screen_not_found')
+      const reviewEvidence = evidence[reviewScreen.screen_id] || {}
+      const phrase = String(reviewEvidence.phrase || '')
+      if (!phrase) throw new Error('smart_review_phrase_missing')
       const saved = await reviewApi.savePhrase({
         lessonId: activity.lesson_id,
-        phrase: String(reviewEvidence.phrase || ''),
+        phrase,
         level: activity.level,
         unitId: activity.unit_id || '',
         tags: ['lesson-player', 'smart-review'],
         kcs: [],
       }) as Record<string, unknown>
-      const item = (saved.item || {}) as Record<string, unknown>
+      const item = (saved.item || saved.savedItem || saved) as Record<string, unknown>
+      const savedReviewItemId = String(item.id || '')
+      // The server has to give us a real item id. Without one there is no
+      // Smart Review evidence to submit, and self-reporting it is not allowed.
+      if (!savedReviewItemId) throw new Error('smart_review_item_id_missing')
       const finalAttempts = attempts.map((attempt) =>
-        attempt.screenId === screen.screen_id
-          ? { ...attempt, evidence: { savedReviewItemId: String(item.id || '') } }
+        attempt.screenId === reviewScreen.screen_id
+          ? { ...attempt, evidence: { ...attempt.evidence, savedReviewItemId } }
           : attempt,
       )
       const clientSubmissionId = `ielps_${Date.now()}_${Math.random().toString(36).slice(2, 12)}`

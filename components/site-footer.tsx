@@ -1,5 +1,3 @@
-import { IELPS_API_BASE } from '@/lib/ielps-api'
-
 export function SiteFooter() {
   return (
     <footer className="border-t border-border bg-card">
@@ -10,10 +8,10 @@ export function SiteFooter() {
           </span>
           <span className="font-display text-lg font-extrabold text-foreground">IELPS</span>
         </div>
+        {/* Production wording. The previous line printed implementation detail and,
+            because the API is same-origin, an empty value followed by a full stop. */}
         <p className="text-sm text-muted-foreground">
-          Brand-faithful account &amp; placement shell overlaying the live platform at{' '}
-          <code className="font-mono text-foreground">{IELPS_API_BASE}</code>. The live frontend and
-          backend are unchanged.
+          Your account, placement and learning route across IELPS.
         </p>
       </div>
     </footer>

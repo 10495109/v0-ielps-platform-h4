@@ -27,7 +27,7 @@ export function Hero() {
           </span>
 
           <h1 className="mt-5 text-balance font-display text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-[3.4rem]">
-            Welcome to <span className="text-turquoise">IELPS</span>,
+            Welcome to <span className="text-turquoise">IELPS</span>
           </h1>
 
           <p className="mt-5 max-w-xl text-pretty font-display text-lg font-bold text-white/90 lg:text-xl">

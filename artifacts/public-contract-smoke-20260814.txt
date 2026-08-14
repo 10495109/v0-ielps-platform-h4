@@ -1,4 +1,4 @@
-﻿200 /api/agent/config
+200 /api/agent/config
 200 /api/lesson-support/language-context
 200 /api/curriculum/deep-summary
 200 /api/discovery/catalogue

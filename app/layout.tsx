@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Inter, Bricolage_Grotesque } from 'next/font/google'
 import './globals.css'
+import { PipMount } from '@/components/pip/pip-mount'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -41,6 +42,10 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${bricolage.variable} bg-background`}>
       <body className="font-sans antialiased">
         {children}
+        {/* PiP is part of the approved Access Panel: the 12 August approved hero
+            carries it, and the panel running in production has it today. It is
+            mounted here so a promotion cannot silently remove it. */}
+        <PipMount />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

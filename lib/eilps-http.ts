@@ -72,7 +72,17 @@ async function refreshAccessToken() {
       })
       if (!response.ok) return null
       const payload = (await parseResponse(response)) as Record<string, unknown> | null
-      const token = payload && typeof payload.token === 'string' ? payload.token : null
+      // The server names this field `accessToken` — /api/auth/refresh, /login and
+      // /register all return it that way. Reading `token` instead meant the
+      // bearer was never attached, so every authenticated call in the panel came
+      // back 401 and every signed-in surface rendered `Authentication required`.
+      // `token` is still accepted in case an older deployment answers that way.
+      const token =
+        payload && typeof payload.accessToken === 'string'
+          ? payload.accessToken
+          : payload && typeof payload.token === 'string'
+            ? payload.token
+            : null
       accessToken = token
       return token
     } catch {

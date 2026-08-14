@@ -1,15 +1,19 @@
 # IELPS Canonical Manifest
 
-Revision 3 — 2026-08-14. Supersedes revisions 1 and 2 of the same date.
+Revision 4 — 2026-08-14. Supersedes revisions 1, 2 and 3 of the same date.
 
 Written to satisfy sections 13 and 16 of *IELPS Developer Handoff — Canonical UI,
 Access Panel & Backend Integration Rules*, and corrected against the client's
 instructions of 2026-08-14.
 
-Revision 3 corrects the landing-page approval history only. The 11 August 2026
+Revision 3 corrected the landing-page approval history only. The 11 August 2026
 morning and afternoon landing conversations are recorded as two separate events
 (§1 LANDING_CANONICAL), and the statement that `IELPS-new-landing-page` was
 never approved is withdrawn.
+
+Revision 4 records the deployment of the 11 August afternoon public landing under
+the authorisation of 2026-08-14 16:50 BST, and the full approval history that
+document required (§1). Nothing outside the public landing was changed.
 
 Approval categories are kept separate throughout: **UI APPROVED**,
 **FUNCTION APPROVED**, **DEPLOY APPROVED**. One never implies another.
@@ -54,6 +58,27 @@ next piece of work **after** the public landing was approved on 11 August.
 
 ### LANDING_CANONICAL — public front page
 
+#### PUBLIC_LANDING_APPROVAL_HISTORY
+
+| Date | Landing | Status |
+| --- | --- | --- |
+| 27 Jul 2026 | V2 public landing — "Choose your pathway, then follow one clear route" (pathway grid, CEFR ladder, placement-to-certificate journey) | Historical approved public-front-door state. Not authorised as a replacement. |
+| 6 Aug 2026, reaffirmed 7 Aug | "Build English that moves with your life" | Historical approved and permanent-at-that-point state — *"06/08 Landing Page is not interim. Again I approve this landing page: 07/August/2026."* Not the replacement candidate. |
+| 11 Aug 2026 — morning | `LANDING PAGE 2.html` / Pearson Canada | **CANONICAL REFERENCE / RESTORED BASELINE.** Not the final UI approval of that day. |
+| 11 Aug 2026 — afternoon | `IELPS-new-landing-page` / `hero-banner` | **UI APPROVED** — *"Anirudha, this is perfect. My exact vision."* **DEPLOY APPROVED** 14 Aug 2026. **LIVE.** |
+
+#### LATEST_UI_APPROVED_PUBLIC_LANDING
+`10495109/IELPS-new-landing-page`, branch `hero-banner`, commit
+`a6e1cf1e8f1640b1b547973f037e8e7b11347d5b`, authored 2026-08-11T15:51:48Z,
+*"hero: push the subject up so both hands are in frame"*. Branch head equals the
+approved commit — it has not moved since approval.
+
+#### CURRENT_PRODUCTION_PUBLIC_LANDING
+- Before 2026-08-14 16:35Z: the 11 August morning restored baseline.
+- After 2026-08-14 16:44Z: the 11 August afternoon `hero-banner` design, ported
+  into `frontend/src/landing-markup.html` + `frontend/src/landing.css`.
+  Build manifest `sourceSha256 ef6bcd7d…`, generated 2026-08-14T16:44:48Z.
+
 **11 August 2026 produced two separate landing-page events, morning and
 afternoon. They are not the same approval and must not be combined.** Corrected
 2026-08-14 on the client's instruction; this chronology is **resolved**, not an
@@ -65,8 +90,8 @@ open interpretation.
 - Source: the client's own attachment `LANDING PAGE 2.html`, identical (md5 `c19cc9a4481a94d290510a54b5e82b8e`) to `04-pearson-canada-colour-only-offline-standalone-preview.html`, title `IELPS-Pearson-Canada-Colour-Only-2026-08-02`
 - Sent because he could not see the image attachment under discussion. He described the attached HTML as the "one true canonical correct landing/front page" and instructed a restoration to it. He chose Page 2 over Page 1 because it matched the Pearson Canada colour direction.
 - Lives as: `frontend/src/landing-markup.html` (11,158 bytes) + `frontend/src/landing.css` (52,106 bytes), injected by `Login.jsx`
-- **DEPLOYED** 2026-08-11 and **still what `eilps.com/` serves today.**
-- Verified 2026-08-14: the live page renders identically to his preview file at 1280 wide.
+- **DEPLOYED** 2026-08-11. Superseded in production 2026-08-14 by (b). Retained in full at `frontend/rollback-herobanner-20260814T163349Z/` and in `frontend/dist.rollback-herobanner-20260814T163349Z/`.
+- Verified 2026-08-14 before replacement: the live page rendered identically to his preview file at 1280 wide.
 - He did not say "I approve this as the final landing page" after the restoration; shortly afterwards he stopped further work so the landing, hero sections and what sits behind them could be resolved properly.
 
 #### (b) 11 Aug 2026, AFTERNOON — `IELPS-new-landing-page` / `hero-banner`
@@ -81,20 +106,47 @@ open interpretation.
   - `a6e1cf1e` 15:51 — hero: push the subject up so both hands are in frame
 - Held on `hero-banner`, **not** pushed to `main`, because merges to `main` auto-deploy via v0.
 - Immediately after the approval the conversation moved to "Next thing is the Access Panel" — which is why the approval attaches to this landing work and not to the Access Panel, and not retrospectively to the morning restoration.
-- **NOT DEPLOY APPROVED.** UI APPROVED never implies DEPLOY APPROVED.
+- **DEPLOY APPROVED** 2026-08-14 16:50 BST by *IELPS Public Landing Page — Deployment Authorisation & Canonical Handover*, public landing only. **LIVE** since 2026-08-14 16:44Z.
 
-#### Consequence to be aware of
-The design carrying the explicit UI approval (b) is **not** the design currently
-served at `eilps.com/`; production still serves the morning restored baseline
-(a). That is correct under the approval rules — no deploy approval has been
-given — but it means the public front page and the approved landing design are
-presently two different things. Closing that gap requires **DEPLOY APPROVED**
-for `hero-banner`, and it is not to be done before then.
+#### How it was deployed
+It was **integrated**, not mounted wholesale. The approved Next.js page was
+rendered from commit `a6e1cf1e` and ported into the shape the platform already
+uses for its landing — one markup file and one stylesheet injected by
+`Login.jsx` — so every later platform update behind the landing was preserved
+untouched.
 
-Superseded record: an earlier revision of this manifest, and the August landing
-summary sent 2026-08-14, recorded the morning file as UI APPROVED on 2026-08-11
-and stated that `IELPS-new-landing-page` was never approved. **Both statements
-are withdrawn as incorrect.**
+- Markup: `frontend/src/landing-markup.html`, 25,092 bytes
+- Stylesheet: `frontend/src/landing.css`, 44,338 bytes, every rule scoped to `.hb-landing`
+- Photographs and the two typefaces: `frontend/public/landing-hb/` (13 files, 2.4 MB)
+- Controls: the 18 `href="#"` dead ends in the approved source are wired to the platform's own three landing actions (`login`, `placement`, `learner`) and to `/dashboard` and `/account`. No fourth action was invented, because that would have been a change to authentication and registration.
+- Two integration corrections were needed and are recorded because they are not obvious:
+  1. the font variables and the body font stack live on `<html>`/`<body>` in a Next build, so they were moved onto `.hb-landing`; without that every section changed height;
+  2. Tailwind ships its rules inside `@layer`, and **anything in a cascade layer loses to any unlayered rule in the host page whatever the specificity** — the platform's own stylesheet was repainting the header navigation ink instead of muted grey. The layers were flattened, preserving source order.
+- Verified against the approved commit at 1280, 834 and 390 wide: document height identical to the pixel (4307 / 5055 / 6208) and every one of the nine sections identical in width and height. The only differing pixels anywhere are the two regions holding the claims that section 7 required to be replaced.
+
+#### Unverified claims — replaced, not invented around
+Section 7 of the authorisation: the inherited v0 figures were never substantiated
+and no replacement statistic may be invented. Each was replaced with a figure read
+from the live curriculum on the day of deployment
+(`GET /api/curriculum/deep-catalog` — 6 levels, 48 units, 240 lessons) or with
+plain accurate copy. The design, the three-across rhythm and the styling are
+untouched; only the words inside them changed.
+
+| Approved source | Deployed | Basis |
+| --- | --- | --- |
+| "Average level gain / +1 CEFR level / in 6 months of regular study" | "Course range / A1 to C2 / every CEFR level covered" | The catalogue runs A1–C2 |
+| "40+ / Countries" | "240 / Lessons" | Counted from `deep-catalog` |
+| "12k+ / Learners" | "48 / Units" | Counted from `deep-catalog` |
+| "IELPS learners come from 40+ countries." | "IELPS learners come from many countries." | Non-numeric, accurate |
+
+The two counts are true as at 2026-08-14 and will need revisiting if the
+curriculum grows. Everything else on the page is the approved wording.
+
+#### Correction history preserved
+An earlier revision of this manifest, and the August landing summary sent
+2026-08-14, recorded the morning file as UI APPROVED on 2026-08-11 and stated
+that `IELPS-new-landing-page` was never approved. **Both statements are withdrawn
+as incorrect.** They are kept here rather than erased, as instructed.
 
 ### GATEWAY_CANONICAL — signed-out gate
 - Source: `frontend/src/SignInRequired.jsx` + `frontend/src/gated-routes.js`
@@ -108,6 +160,12 @@ are withdrawn as incorrect.**
 - Backend exists: `GET /api/assessment/level-check`, `POST /api/assessment/level-check/score`, `POST /api/assessment/placement/calibrate`
 - Frontend exists: `frontend/src/screens/Diagnostic.jsx` on the main site
 - Status: **NOT WIRED as a funnel.** The pieces exist separately. The landing currently goes straight to the Access Panel, and the Access Panel does not route a new learner through placement before a pathway. Sequencing them is outstanding work, not a missing component.
+
+### ACCESS_PANEL_HOME / LEARNER_APP — separate canonical components
+`ACCESS_PANEL_HOME` is `/learner/` and `LEARNER_APP` is everything behind it.
+Neither is the public landing, and neither was touched by the 2026-08-14 landing
+deployment. Recorded here under the names the authorisation uses so the two can
+never be substituted for one another again. Detail follows.
 
 ### ACCESS_PANEL_CANONICAL
 - Repo `10495109/v0-ielps-platform-h4`, branch `access-panel-approved-design`, commit at time of writing `ba27fbd`
@@ -154,14 +212,16 @@ are withdrawn as incorrect.**
 - The existing IELPS API on the client's server. 31 mounted route modules (`~/eilps/backend/src/index.js`). No backend route was added, renamed or loosened.
 
 ### CURRENT_PRODUCTION_RELEASE
-- Public site: `~/eilps/frontend/dist`, build manifest `sourceSha256 00b909f5…`, generated 2026-08-13T20:55:39Z, port 4301
+- Public site: `~/eilps/frontend/dist`, build manifest `sourceSha256 ef6bcd7d…`, generated 2026-08-14T16:44:48Z, port 4301
 - Access Panel: `~/eilps/releases/ielps-a1-c2-learner-20260805-r4-discovery/out`, port 4302
 - Review copy: same release directory, `out/panel-preview/`, reachable at `/learner/panel-preview/`. Additive only — no existing file changed, no service restarted.
-- Rollback retained: `~/eilps/frontend/dist.rollback-gate-20260813T205527Z`
+- Rollback retained: `~/eilps/frontend/dist.rollback-herobanner-20260814T163349Z` (the whole pre-deployment site) and `~/eilps/frontend/rollback-herobanner-20260814T163349Z/` (the two previous landing source files)
+- Rollback command: `cd ~/eilps/frontend && rm -rf dist && cp -a dist.rollback-herobanner-20260814T163349Z dist` — no service restart needed, the web server reads from disk per request. To roll the source back too, copy the two files in `rollback-herobanner-20260814T163349Z/` over `src/`.
+- Earlier rollback also retained: `~/eilps/frontend/dist.rollback-gate-20260813T205527Z`
 
 ### LAST_APPROVED_BUILD
-- Public site: the 2026-08-13 gate build. **DEPLOY APPROVED**, live. It carries the 11 Aug morning restored landing baseline, not the UI APPROVED `hero-banner` design.
-- Public landing design: `IELPS-new-landing-page` @ `hero-banner` `a6e1cf1e`. **UI APPROVED**, never built or deployed.
+- Public site: the 2026-08-14 landing build. **DEPLOY APPROVED**, live. It carries the 11 Aug afternoon `hero-banner` landing.
+- Public landing design: `IELPS-new-landing-page` @ `hero-banner` `a6e1cf1e8f1640b1b547973f037e8e7b11347d5b`. **UI APPROVED + DEPLOY APPROVED + LIVE.**
 - Access Panel: none. The h4 build awaits **DEPLOY APPROVED**.
 
 ---
@@ -173,8 +233,8 @@ build. Status is evidence-based, measured on 2026-08-14 against the live server.
 
 | # | Architecture stage | Backend module(s) | Frontend | Status |
 | --- | --- | --- | --- | --- |
-| 1 | Public landing — restored baseline (11 Aug AM) | — | `landing-markup.html` | ✅ LIVE, unchanged. Canonical reference / restored baseline, **not** the final UI approval |
-| 1b | Public landing — UI APPROVED design (11 Aug PM) | — | repo `IELPS-new-landing-page`, branch `hero-banner` @ `a6e1cf1e` | ✅ **UI APPROVED** ("this is perfect. My exact vision.") · ⚠️ **NOT DEPLOYED**, awaiting DEPLOY APPROVED |
+| 1 | Public landing — UI APPROVED design (11 Aug PM) | — | `landing-markup.html` + `landing.css`, ported from `hero-banner` @ `a6e1cf1e` | ✅ **UI APPROVED + DEPLOY APPROVED**, LIVE since 2026-08-14 |
+| 1b | Public landing — restored baseline (11 Aug AM) | — | `rollback-herobanner-20260814T163349Z/` | ⏹ Superseded in production. Canonical reference / restored baseline, retained as the rollback |
 | 2 | Gateway / funnel (signed-out gate) | `auth` | `SignInRequired.jsx` | ✅ LIVE, 20 routes |
 | 3 | Placement | `assessment` (`/level-check`, `/level-check/score`, `/placement/calibrate`) | `Diagnostic.jsx` | ⚠️ **NOT WIRED as a funnel** — components exist, sequence does not |
 | 4 | Result / recommendation | `assessment`, `engine` | — | ⚠️ **NOT WIRED** — no screen consumes the placement result into a recommendation |
@@ -360,17 +420,12 @@ Confirmed live: `GET /api/agent/config` returns `dynamicSpeechEnabled: false`
 although the file intends `true`. **Not fixed** — correcting it means editing a
 production environment file and restarting the API, which requires approval.
 
-**3. The UI APPROVED public landing is not the deployed public landing.**
-`eilps.com/` serves the 11 Aug morning restored baseline. The 11 Aug afternoon
-`hero-banner` design is the one carrying the explicit UI approval, and it has
-never been deployed. This is correct under the approval rules — UI APPROVED is
-not DEPLOY APPROVED — so it is not a defect, but it is an open decision: either
-`hero-banner` is deployed when DEPLOY APPROVED is given, or the restored
-baseline is confirmed as the intended live page. **Technical note:** the two are
-different codebases. Live is a static markup + CSS pair injected by `Login.jsx`
-inside the Vite app on port 4301; `hero-banner` is a Next.js app in a separate
-repo. Deploying it is a build-and-mount job, not a file swap, and would need to
-preserve the existing login and routing that `Login.jsx` provides.
+**3. ~~The UI APPROVED public landing is not the deployed public landing.~~
+RESOLVED 2026-08-14.** DEPLOY APPROVED was given for the public landing only and
+the 11 August afternoon `hero-banner` design is now live. See §1
+LANDING_CANONICAL. The two codebases were reconciled by porting the approved
+page into the platform's own landing mechanism rather than mounting the Next.js
+project over the frontend, so everything behind the landing is untouched.
 
 **4. Junior placement.** Section 5 of the client's instruction requires learners
 entering schools and classrooms to follow the placement / level-allocation

@@ -34,22 +34,23 @@ export function SessionBadge() {
     }
   }, [])
 
+  // Truthful session text is shorter than "Checking session…", so without a
+  // floor the whole header nav slides sideways the moment the check resolves.
   if (!checked) {
     return (
-      <span className="hidden rounded-full border border-border bg-card px-3 py-1.5 text-xs font-bold text-muted-foreground sm:inline-flex">
+      <span className="ielps-session-badge hidden rounded-full border border-border bg-card px-3 py-1.5 text-xs font-bold text-muted-foreground sm:inline-flex">
         Checking session…
       </span>
     )
   }
 
+  // Signing in happens on the platform itself, not here, so this states the
+  // fact rather than offering a button that leads nowhere.
   if (!user) {
     return (
-      <a
-        href="/signin"
-        className="inline-flex min-h-9 items-center rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground shadow-sm transition-transform hover:-translate-y-0.5"
-      >
-        Sign in
-      </a>
+      <span className="ielps-session-badge hidden rounded-full border border-border bg-card px-3 py-1.5 text-xs font-bold text-muted-foreground sm:inline-flex">
+        Not signed in
+      </span>
     )
   }
 
@@ -57,7 +58,7 @@ export function SessionBadge() {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="hidden rounded-full border border-border bg-card px-3 py-1.5 text-xs font-bold text-foreground sm:inline-flex">
+      <span className="ielps-session-badge hidden rounded-full border border-border bg-card px-3 py-1.5 text-xs font-bold text-foreground sm:inline-flex">
         {user.name} · {label}
       </span>
       <button

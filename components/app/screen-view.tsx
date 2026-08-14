@@ -31,8 +31,14 @@ export function ScreenView({
   const screen = getScreen(app, screenSlug)
   if (!screen) return notFound()
 
-  // Greeting titles carry a placeholder name; use the signed-in learner's.
-  const title = name ? screen.title.replace(/,\s*[A-Z][\w'-]*$/, `, ${name}`) : screen.title
+  // Greeting titles carry a placeholder name. Use the signed-in learner's, and
+  // with no session drop the name entirely rather than greeting a visitor by
+  // somebody else's — a made-up name reads as real data.
+  // "Welcome back, Jordan" and "Hello, Alex! Ready to learn?" both qualify.
+  const GREETING_NAME = /,\s*[A-Z][\w'-]*(?=[!?.]|$)/
+  const title = name
+    ? screen.title.replace(GREETING_NAME, `, ${name}`)
+    : screen.title.replace(GREETING_NAME, '')
 
   return (
     <AppShell app={app} activeScreen={screen.slug}>

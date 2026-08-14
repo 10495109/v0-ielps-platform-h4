@@ -1,5 +1,6 @@
 'use client'
 
+import { Fragment } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
@@ -68,19 +69,6 @@ function normalizeLive(raw: unknown): Record<string, LivePathway> {
   return map
 }
 
-function MethodBadge({ method }: { method: string }) {
-  const isGet = method === 'GET'
-  return (
-    <span
-      className={`rounded-md px-1.5 py-0.5 font-mono text-[10px] font-bold ${
-        isGet ? 'bg-secondary/15 text-secondary' : 'bg-primary/15 text-primary'
-      }`}
-    >
-      {method}
-    </span>
-  )
-}
-
 function PathwayCard({
   pathway,
   live,
@@ -108,36 +96,16 @@ function PathwayCard({
       <div className={`h-[3px] w-full ${accent.bar}`} />
 
       <div className="flex flex-1 flex-col p-4">
-        <p className={`inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider ${accent.text}`}>
+        <p className={`inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider ${accent.text}`}>
           <Icon className="h-3 w-3" />
           {pathway.short}
         </p>
-        <h3 className="mt-1.5 text-pretty font-display text-base font-bold leading-tight text-foreground">
+        <h3 className="mt-1.5 text-pretty font-display text-xl font-bold leading-tight text-foreground">
           {name}
         </h3>
-        <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-muted-foreground">
+        <p className="mt-2 text-base leading-relaxed text-muted-foreground">
           {blurb}
         </p>
-
-        {/* Compact endpoint strip — same data, denser presentation */}
-        <div className="mt-3 flex flex-wrap gap-1">
-          {pathway.backend.slice(0, 2).map((ep) => (
-            <span
-              key={ep.method + ep.path}
-              className="inline-flex items-center gap-1 rounded border border-border bg-background px-1.5 py-0.5"
-            >
-              <MethodBadge method={ep.method} />
-              <code className="max-w-[9rem] truncate font-mono text-[10px] text-muted-foreground">
-                {ep.path}
-              </code>
-            </span>
-          ))}
-          {pathway.backend.length > 2 && (
-            <span className="inline-flex items-center rounded border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] font-bold text-muted-foreground">
-              +{pathway.backend.length - 2}
-            </span>
-          )}
-        </div>
 
         <Link
           href={`/app/${pathway.slug}`}
@@ -174,20 +142,20 @@ export function PathwaysSection() {
             </h2>
           </div>
           <div className="flex items-center gap-2">
-            <span className="hidden items-center rounded-full border border-border bg-card px-3 py-1 text-[11px] font-bold text-muted-foreground sm:inline-flex">
-              GET /api/auth/pathways
-            </span>
             <SourceBadge source={source} />
           </div>
         </div>
         <p className="mt-3 max-w-2xl text-pretty text-sm leading-relaxed text-muted-foreground">
           Each account type is its own mini-application with a dedicated onboarding, dashboard and
-          pathway screens — hydrated live from the EILPS server. Open one to explore it.
+          pathway screens. Open one to explore it.
         </p>
 
-        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
-          {PATHWAYS.map((p) => (
-            <PathwayCard key={p.slug} pathway={p} live={liveMap[p.slug]} />
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {PATHWAYS.map((p, index) => (
+            <Fragment key={p.slug}>
+              <PathwayCard pathway={p} live={liveMap[p.slug]} />
+              {index === 0 && <div aria-hidden="true" className="hidden lg:block lg:col-span-2" />}
+            </Fragment>
           ))}
         </div>
       </div>

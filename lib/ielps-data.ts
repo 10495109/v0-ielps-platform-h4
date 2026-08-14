@@ -167,7 +167,6 @@ export const ADULT_FLOW = [
   {
     step: '04',
     title: 'Completion',
-    route: '/api/progress/lesson',
     detail: 'Saves progress, then returns to course, Discover or StarPath.',
   },
 ]

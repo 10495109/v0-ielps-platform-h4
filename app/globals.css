@@ -319,3 +319,50 @@
     padding-bottom: 6rem;
   }
 }
+
+/* The header session pill changes width when the check resolves. Pinning a
+   floor stops the nav shifting sideways under the reader. */
+.ielps-session-badge {
+  min-width: 150px;
+  justify-content: center;
+}
+
+/* Hero fit. The panel is an inset card and the artwork sets its height, so the
+   lead column needs its own measure and its own padding at each breakpoint. */
+@media (min-width: 1024px) {
+  #top .hero-grid {
+    grid-template-columns: 1.05fr 0.95fr;
+  }
+  /* Measure for the body copy only — the display line keeps its own width. */
+  #top .hero-grid .animate-rise p:not(.font-display) {
+    max-width: 445px;
+  }
+}
+
+@media (max-width: 1023px) {
+  #top .hero-grid > div:first-child {
+    padding: 40px 24px 44px;
+  }
+}
+
+/* The four facts sit flush in their 500px block. */
+#top .hero-grid dl {
+  gap: 0;
+  padding-top: 0;
+}
+
+/* On a narrow screen the full PiP pill was wide enough to cover a card's own
+   button, so it collapses to the mascot. */
+@media (max-width: 640px) {
+  .ielps-pip-launcher span {
+    display: none;
+  }
+  .ielps-pip-launcher {
+    gap: 0;
+    padding: 8px;
+  }
+  .ielps-pip-launcher img {
+    width: 44px;
+    height: 44px;
+  }
+}

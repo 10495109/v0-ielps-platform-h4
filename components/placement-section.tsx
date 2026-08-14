@@ -14,19 +14,6 @@ const LEVEL_STYLE = [
   'bg-success text-primary-foreground',
 ]
 
-function MethodBadge({ method }: { method: string }) {
-  const isGet = method === 'GET'
-  return (
-    <span
-      className={`rounded-md px-1.5 py-0.5 font-mono text-[10px] font-bold ${
-        isGet ? 'bg-secondary/15 text-secondary' : 'bg-primary/15 text-primary'
-      }`}
-    >
-      {method}
-    </span>
-  )
-}
-
 export function PlacementSection() {
   const [selected, setSelected] = useState<number | null>(null)
 
@@ -93,10 +80,6 @@ export function PlacementSection() {
                 key={ep.path}
                 className="flex items-center justify-between gap-3 rounded-lg border border-border bg-background px-3 py-2"
               >
-                <span className="flex min-w-0 items-center gap-2">
-                  <MethodBadge method={ep.method} />
-                  <code className="truncate font-mono text-xs text-foreground">{ep.path}</code>
-                </span>
                 <span className="shrink-0 text-xs font-medium text-muted-foreground">
                   {ep.label}
                 </span>

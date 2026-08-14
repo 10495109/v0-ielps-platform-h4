@@ -39,7 +39,9 @@ export function AdultFlowSection() {
             >
               <span className="font-display text-2xl font-black text-gold">{s.step}</span>
               <h3 className="mt-2 font-display text-lg font-bold">{s.title}</h3>
-              <code className="mt-1 block font-mono text-xs text-turquoise">{s.route}</code>
+              {s.route && (
+                <code className="mt-1 block font-mono text-xs text-turquoise">{s.route}</code>
+              )}
               <p className="mt-2 text-sm leading-relaxed text-white/70">{s.detail}</p>
               {i < ADULT_FLOW.length - 1 && (
                 <ArrowRight className="absolute -right-3 top-1/2 hidden h-5 w-5 -translate-y-1/2 text-white/30 lg:block" />

@@ -2,7 +2,7 @@
   "schema": "ielps.panel.source-inventory.v1",
   "note": "Every git-tracked file in the frozen tree except this inventory itself, sorted by path. Recompute: git ls-files | sort, then sha256 over path + NUL + bytes + NUL for each.",
   "files": 106,
-  "sourceSha256": "73cd17943ef46b4b17d789e22e6482a7fe1612acfa87a45479482bdcb04dbef9",
+  "sourceSha256": "bc5082f68f967a3d0740001ff038078a5b9027842940eb8e8c23e09307711de3",
   "entries": {
     ".gitignore": "af8a19a90f57267e08871d02ca55c3dbfcd0a0864d29754b29e116885a66d897",
     "README.md": "5128cb9b97bb2ac837a33d64b1e490ee9e408f6076ae71720b087c4dac9e29ae",
@@ -71,7 +71,7 @@
     "lib/apps/teachers.ts": "4b9453598428c67216a94069e7564a9193411d55410a487e39f1476549c295db",
     "lib/apps/tutors.ts": "b7118859297ed64bd7d526a587c920b220c4b8b22bae353a09bb5677a581640c",
     "lib/apps/types.ts": "e7232408010c445f93fea9a1dbbba45a0728294328c3715ff11c8e41b032e6aa",
-    "lib/eilps-http.ts": "94937e637387fc1437a2f163bc261f987373cb6f12d39d1911f6c858a43d9065",
+    "lib/eilps-http.ts": "c7e40f06682b11a8bf558b0b86b9924d22886a85dc3244018757b880d4f68d3b",
     "lib/ielps-api.ts": "9e1d67af779463be8091e531eb4ba95f7672c4a075103f4f1bd9da816e11c295",
     "lib/ielps-data.ts": "85bd0e5a2efb3165ce626998be6cce26974d59b57dd86d99dea17f636393b494",
     "lib/lesson-player/content.ts": "e63eb9ef60e7c75e070b9765585a9a492c6c061c4e5912de3abf186b035a232b",

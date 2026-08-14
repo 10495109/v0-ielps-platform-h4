@@ -1,0 +1,22 @@
+[Unit]
+Description=IELPS web runtime
+After=network.target
+
+[Service]
+Type=simple
+User=eilps
+Group=eilps
+WorkingDirectory=/var/www/eilps/web-current
+Environment=NODE_ENV=production
+EnvironmentFile=-/etc/eilps/web.env
+ExecStart=/usr/bin/node /var/www/eilps/web-current/eilps_web_server.js
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/log/eilps /var/cache/eilps
+
+[Install]
+WantedBy=multi-user.target

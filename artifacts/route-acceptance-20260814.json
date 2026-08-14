@@ -1,0 +1,304 @@
+﻿{
+    "generatedAtUtc":  "2026-08-14T11:12:52.8834960Z",
+    "server":  "local production build",
+    "pid":  27628,
+    "passed":  59,
+    "total":  59,
+    "routes":  [
+                   {
+                       "route":  "/",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/junior",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/junior/dashboard",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/junior/lessons",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/junior/games",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/junior/classroom",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/junior/progress",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/junior/onboarding",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/junior/placement",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/junior/learner",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/adult",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/adult/dashboard",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/adult/player",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/adult/discover",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/adult/review",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/adult/speaking",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/adult/tutors",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/adult/account",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/adult/progress",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/adult/onboarding",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/adult/placement",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/adult/learner",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/parents",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/parents/dashboard",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/parents/links",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/parents/reports",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/parents/billing",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/parents/onboarding",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/parents/learner",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/teachers",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/teachers/dashboard",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/teachers/classes",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/teachers/assignments",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/teachers/reports",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/teachers/onboarding",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/teachers/learner",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/tutors",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/tutors/dashboard",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/tutors/bookings",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/tutors/classroom",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/tutors/earnings",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/tutors/onboarding",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/tutors/learner",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/schools",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/schools/dashboard",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/schools/roster",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/schools/licenses",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/schools/compliance",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/schools/onboarding",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/schools/learner",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/studio",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/studio/dashboard",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/studio/coursebook",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/studio/generations",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/studio/starpath",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/studio/governance",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/studio/onboarding",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/app/studio/learner",
+                       "status":  200,
+                       "noindex":  true
+                   },
+                   {
+                       "route":  "/certificates/verify",
+                       "status":  200,
+                       "noindex":  true
+                   }
+               ]
+}

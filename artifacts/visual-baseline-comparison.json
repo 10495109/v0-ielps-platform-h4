@@ -1,0 +1,198 @@
+﻿[
+    {
+        "path":  "app/globals.css",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "ec1d840740c3ea3de387214f80103df88a678a3ce87fb651fe3cf9b13574df41"
+    },
+    {
+        "path":  "app/page.tsx",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "ae606688d931de120d48809072dd4d4aa5d19442ede2f12695b5d3c8a40deaac"
+    },
+    {
+        "path":  "components/site-header.tsx",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "374a0bef241e98d9f797bb89e8c56a24a9b2421d42238788cf9695e9eb53966b"
+    },
+    {
+        "path":  "components/hero.tsx",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "0a7142d3706a1dde070b4eb7ad1bb9134208587b72f5dc03fd63441c7f4a94fc"
+    },
+    {
+        "path":  "components/welcome-section.tsx",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "aea67b270a8cbee401957690c24ea88b4bcb89bdf0103ffe239993999ae014c6"
+    },
+    {
+        "path":  "components/pathways-section.tsx",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "241fd1197f42b3ce06479c8b0acf3d338c331283689db759070ab68dc0ad7393"
+    },
+    {
+        "path":  "components/adult-flow-section.tsx",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "fe9dd757c2c8993e63b5549562441218e7d227c9d986e7e0156dbd0688d12109"
+    },
+    {
+        "path":  "components/placement-section.tsx",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "c67feac05cac2c01325f27f66d3f1fe0c4773e15437db179f583d5bc1fc1a2f6"
+    },
+    {
+        "path":  "components/site-footer.tsx",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "3312be1516dba5f34b51a093e3d4970bf2ef285e9d745af0a372e640cc30a932"
+    },
+    {
+        "path":  "public/adult-lesson.png",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "110f72b0aa15f498ff3749e4dab4600a6c687eb435c6148b48c17fc9c8c7962c"
+    },
+    {
+        "path":  "public/apple-icon.png",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "da678942d4656a903f61000551cc51c09464d7a223faaae304e8210e1ca19257"
+    },
+    {
+        "path":  "public/hero-learning.png",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "4852c8f623db401c76fcc5c2a2f92e2fff844077874ab0ce39f9899449756e0e"
+    },
+    {
+        "path":  "public/icon-dark-32x32.png",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "8a1570b2955c3748b6844356a7487d88c60f9f1e699e870a3452a3decd1ba03c"
+    },
+    {
+        "path":  "public/icon-light-32x32.png",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "83145e5bb033ace23cd8e7fbb63e7c39733aaf58f8a7280d7800995cced6f7c2"
+    },
+    {
+        "path":  "public/icon.svg",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "263f117c0c69a44d3206a5702105c178ebaa164bca325f3c3973a13bd948f1bf"
+    },
+    {
+        "path":  "public/placeholder-logo.png",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "d7c39d978af643ba9525de6fb8171e0f834882db4110c82ecad0df3f4f69551a"
+    },
+    {
+        "path":  "public/placeholder-logo.svg",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "19a9e968f4656d52a4c249b4056117ad109370ba9da51cdc630ddded74cec73b"
+    },
+    {
+        "path":  "public/placeholder-user.jpg",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "22be067d748175598a5e00123902f5c8332dd7f101de03dfb92ec08d85bb5e53"
+    },
+    {
+        "path":  "public/placeholder.jpg",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "14be0c7aa11cca1e78f0966176b286a6d36d00ec64be027775dfeb33d8e2dfdf"
+    },
+    {
+        "path":  "public/placeholder.svg",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "64badf7aabda0b9630b87020ffb6095cb858ccbcf66b355c2aa08b1063954d3b"
+    },
+    {
+        "path":  "public/placement-test.png",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "7e0b4397c3fe23e01e8231325a7a38a79a082baca8cf7c2bad47ccf5c051d8b3"
+    },
+    {
+        "path":  "public/pathways/adult.png",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "f8f8de6add13c15f614f3d171a542ee4c29b5cb873905189bc4d0a03f33ca675"
+    },
+    {
+        "path":  "public/pathways/junior.png",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "7c8724a6c83ad9d20d0d91a49d8a8ecfe6996a825712355def2ab989adbb418b"
+    },
+    {
+        "path":  "public/pathways/parents.png",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "e31b0e72939cc94678a2885ef86f061b698e269e79145f6352f1b76e731fa7b9"
+    },
+    {
+        "path":  "public/pathways/schools.png",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "8a085d52a1565781e272525868d5371f2e88a57e03c17dbc41b7cbaf8b5cbb92"
+    },
+    {
+        "path":  "public/pathways/studio.png",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "85c03cfbc3fca409a89c51efadb4bd7075a60fecf7e47471fac8149a93dd4077"
+    },
+    {
+        "path":  "public/pathways/teachers.png",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "4c718bf4eceb7861de6b4d727e4e0b6da5799031edb96d4b1fa9110f40456c54"
+    },
+    {
+        "path":  "public/pathways/tutors.png",
+        "originalExists":  true,
+        "currentExists":  true,
+        "identical":  true,
+        "sha256":  "6d7d5277c4dcc903b7086b48bdffd1615c14700bd4c191731d8d33f2c25e8e01"
+    }
+]

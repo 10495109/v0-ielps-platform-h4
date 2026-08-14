@@ -1,0 +1,134 @@
+﻿[RUNTIME]
+Fri Aug 14 11:01:11 UTC 2026
+/var/www/eilps/learner-releases/ielps-a1-c2-learner-20260805-r4-discovery-security
+ExecStart={ path=/usr/bin/node ; argv[]=/usr/bin/node /home/anirudhat/eilps/eilps_web_server.js ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+WorkingDirectory=/home/anirudhat/eilps
+User=anirudhat
+Group=anirudhat
+
+ExecStart={ path=/usr/bin/node ; argv[]=/usr/bin/node /home/anirudhat/eilps/backend/src/index.js ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+WorkingDirectory=/home/anirudhat/eilps/backend
+User=anirudhat
+Group=anirudhat
+
+ExecStart={ path=/usr/bin/node ; argv[]=/usr/bin/node /home/anirudhat/eilps/backend/scripts/job-worker.js ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+WorkingDirectory=/home/anirudhat/eilps/backend
+User=anirudhat
+Group=anirudhat
+
+ExecStart={ path=/usr/bin/node ; argv[]=/usr/bin/node /home/anirudhat/eilps/releases/ielps-a1-c2-learner-20260805-r4-discovery/runtime/learner-server.mjs ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+WorkingDirectory=/home/anirudhat/eilps/releases/ielps-a1-c2-learner-20260805-r4-discovery
+User=anirudhat
+Group=anirudhat
+[BACKEND-SOURCE-MIGRATIONS]
+354dfbcfa30debd59a30e549a5b3e6def03a0f6b685d8dd2e89c578af3707660  /home/anirudhat/eilps/backend/migrations/001_init.sql
+0f6152d008ca6cdbc4d4065413732e46341646c8367f2b9919e937502cd597e7  /home/anirudhat/eilps/backend/migrations/002_commercial_core.sql
+2b08912fa024bf775455f0ea16806e70c2586d4a3f1a3d06c91c89ba10988f2a  /home/anirudhat/eilps/backend/migrations/003_engine.sql
+789b1a8eaf442e324eabc6bb8e9b5364b7a85725e10107e4c25737a14ede602a  /home/anirudhat/eilps/backend/migrations/004_live_tutoring.sql
+385203f4af98ef35e59317101018a9d74afa47854413705473da9b3da411214e  /home/anirudhat/eilps/backend/migrations/005_billing.sql
+ff3a734eb8621e47de365d5fedd3fa2d781228277fc5d330ee94889c0a5db205  /home/anirudhat/eilps/backend/migrations/006_partners.sql
+8a65e8c7da6d6979d2e8adb12a9a949f9aaed613d5a61b13283acbc46c3ed66b  /home/anirudhat/eilps/backend/migrations/007_platform_v2.sql
+c0277bc709f2255edb840c9e76b131c5f0380acd8a2b2e5c4a4ffd8ac962d728  /home/anirudhat/eilps/backend/migrations/009_review_authoring.sql
+5dfc8f76d2b1f0460951312bb9ecd94b9c73639559db18338448bbfd0ab82da4  /home/anirudhat/eilps/backend/migrations/010_school_ops.sql
+731a1089edf4434fad53c17fde2f0a26a22ddf0dd27fd07a40e5c4676b4d6bae  /home/anirudhat/eilps/backend/migrations/011_school_scale_mobile_assets.sql
+21f98ce168cc2d8babb23317ddde40aac6605f4edd9e0e1a6e942aae17cc2f54  /home/anirudhat/eilps/backend/migrations/012_adaptive_practice.sql
+cb4ec8aef2174bc565d6c4f86ac848abcacc8440f090fa5fe40f8aaec408e093  /home/anirudhat/eilps/backend/migrations/013_commercial_completion_upgrade.sql
+c4d2d835499e5b2ef6884497e2abc29afa9d505a83b99d3f22016d017f3c3ccb  /home/anirudhat/eilps/backend/migrations/014_commercial_release_hardening.sql
+0ddbbd3cce5afb88a23d1e3a8b41f61ce19c8ecd8ba3ca36d20d268c25e7417b  /home/anirudhat/eilps/backend/migrations/015_activity_audio_pack_integration.sql
+dc7bb8c55cc8c70efdc7176270968dfcd3cf861a495d594352daaf19846f3952  /home/anirudhat/eilps/backend/migrations/016_account_pathways.sql
+af790addcfcae4a3d56ccba2a6c3f84138b0549ad06dc46c9fffe9c50bd0e9ab  /home/anirudhat/eilps/backend/migrations/017_verified_activity_submissions.sql
+567a1d940cc102405f46c6930d990408b446c3da01ec0660b88498e383f5767e  /home/anirudhat/eilps/backend/migrations/018_editorial_operations_security.sql
+deb3a14d8a8bf3a93364db5d7be26cf0f48190c15e18dad000bd6f43edf83250  /home/anirudhat/eilps/backend/migrations/019_commercial_ai_live_completion.sql
+e92f96eebc88d5a0e6b6da07d85ae82bfb9cad73a1f0e21b1ebf9e9aeb674aaa  /home/anirudhat/eilps/backend/migrations/020_controlled_studio_starpath_addons.sql
+c45b5e1933a2dce65bef9559c4b4ad1c7ad791ed6afe1075467ef775f3eeab66  /home/anirudhat/eilps/backend/migrations/021_discovery_enrichment.sql
+e6110e00f0976ab6cb4fe952412a26b695a3a4fa8f0418aad6c93ad32549f7f9  /home/anirudhat/eilps/backend/migrations/022_tutoring_session_completion.sql
+da8d0d88c85dfae3da7014e8a50b2f29e0543ee34a226a2f24bc749363aab20a  /home/anirudhat/eilps/backend/migrations/023_tutoring_flexible_time_requests.sql
+ee3f5ce2369b54e215fe646d7e675e83b615cafe29d33ded50eeb4a270326cbf  /home/anirudhat/eilps/backend/migrations/024_tutoring_cancellation_policy.sql
+b953611fc47e3d395d85fe16fb37f94070076cceb228fdc6052ff45760853012  /home/anirudhat/eilps/backend/src/activities.js
+873f52b9e51cf00116792e51b9e03ebe8255efb5392d2f2a001d277da9e0253c  /home/anirudhat/eilps/backend/src/activity_catalog.js
+1c8281ce53b7ce354e0ccf5a615ec26bf063fb5522db1ba8aba8d7c7a5d8f7fa  /home/anirudhat/eilps/backend/src/activity_scoring.js
+e21d58a20b2f4a6ba51b7fc710f9a00ff824a521657f68d3a12eccec23d99f7d  /home/anirudhat/eilps/backend/src/admin.js
+9d221499db6c63dda5b3fe85e5071a0d86eabb13628e23cc76dcb14b0d4c4a9c  /home/anirudhat/eilps/backend/src/agent.js
+2b41957a951ed5668ad79696f7e461c8d14f49517781a84f296a9366403a4cf3  /home/anirudhat/eilps/backend/src/agent.js.bak.langs
+515e1df20edd861a35b828e079417901cf9dbd525833042dcc38e9ce6d266d27  /home/anirudhat/eilps/backend/src/ai_moderation.js
+19f4641124d62ee60e87d3f13097c74e51f98ae046cb250397ab50fa4955959b  /home/anirudhat/eilps/backend/src/ai_prompt_service.js
+e6ba9c2961f6287d2735c830a2504fe82d7fc1a3bdf3d5cfb29ee30ec8ff7e42  /home/anirudhat/eilps/backend/src/ai_provider.js
+162b65a9c92fdcde17a70bc2ec99f6b716106b7ff62d6420a53b35eb88e04bd3  /home/anirudhat/eilps/backend/src/analytics.js
+bbe1dd2b5fb62fd31cb59a53692bf635e0ef9a07efbc79ad48654e96439b19b7  /home/anirudhat/eilps/backend/src/app/api/payments/create-one-time-session.js
+60c1a99022e1a4ce1e2c23833486820f800d780937eac6776bdc549faeb6a3a5  /home/anirudhat/eilps/backend/src/app/api/payments/create-one-time-session/route.ts
+01fe1c9fc90abc57f4317be89ef3eb922662280cce51fdddc025082e801c7bc6  /home/anirudhat/eilps/backend/src/assessment.js
+a822960164641766d50a3b0c7cd4660bd457774698ef56f44a4ea2f9a3c11d46  /home/anirudhat/eilps/backend/src/auth.js
+7a3e10c40a3bf94d7b8ad9b9530f261796574edd36689b28ff377313b2b702c3  /home/anirudhat/eilps/backend/src/auth.js.save
+3a2b9c1a28b419f189255dec2af2002a3d51395a6cc9804aca1937e59cc7bbad  /home/anirudhat/eilps/backend/src/authoring.js
+c41aa75d801ebe410d3982d1603d55d1fd602ba068b09a37e3a469ca069a4d43  /home/anirudhat/eilps/backend/src/billing.js
+4e4ab9d948919d20265b7dccd0e7fe99fe1cbe9f69a9763fdfaabe27d2e43671  /home/anirudhat/eilps/backend/src/billing.js.pre_trial_20260801T121040
+54c05c0ff569e67c03966cc8ebcf1fec004f2c0c80ab4382846fe22b4fa9f0bb  /home/anirudhat/eilps/backend/src/certificates.js
+807b2d102991b7188ff95d97af4b0b343d2e23bc65ae49866b0e2023d8d25eda  /home/anirudhat/eilps/backend/src/classroom.js
+80c64fb3ae7941214d2f6898e6115434be7bec41ff456a572b2180472417a492  /home/anirudhat/eilps/backend/src/classroom_provider.js
+68a7a9e5f54c92a467a122cf4023db1cd77433e805c72d09039ae70ac38a736a  /home/anirudhat/eilps/backend/src/commission_engine.js
+d142b4f3f9a6d220aef3ec5d92a43b1f0bb8c53dbf8f893be5527fe827059c3b  /home/anirudhat/eilps/backend/src/compliance.js
+95f3f7ea8a31809dc1c7f3cabaf0c499cc2fa2b11a0c88bb38f33391165927f5  /home/anirudhat/eilps/backend/src/coursebook_studio.js
+40375fe5c5551cf4507a8efa402ac8d39d3b990d0c6df48b25604dca716ed3d0  /home/anirudhat/eilps/backend/src/coursebook_studio_service.js
+6e17b55d901e36e9e7b4f6e036bc4f107f39e6cdcd73730baae82efcbd9f5d5e  /home/anirudhat/eilps/backend/src/curriculum.js
+54edb068df383497dd7a64c32e7dcc2295b7d6ddc3147bbc648ce6576299e89a  /home/anirudhat/eilps/backend/src/curriculum.js.pre_trial_20260801T121040
+12e9eb85884e49f59577bf389d94957ec4608b625d9970adf88be7b46ecafa54  /home/anirudhat/eilps/backend/src/curriculum_ux_augmentation.js
+0939430b08242882264155966ed4c337ca48ddee56cefc5a66210d0ae115ac12  /home/anirudhat/eilps/backend/src/db.js
+81bd4e77e09cadf1d504de1fe6a50e4e971228af0d1980d584464b1e950065c5  /home/anirudhat/eilps/backend/src/discovery.js
+5b6252fef0374461a3ac8928c691362a3d5118dd0b43c76efdb8e8b41f0fc869  /home/anirudhat/eilps/backend/src/discovery_policy.js
+c63f7cb1c1bf57909c98a45e3060b5fd373940af6f46e2e1e5c0b34768e024f0  /home/anirudhat/eilps/backend/src/email_service.js
+adaea2a2490659dd93df5aa8f764706528de797c24745c56ec2e9c8d5eab735e  /home/anirudhat/eilps/backend/src/engine.js
+d1ce3e7ae2508c5f5d8688c0eed8f5f4f0b319e053beb2a2153e23e3b443b2b8  /home/anirudhat/eilps/backend/src/engine/bkt.js
+82b8714efecae458cfbdfceb654f21f5e31bfcfcf2b82d035dfe09444cb95417  /home/anirudhat/eilps/backend/src/engine/contentIndex.js
+5852648b25f69abda00bc6537271f05774c3c7a4f39421fd4a93806ae6b83b1b  /home/anirudhat/eilps/backend/src/engine/scheduler.js
+8364a4aad8929cf4a7c2dcb6a75df45d04557f9b791875b3e674ded192cd2eba  /home/anirudhat/eilps/backend/src/entitlements.js
+42285caa3c70584e16a8d4271972a67697b36ab9d9cc192611887b03ed0893dc  /home/anirudhat/eilps/backend/src/gamification.js
+cf106fe6e36fc39e3e182b6873b74952dfcbc1da4bc95ab3f2e935b7506c4328  /home/anirudhat/eilps/backend/src/gamification_service.js
+4c473a4d4c3421b252b5457ba4ccd1091e518c9b1af3014b92d1afc3d8c4c1d6  /home/anirudhat/eilps/backend/src/identity_provider.js
+b257aa66df6db75d79064ea865f8f26e050ff587b2d62699d11fafa7525a0a7a  /home/anirudhat/eilps/backend/src/index.js
+2e16b4d8a3922b808558b233e98cc66c3a94e26ebf237729d1b23f0f9bc9b673  /home/anirudhat/eilps/backend/src/index.js.before-studio-ai-governance-20260810T150046Z
+a2ff33546c69888b8ce6b03bdbe88ce881f47a3f3c4dfbb1f377a9488a7917b8  /home/anirudhat/eilps/backend/src/index.js.broken-20260727T182304Z
+d4b69ff88fe785cffdef5bb601f5d70e130b016812d89e53b822a30691c851cc  /home/anirudhat/eilps/backend/src/index.js.repair.js
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  /home/anirudhat/eilps/backend/src/index.js.save
+395b46aac168373a365881b5cd8f95472ee78bb592423e9357a3b83e536154b8  /home/anirudhat/eilps/backend/src/index.js.save.1
+c7a02a870a8d13fdd9ff1ca843508484191809228add141ef99ed274b6d9d02c  /home/anirudhat/eilps/backend/src/integrations.js
+d52aa70ed64b0bee5a3f221db0233e39f9ca8f196b60e9582af87f43c4ca6aab  /home/anirudhat/eilps/backend/src/job_worker.js
+c4e96673eb89307c25bc6f9f372f233c05ad13c5541a03d6685d86f41ffad725  /home/anirudhat/eilps/backend/src/language_context.js
+83a571f4c69d8499e6eb0094fa2cf8bd799dcb1ec25a91ab99cf12eb02b88d91  /home/anirudhat/eilps/backend/src/lesson_engine_15.js
+3047c2a215e58a2eaa61d2517f3b05ce162c1f7da43ee5dc5a967d78852e6557  /home/anirudhat/eilps/backend/src/lesson_support.js
+11c19b8649a4270dc5493b40b2c6750c846d822fa8350171a24be23f6336dd5c  /home/anirudhat/eilps/backend/src/lib/courses.js
+9d8f4f4dad45726961124b0531878ffc5f6f64242808bbd50418a9e5c61b1b25  /home/anirudhat/eilps/backend/src/lib/timezones.js
+b4e1f10a89f6cc83cfb437d27660d4c9f242f363eafda836ec50d3e4d20e5e14  /home/anirudhat/eilps/backend/src/mfa.js
+e81b3539896a779b50f3044c4bcd6c1284ea63a70d544685344c9df0d5199921  /home/anirudhat/eilps/backend/src/middleware.js
+5fcd4d2773203dd9fa7698ff15fb7c2cde69d1857ca99cc7f442a2bfd2418276  /home/anirudhat/eilps/backend/src/operations.js
+95b396d93af22e6b3c07c8033bc93edfc5267d8074075f02c2f02334c38c5c45  /home/anirudhat/eilps/backend/src/partners.js
+80707f077095d69792bf81f2ad9a6aa080fa231968e6bf61c05a39ea0c249971  /home/anirudhat/eilps/backend/src/payments.js
+d17aaf34b4a245e03777992afe509b91fa83349bc0a5d2d17a6183dd28ae3797  /home/anirudhat/eilps/backend/src/payments.js.broken-20260727T182400Z
+80707f077095d69792bf81f2ad9a6aa080fa231968e6bf61c05a39ea0c249971  /home/anirudhat/eilps/backend/src/payments.js.repair.js
+89c32234863f510a0748e7d08f68abce5ffb5d487009232cc86ff492f6950a9c  /home/anirudhat/eilps/backend/src/pedagogy.js
+eb2c3e40cab04743d4ce785d56c70fdce375fae614ad8aaa359505505daa56c5  /home/anirudhat/eilps/backend/src/practice.js
+9ffefb56fa5e4ab960619cfb1acc8734c359ee18e320accc38021cf6d910768e  /home/anirudhat/eilps/backend/src/progress.js
+502fd07713eccd2a8e8240aeea08de5204b932b2f36afc2aca97f0009b7c833c  /home/anirudhat/eilps/backend/src/pronunciation_provider.js
+d8518ad54d2ab9c69a875dd1aa4a1f7cd3a02ad005dd478e3a4e6207c6da814d  /home/anirudhat/eilps/backend/src/queue.js
+1f624ebff776c6681cd46df356c42e3d9f06d21f6d800b0fc1bb2358d3c722be  /home/anirudhat/eilps/backend/src/resources.js
+3316b18c17bf1482b8403bfb55d9d13f5631043bc11889208be3b6f72cec409c  /home/anirudhat/eilps/backend/src/review.js
+fd89fddeb72933c4fe9b923864a393f46009d2a6d831486d27874ebfa95f94b3  /home/anirudhat/eilps/backend/src/roles.js
+eeb3744bdaa24d61207d31add121a5ae474364d73de957b8122e243632e9566c  /home/anirudhat/eilps/backend/src/roster_provider.js
+455675879c5070c449bcec2863bd4b039e8007bef22439bb7b82ed5186e4344c  /home/anirudhat/eilps/backend/src/routes/queue.js
+583ca20ca7a83e2419baf1b2c3bc941c2d6e3a2206acf5d5dfd51e8856b10e94  /home/anirudhat/eilps/backend/src/school.js
+fddec112baa6e54550fc198f50d825f5e38692576c17e7313252c71db9b023d5  /home/anirudhat/eilps/backend/src/starpath_addon.js
+a7348cce46fca05298ad0d9193d8a62374f01cb1a44ba50711f260b8314e541f  /home/anirudhat/eilps/backend/src/studio_ai_governance.js
+99a6f603fd6ea3e4750379e89720be09a8e66125d23f51223579031c3c12452f  /home/anirudhat/eilps/backend/src/tutor.js
+acb7a2c9ece67f65640718a59c9a6da89109d2c7434d073264915318d8498d0e  /home/anirudhat/eilps/backend/src/tutoring.js
+021848703f555be8c36af6ac18be271791258fc12e2c168a5d6a5aac643fa2f6  /home/anirudhat/eilps/backend/src/tutoring.js.before-cancellation-policy-20260810T181238Z
+7f635a896fdb277f3140f656bf0c9cd81ac4dd8ac56229ee008edb8ae56be7b7  /home/anirudhat/eilps/backend/src/tutoring.js.before-flexible-time-requests-20260810T180115Z
+b3935c479bb6c6c3d2fb10f67c8e55243b94c5a6b7a59e5e21dd0448e10e0f53  /home/anirudhat/eilps/backend/src/tutoring.js.before-session-notes-20260810T175151Z
+e4d043f5c66e83733a55af544c7e2dde3d116f3413efc42958edc5a3dd1f7af9  /home/anirudhat/eilps/backend/src/verification_provider.js
+7c80df0cc4c885deb87e7c98ee7c82a338534837778ccc6058eeecc5c1bd9cd5  /home/anirudhat/eilps/backend/src/voice_service.js
+7134950ca12a30b5ff49809ed1be889a702a3f43b45de73bd1d6cc46b28cec05  /home/anirudhat/eilps/backend/src/worker.js
+[SYSTEM-CONFIG]
+fa50c54f7f5e1bd8178d3e0583ceac6414113facbe507e93878c0e9b37e9c5dd  /etc/systemd/system/eilps-web.service
+10d0e1e646ff2219e1bdd313a5580b3c1b881c4c6264f5e4a8d023d239fd34cd  /etc/systemd/system/eilps-api.service
+9f7bec64dde2769c653c078d741cd89760a076eed960fb6d2596e8c40d8af9d0  /etc/systemd/system/eilps-worker.service
+ec5031b291b84ac853a2284b9ae0253d1c20409dba4858a39ad347025b4fd270  /etc/systemd/system/eilps-learner.service
+[ACTIVITY-SUMMARY]
+cb90bf401c07ff220ce8974d19092466b80a46927eece7b3759f67d462ee0a7c  /home/anirudhat/eilps/backend/data/starfall-splashlearn-activity-summary.json

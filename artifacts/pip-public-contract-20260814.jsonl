@@ -1,0 +1,148 @@
+﻿{
+  "name": null,
+  "languages": {
+    "en": {
+      "name": "English",
+      "nativeName": "English",
+      "dir": "ltr"
+    },
+    "es": {
+      "name": "Spanish",
+      "nativeName": "Espanol",
+      "dir": "ltr"
+    },
+    "ar": {
+      "name": "Arabic",
+      "nativeName": "العربية",
+      "dir": "rtl"
+    },
+    "zh": {
+      "name": "Chinese",
+      "nativeName": "中文",
+      "dir": "ltr"
+    },
+    "fr": {
+      "name": "French",
+      "nativeName": "Francais",
+      "dir": "ltr"
+    },
+    "pt": {
+      "name": "Portuguese",
+      "nativeName": "Portugues",
+      "dir": "ltr"
+    },
+    "it": {
+      "name": "Italian",
+      "nativeName": "Italiano",
+      "dir": "ltr"
+    },
+    "ru": {
+      "name": "Russian",
+      "nativeName": "Русский",
+      "dir": "ltr"
+    },
+    "id": {
+      "name": "Indonesian",
+      "nativeName": "Bahasa Indonesia",
+      "dir": "ltr"
+    },
+    "fil": {
+      "name": "Filipino",
+      "nativeName": "Filipino",
+      "dir": "ltr"
+    },
+    "vi": {
+      "name": "Vietnamese",
+      "nativeName": "Tiếng Việt",
+      "dir": "ltr"
+    }
+  },
+  "commonPaths": [
+    {
+      "id": "welcome",
+      "route": "/",
+      "destination": "/learn",
+      "caption": "Welcome to IELPS! I can guide you through lessons, practice, teacher tools, school reports, live classroom, tutoring, billing, and account setup.",
+      "audio": {
+        "mode": "prerendered",
+        "audioUrl": "/content-assets/agent-voice/audio/en/welcome.mp3"
+      }
+    },
+    {
+      "id": "learn",
+      "route": "/learn",
+      "destination": "/learn",
+      "caption": "Open Learn to follow the A1 to C2 course, choose your level, complete the exact lesson steps, and save progress.",
+      "audio": {
+        "mode": "prerendered",
+        "audioUrl": "/content-assets/agent-voice/audio/en/learn.mp3"
+      }
+    },
+    {
+      "id": "practice",
+      "route": "/practice",
+      "destination": "/practice",
+      "caption": "Use Practice for adaptive tasks. Filter by CEFR level, skill, time, or delivery mode, then submit answers for automatic feedback.",
+      "audio": {
+        "mode": "prerendered",
+        "audioUrl": "/content-assets/agent-voice/audio/en/practice.mp3"
+      }
+    },
+    {
+      "id": "teacher_studio",
+      "route": "/authoring",
+      "destination": "/authoring",
+      "caption": "Teachers use Studio to draft, review, publish, assign, and run interactive lessons with reusable activity templates.",
+      "audio": {
+        "mode": "prerendered",
+        "audioUrl": "/content-assets/agent-voice/audio/en/teacher_studio.mp3"
+      }
+    },
+    {
+      "id": "school",
+      "route": "/school",
+      "destination": "/school",
+      "caption": "School leaders use School to manage classes, rosters, licenses, parents, moderation, assignments, grading, and exportable reports.",
+      "audio": {
+        "mode": "prerendered",
+        "audioUrl": "/content-assets/agent-voice/audio/en/school.mp3"
+      }
+    },
+    {
+      "id": "classroom",
+      "route": "/classroom",
+      "destination": "/classroom",
+      "caption": "Open Classroom for live lesson participation, chat, whiteboard actions, saved words, and review after class.",
+      "audio": {
+        "mode": "prerendered",
+        "audioUrl": "/content-assets/agent-voice/audio/en/classroom.mp3"
+      }
+    },
+    {
+      "id": "account",
+      "route": "/account",
+      "destination": "/account",
+      "caption": "Use Account for subscriptions, billing portal access, commercial readiness checks, privacy export, email verification, and safety reports.",
+      "audio": {
+        "mode": "prerendered",
+        "audioUrl": "/content-assets/agent-voice/audio/en/account.mp3"
+      }
+    }
+  ],
+  "voice": null,
+  "dynamicSpeechEnabled": null,
+  "provider": {
+    "name": "elevenlabs",
+    "modelId": "eleven_multilingual_v2",
+    "cachedAudioFirst": true,
+    "dynamicSpeechEnabled": false
+  },
+  "languageDetection": null
+}
+{
+  "supportedLanguages": null,
+  "country": null,
+  "language": null,
+  "source": null,
+  "cloudflare": null
+}

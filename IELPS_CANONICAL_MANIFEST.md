@@ -102,7 +102,7 @@ See open question 6.
 | Junior Learners — Classroom | /learner/app/junior/classroom | Under-12 learner | Approved shell | `GET /api/tutoring/bookings` → 401 | React mounts | ✅ |
 | Junior Learners — Progress | /learner/app/junior/progress | Under-12 learner | Approved shell | `GET /api/gamification/leaderboard` → 401<br>`GET /api/progress` → 401 | React mounts | ✅ |
 | Junior Learners — onboarding | /learner/app/junior/onboarding | Under-12 learner | Approved shell | _session only_ | React mounts | ✅ |
-| Junior Learners — Lesson Player | /learner/app/junior/learner | Under-12 learner | Approved lesson player | `GET /api/curriculum/deep-catalog` → 200<br>`GET /api/resources/starfall-splashlearn/lessons/a1d01l1` → 401 | React mounts | ✅ |
+| Junior Learners — Lesson Player (running) | /learner/app/junior/learner | Under-12 learner | Approved lesson player | `GET /api/curriculum/deep-catalog` → 200<br>`GET /api/resources/starfall-splashlearn/lessons/a1d01l1` → 401 | React mounts | ✅ |
 | Adult Scholars & Self-Starters — pathway home | /learner/app/adult | Self-paced learner | Approved shell | _session only_ | React mounts | ✅ |
 | Adult Scholars & Self-Starters — My Course | /learner/app/adult/dashboard | Self-paced learner | Approved shell | `GET /api/curriculum/deep-catalog` → 200<br>`GET /api/engine/schedule` → 401<br>`GET /api/progress` → 401 | React mounts | ✅ |
 | Adult Scholars & Self-Starters — Lesson Player | /learner/app/adult/player | Self-paced learner | Approved shell | `GET /api/engine/next` → 401 | React mounts | ✅ |
@@ -110,35 +110,35 @@ See open question 6.
 | Adult Scholars & Self-Starters — Review | /learner/app/adult/review | Self-paced learner | Approved shell | `GET /api/engine/review-queue` → 401<br>`GET /api/practice/filters` → 401<br>`GET /api/review/due` → 401 | React mounts | ✅ |
 | Adult Scholars & Self-Starters — Progress | /learner/app/adult/progress | Self-paced learner | Approved shell | `GET /api/certificates/eligibility/B1` → 401<br>`GET /api/engine/mastery` → 401 | React mounts | ✅ |
 | Adult Scholars & Self-Starters — onboarding | /learner/app/adult/onboarding | Self-paced learner | Approved shell | _session only_ | React mounts | ✅ |
-| Adult Scholars & Self-Starters — Lesson Player | /learner/app/adult/learner | Self-paced learner | Approved lesson player | `GET /api/curriculum/deep-catalog` → 200<br>`GET /api/resources/starfall-splashlearn/lessons/a1d01l1` → 401 | React mounts | ✅ |
+| Adult Scholars & Self-Starters — Lesson Player (running) | /learner/app/adult/learner | Self-paced learner | Approved lesson player | `GET /api/curriculum/deep-catalog` → 200<br>`GET /api/resources/starfall-splashlearn/lessons/a1d01l1` → 401 | React mounts | ✅ |
 | Parents & Guardians — pathway home | /learner/app/parents | Family account | Approved shell | _session only_ | React mounts | ✅ |
 | Parents & Guardians — Overview | /learner/app/parents/dashboard | Family account | Approved shell | `GET /api/school/parent/dashboard` → 401 | React mounts | ✅ |
 | Parents & Guardians — Access & links | /learner/app/parents/links | Family account | Approved shell | `GET /api/school/parent/dashboard` → 401 | React mounts | ✅ |
 | Parents & Guardians — Reports | /learner/app/parents/reports | Family account | Approved shell | `GET /api/progress` → 401 | React mounts | ✅ |
 | Parents & Guardians — Billing | /learner/app/parents/billing | Family account | Approved shell | `GET /api/billing/plans` → 200<br>`GET /api/billing/subscription` → 401 | React mounts | ✅ |
 | Parents & Guardians — onboarding | /learner/app/parents/onboarding | Family account | Approved shell | _session only_ | React mounts | ✅ |
-| Parents & Guardians — Lesson Player | /learner/app/parents/learner | Family account | Approved lesson player | `GET /api/curriculum/deep-catalog` → 200<br>`GET /api/resources/starfall-splashlearn/lessons/a1d01l1` → 401 | React mounts | ✅ |
+| Parents & Guardians — Lesson Player (running) | /learner/app/parents/learner | Family account | Approved lesson player | `GET /api/curriculum/deep-catalog` → 200<br>`GET /api/resources/starfall-splashlearn/lessons/a1d01l1` → 401 | React mounts | ✅ |
 | Educators & Classroom Teachers — pathway home | /learner/app/teachers | Classroom teacher | Approved shell | _session only_ | React mounts | ✅ |
 | Educators & Classroom Teachers — Overview | /learner/app/teachers/dashboard | Classroom teacher | Approved shell | `GET /api/school/classes` → 401<br>`GET /api/school/dashboard` → 401 | React mounts | ✅ |
 | Educators & Classroom Teachers — Classes | /learner/app/teachers/classes | Classroom teacher | Approved shell | _session only_ | React mounts | ✅ |
 | Educators & Classroom Teachers — Assignments | /learner/app/teachers/assignments | Classroom teacher | Approved shell | _session only_ | React mounts | ✅ |
 | Educators & Classroom Teachers — Reports | /learner/app/teachers/reports | Classroom teacher | Approved shell | _session only_ | React mounts | ✅ |
 | Educators & Classroom Teachers — onboarding | /learner/app/teachers/onboarding | Classroom teacher | Approved shell | _session only_ | React mounts | ✅ |
-| Educators & Classroom Teachers — Lesson Player | /learner/app/teachers/learner | Classroom teacher | Approved lesson player | `GET /api/curriculum/deep-catalog` → 200<br>`GET /api/resources/starfall-splashlearn/lessons/a1d01l1` → 401 | React mounts | ✅ |
+| Educators & Classroom Teachers — Lesson Player (running) | /learner/app/teachers/learner | Classroom teacher | Approved lesson player | `GET /api/curriculum/deep-catalog` → 200<br>`GET /api/resources/starfall-splashlearn/lessons/a1d01l1` → 401 | React mounts | ✅ |
 | Online & Live Tutors — pathway home | /learner/app/tutors | Verified tutor | Approved shell | _session only_ | React mounts | ✅ |
 | Online & Live Tutors — Overview | /learner/app/tutors/dashboard | Verified tutor | Approved shell | `GET /api/tutoring/application` → 401<br>`GET /api/tutoring/bookings` → 401 | React mounts | ✅ |
 | Online & Live Tutors — Bookings | /learner/app/tutors/bookings | Verified tutor | Approved shell | `GET /api/tutoring/bookings` → 401 | React mounts | ✅ |
 | Online & Live Tutors — Classroom | /learner/app/tutors/classroom | Verified tutor | Approved shell | `GET /api/tutoring/bookings` → 401 | React mounts | ✅ |
 | Online & Live Tutors — Earnings | /learner/app/tutors/earnings | Verified tutor | Approved shell | `GET /api/billing/connect/payouts` → 401<br>`GET /api/billing/connect/status` → 401 | React mounts | ✅ |
 | Online & Live Tutors — onboarding | /learner/app/tutors/onboarding | Verified tutor | Approved shell | _session only_ | React mounts | ✅ |
-| Online & Live Tutors — Lesson Player | /learner/app/tutors/learner | Verified tutor | Approved lesson player | `GET /api/curriculum/deep-catalog` → 200<br>`GET /api/resources/starfall-splashlearn/lessons/a1d01l1` → 401 | React mounts | ✅ |
+| Online & Live Tutors — Lesson Player (running) | /learner/app/tutors/learner | Verified tutor | Approved lesson player | `GET /api/curriculum/deep-catalog` → 200<br>`GET /api/resources/starfall-splashlearn/lessons/a1d01l1` → 401 | React mounts | ✅ |
 | Schools & Educational Organisations — pathway home | /learner/app/schools | Institution admin | Approved shell | _session only_ | React mounts | ✅ |
 | Schools & Educational Organisations — Admin overview | /learner/app/schools/dashboard | Institution admin | Approved shell | `GET /api/integrations/status` → 200<br>`GET /api/school/admin/overview` → 401 | React mounts | ✅ |
 | Schools & Educational Organisations — Roster | /learner/app/schools/roster | Institution admin | Approved shell | `GET /api/school/classes` → 401 | React mounts | ✅ |
 | Schools & Educational Organisations — Licenses | /learner/app/schools/licenses | Institution admin | Approved shell | `GET /api/billing/plans` → 200<br>`GET /api/billing/subscription` → 401 | React mounts | ✅ |
 | Schools & Educational Organisations — Compliance | /learner/app/schools/compliance | Institution admin | Approved shell | `GET /api/compliance/privacy-export` → 401 | React mounts | ✅ |
 | Schools & Educational Organisations — onboarding | /learner/app/schools/onboarding | Institution admin | Approved shell | _session only_ | React mounts | ✅ |
-| Schools & Educational Organisations — Lesson Player | /learner/app/schools/learner | Institution admin | Approved lesson player | `GET /api/curriculum/deep-catalog` → 200<br>`GET /api/resources/starfall-splashlearn/lessons/a1d01l1` → 401 | React mounts | ✅ |
+| Schools & Educational Organisations — Lesson Player (running) | /learner/app/schools/learner | Institution admin | Approved lesson player | `GET /api/curriculum/deep-catalog` → 200<br>`GET /api/resources/starfall-splashlearn/lessons/a1d01l1` → 401 | React mounts | ✅ |
 | Studio & Content Creator — pathway home | /learner/app/studio | Content author | Approved shell | _session only_ | React mounts | ✅ |
 | Studio & Content Creator — Projects | /learner/app/studio/dashboard | Content author | Approved shell | `GET /api/authoring/projects` → 401 | React mounts | ✅ |
 | Studio & Content Creator — Coursebook | /learner/app/studio/coursebook | Content author | Approved shell | `GET /api/studio/coursebook/sequence/default` → 401 | React mounts | ✅ |
@@ -146,11 +146,12 @@ See open question 6.
 | Studio & Content Creator — StarPath | /learner/app/studio/starpath | Content author | Approved shell | `GET /api/addons/starpath/assignments` → 401<br>`GET /api/addons/starpath/resources` → 401 | React mounts | ✅ |
 | Studio & Content Creator — AI Governance | /learner/app/studio/governance | Content author | Approved shell | `GET /api/activities/moderation` → 401<br>`GET /api/assessment/checkpoint/moderation/queue` → 401<br>`GET /api/integrations/status` → 200<br>`GET /api/practice/moderation` → 401<br>`GET /api/tutor/admin/prompts` → 401<br>`GET /api/tutor/quota` → 401 | React mounts | ✅ |
 | Studio & Content Creator — onboarding | /learner/app/studio/onboarding | Content author | Approved shell | _session only_ | React mounts | ✅ |
-| Studio & Content Creator — Lesson Player | /learner/app/studio/learner | Content author | Approved lesson player | `GET /api/curriculum/deep-catalog` → 200<br>`GET /api/resources/starfall-splashlearn/lessons/a1d01l1` → 401 | React mounts | ✅ |
+| Studio & Content Creator — Lesson Player (running) | /learner/app/studio/learner | Content author | Approved lesson player | `GET /api/curriculum/deep-catalog` → 200<br>`GET /api/resources/starfall-splashlearn/lessons/a1d01l1` → 401 | React mounts | ✅ |
 | Tutors (directory) | /learner/tutors | Public | Approved shell | `GET /api/tutoring/tutors` → 401 | React mounts | ✅ |
 | Profile (directory) | /learner/tutors/profile | Public | Approved shell | _session only_ | React mounts | ✅ |
 | Live (directory) | /learner/tutor/live | Verified tutor | Approved shell | _session only_ | React mounts | ✅ |
 | Summary (directory) | /learner/tutor/summary | Verified tutor | Approved shell | _session only_ | React mounts | ✅ |
+
 ---
 
 ## 3. Open questions — blocked until answered

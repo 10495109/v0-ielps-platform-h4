@@ -83,7 +83,7 @@ export function Panel({
 
       <div className="flex-1">
         {displaySource && !['live', 'sample'].includes(displaySource) ? (
-          <OperationalState source={displaySource} message={error} />
+          <OperationalState source={displaySource} message={error} emptyNote={panel.emptyNote} />
         ) : (
           <PanelBody panel={panel} data={data} accent={accent} />
         )}
@@ -168,10 +168,18 @@ function normalizePanelData(kind: PanelType['kind'], raw: unknown): unknown {
   }))
 }
 
-function OperationalState({ source, message }: { source: DataSource; message?: string }) {
+function OperationalState({
+  source,
+  message,
+  emptyNote,
+}: {
+  source: DataSource
+  message?: string
+  emptyNote?: string
+}) {
   const copy: Partial<Record<DataSource, string>> = {
     loading: 'Checking the IELPS server…',
-    empty: 'No records are available for this account yet.',
+    empty: emptyNote || 'No records are available for this account yet.',
     authentication: 'Sign in to load this account data.',
     permission: 'This account does not have permission to view these records.',
     entitlement: 'An active lesson or subscription entitlement is required.',

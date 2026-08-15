@@ -23,8 +23,10 @@ import type { VocabCard, QuizItem } from '@/lib/lesson-player/spec'
 import {
   engineKeywords,
   engineStepFor,
+  type EngineVocabularyCard,
   type LessonEngine15,
 } from '@/lib/lesson-player/engine'
+import { KeywordChip, KeywordPopup } from './keyword-popup'
 import type { LessonIdentity } from './lesson-player'
 import { QuizRunner } from './quiz-runner'
 import { SourceBadge } from '@/components/app/source-badge'
@@ -370,8 +372,11 @@ function LanguageSupportStep({ step, accent, juniorReadability, supportLanguage,
 }
 
 function KeywordsStep({ step, accent, juniorReadability, onDone, content, engine }: StepProps) {
-  const a = ACCENT[accent]
+  // The pop-up needs the whole engine card — the picture, the visual brief and
+  // the usage example live there, not on the trimmed screen model.
+  const cards = engineKeywords(engine)
   const [tapped, setTapped] = useState<Set<string>>(new Set())
+  const [openWord, setOpenWord] = useState<string | null>(null)
   const allTapped = tapped.size >= content.keywords.length
   if (!content.keywords.length) {
     return (
@@ -380,28 +385,28 @@ function KeywordsStep({ step, accent, juniorReadability, onDone, content, engine
       </StepShell>
     )
   }
+  const open = cards.find((card) => card.word === openWord) || null
   return (
     <StepShell step={step} accent={accent} junior={juniorReadability}>
-      <p className="text-sm text-muted-foreground">Tap each word to hear it. Cards show the English word only.</p>
+      <p className="text-sm text-muted-foreground">
+        Click any word to open its picture, meaning and pronunciation.
+      </p>
       <div className="flex flex-wrap gap-2.5">
-        {content.keywords.map((k) => {
-          const on = tapped.has(k.word)
-          return (
-            <button
-              key={k.word}
-              type="button"
-              onClick={() => setTapped((prev) => new Set(prev).add(k.word))}
-              className={[
-                'inline-flex items-center gap-2 rounded-full border px-4 font-medium transition-all',
-                juniorReadability ? 'py-3 text-lg' : 'py-2 text-sm',
-                on ? `border-transparent ${a.solid}` : 'border-border bg-card hover:border-foreground/20',
-              ].join(' ')}
-            >
-              <Volume2 className="size-4" /> {k.word}
-            </button>
-          )
-        })}
+        {cards.map((card) => (
+          <KeywordChip
+            key={card.word}
+            card={card}
+            accent={accent}
+            large={juniorReadability}
+            active={tapped.has(card.word)}
+            onOpen={() => {
+              setTapped((prev) => new Set(prev).add(card.word))
+              setOpenWord(card.word)
+            }}
+          />
+        ))}
       </div>
+      {open ? <KeywordPopup card={open} accent={accent} onClose={() => setOpenWord(null)} /> : null}
       <PrimaryButton accent={accent} onClick={onDone}>{allTapped ? 'Next' : 'Skip ahead'}</PrimaryButton>
     </StepShell>
   )
@@ -409,7 +414,9 @@ function KeywordsStep({ step, accent, juniorReadability, onDone, content, engine
 
 function DefinitionsStep({ step, accent, juniorReadability, onDone, content, engine }: StepProps) {
   const a = ACCENT[accent]
-  const [open, setOpen] = useState<string | null>(content.keywords[0]?.word ?? null)
+  const cards = engineKeywords(engine)
+  const [openWord, setOpenWord] = useState<string | null>(null)
+  const [seen, setSeen] = useState<Set<string>>(new Set())
   if (!content.keywords.length) {
     return (
       <StepShell step={step} accent={accent} junior={juniorReadability}>
@@ -417,38 +424,37 @@ function DefinitionsStep({ step, accent, juniorReadability, onDone, content, eng
       </StepShell>
     )
   }
+  const open = cards.find((card) => card.word === openWord) || null
   return (
     <StepShell step={step} accent={accent} junior={juniorReadability}>
       <div className="grid gap-3 sm:grid-cols-2">
-        {content.keywords.map((k) => {
-          const isOpen = open === k.word
-          return (
-            <button
-              key={k.word}
-              type="button"
-              onClick={() => setOpen(isOpen ? null : k.word)}
-              className={[
-                'rounded-2xl border p-4 text-left transition-colors',
-                isOpen ? `${a.ring} ring-2 border-transparent bg-card` : 'border-border bg-card hover:border-foreground/20',
-              ].join(' ')}
-            >
-              <div className="flex items-center justify-between">
-                <span className="font-serif text-lg font-semibold text-card-foreground">{k.word}</span>
-                <AudioChip text="Hear" accent={accent} />
-              </div>
-              {k.ipa ? <span className="text-xs text-muted-foreground">{k.ipa}</span> : null}
-              {isOpen ? (
-                <div className="mt-3 space-y-2">
-                  <p className="text-sm text-foreground">{k.definition}</p>
-                  <p className={`rounded-lg px-3 py-2 text-sm ${a.soft}`}>“{k.example}”</p>
-                </div>
-              ) : (
-                <p className="mt-2 text-xs text-muted-foreground">Tap to reveal picture, meaning and example.</p>
-              )}
-            </button>
-          )
-        })}
+        {cards.map((card) => (
+          <button
+            key={card.word}
+            type="button"
+            aria-haspopup="dialog"
+            onClick={() => {
+              setSeen((prev) => new Set(prev).add(card.word))
+              setOpenWord(card.word)
+            }}
+            className={[
+              'rounded-2xl border p-4 text-left transition-colors',
+              seen.has(card.word)
+                ? `${a.ring} ring-2 border-transparent bg-card`
+                : 'border-border bg-card hover:border-foreground/20',
+            ].join(' ')}
+          >
+            <div className="flex items-center justify-between gap-2">
+              <span className="font-serif text-lg font-semibold text-card-foreground">{card.word}</span>
+              <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${a.soft}`}>Open</span>
+            </div>
+            <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
+              {card.definition || 'Click to open the picture, meaning and example.'}
+            </p>
+          </button>
+        ))}
       </div>
+      {open ? <KeywordPopup card={open} accent={accent} onClose={() => setOpenWord(null)} /> : null}
       <PrimaryButton accent={accent} onClick={onDone}>I understand these</PrimaryButton>
     </StepShell>
   )
@@ -784,14 +790,31 @@ function VerifiedCheckStep({ step, accent, juniorReadability, activity, activity
   )
 }
 
-function RecapStep({ step, lesson, accent, juniorReadability, onDone, content }: StepProps) {
+function RecapStep({ step, lesson, accent, juniorReadability, onDone, content, engine }: StepProps) {
   const a = ACCENT[accent]
+  // Keywords are clickable everywhere they appear, the recap included.
+  const cards = engineKeywords(engine)
+  const [openWord, setOpenWord] = useState<string | null>(null)
+  const open = cards.find((card) => card.word === openWord) || null
   return (
     <StepShell step={step} accent={accent} junior={juniorReadability}>
+      {open ? <KeywordPopup card={open} accent={accent} onClose={() => setOpenWord(null)} /> : null}
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="rounded-xl border border-border bg-card p-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Words</p>
-          <p className="mt-1 text-sm text-card-foreground">{content.keywords.map((k) => k.word).join(', ')}</p>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {cards.map((card) => (
+              <button
+                key={card.word}
+                type="button"
+                aria-haspopup="dialog"
+                onClick={() => setOpenWord(card.word)}
+                className="rounded-full border border-border bg-background px-2.5 py-1 text-sm text-card-foreground hover:border-foreground/20"
+              >
+                {card.word}
+              </button>
+            ))}
+          </div>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Language</p>

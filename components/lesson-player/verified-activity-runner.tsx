@@ -5,6 +5,8 @@ import { ChevronDown, ChevronUp, Loader2 } from 'lucide-react'
 import type { AccentToken } from '@/lib/apps/types'
 import { ACCENT } from '@/lib/apps/accent'
 import { activitiesApi, reviewApi } from '@/lib/adapters'
+import { ReadingActivity, readingPassage } from './reading-activity'
+import { WritingActivity } from './writing-activity'
 
 export type ActivityScreen = {
   screen_id: string
@@ -142,13 +144,25 @@ export function VerifiedActivityRunner({
 
   if (!screen) return <p className="text-sm text-muted-foreground">No verified activity is available for this lesson.</p>
 
+  // A screen that carries a reading text gets the expansion window, so the
+  // passage and its questions can be read side by side instead of stacked into
+  // a card. Everything else renders exactly as it did.
+  const passage = readingPassage(screen)
+  const mechanic = <Mechanic screen={screen} value={currentEvidence} onChange={update} accent={accent} />
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between text-sm">
         <span className="font-medium text-muted-foreground">Verified activity {index + 1} of {activity.screens.length}</span>
         <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${a.soft}`}>{screen.mechanic.replaceAll('_', ' ')}</span>
       </div>
-      <Mechanic screen={screen} value={currentEvidence} onChange={update} accent={accent} />
+      {passage ? (
+        <ReadingActivity passage={passage} accent={accent} instruction={screen.instruction}>
+          {mechanic}
+        </ReadingActivity>
+      ) : (
+        mechanic
+      )}
       {error ? <p role="alert" className="rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-sm text-foreground">{error}</p> : null}
       <button type="button" disabled={pending} onClick={advance} className={`self-end rounded-full px-6 py-2.5 text-sm font-semibold disabled:opacity-60 ${a.solid}`}>
         {pending ? <span className="inline-flex items-center gap-2"><Loader2 className="size-4 animate-spin" /> Submitting</span> : index + 1 === activity.screens.length ? 'Submit for server marking' : 'Next activity'}
@@ -183,8 +197,16 @@ function Mechanic({ screen, value, onChange, accent }: { screen: ActivityScreen;
     return <div className="space-y-2"><p className={`rounded-xl p-3 text-sm ${a.soft}`}>{screen.model_line}</p>{(screen.self_check || []).map((item) => <label key={item} className="flex items-center gap-3 rounded-xl border border-border p-3 text-sm"><input type="checkbox" checked={Boolean(checks[item])} onChange={(event) => onChange({ selfChecks: { ...checks, [item]: event.target.checked } })} /><span>{item}</span></label>)}</div>
   }
   if (screen.mechanic === 'speaking_or_writing_transfer') {
-    const minimum = screen.anti_gaming?.min_unique_words || 1
-    return <div><p className="mb-2 text-sm text-muted-foreground">Use at least {minimum} different words and include lesson language: {(screen.required_words || []).join(', ')}.</p><textarea rows={5} value={String(value.responseText || '')} onChange={(event) => onChange({ responseText: event.target.value })} className="w-full rounded-xl border border-border bg-background p-3 text-sm" placeholder="Write or dictate your own response." /></div>
+    // The writing activity owns its own presentation, including the expansion
+    // window. The answer still lives here, so the two views are one answer.
+    return (
+      <WritingActivity
+        screen={screen}
+        accent={accent}
+        value={String(value.responseText || '')}
+        onChange={(responseText) => onChange({ responseText })}
+      />
+    )
   }
   if (screen.mechanic === 'save_phrase_to_review_deck') {
     return <div><p className="mb-2 text-sm text-muted-foreground">Choose a useful phrase to save in your personal Smart Review deck.</p><input value={String(value.phrase || '')} onChange={(event) => onChange({ phrase: event.target.value })} className="w-full rounded-xl border border-border bg-background p-3 text-sm" placeholder="Type the phrase to save." /></div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import Image from 'next/image'
 import { X, Play, Pause, ImageOff, Volume2 } from 'lucide-react'
 import type { AccentToken } from '@/lib/apps/types'
@@ -21,15 +21,21 @@ import { resolveKeywordImage } from '@/lib/lesson-player/keyword-image'
  * second content panel.
  */
 
+/** Whether this browser can speak the word. Never changes after load, so it has
+ *  nothing to subscribe to; the server answer is `true` so the button renders in
+ *  the markup and only disappears on a browser that genuinely cannot speak. */
+const noSubscription = () => () => {}
+
 function Pronounce({ word, accent, src }: { word: string; accent: AccentToken; src?: string }) {
   const a = ACCENT[accent]
   const [playing, setPlaying] = useState(false)
   const audio = useRef<HTMLAudioElement | null>(null)
-  const [supported, setSupported] = useState(true)
 
-  useEffect(() => {
-    if (!src && typeof window !== 'undefined' && !('speechSynthesis' in window)) setSupported(false)
-  }, [src])
+  const supported = useSyncExternalStore(
+    noSubscription,
+    () => Boolean(src) || 'speechSynthesis' in window,
+    () => true,
+  )
 
   useEffect(
     () => () => {

@@ -4,7 +4,6 @@ import { useRef, useState } from 'react'
 import {
   Play,
   Pause,
-  Volume2,
   Mic,
   Sparkles,
   Check,
@@ -23,7 +22,6 @@ import type { VocabCard, QuizItem } from '@/lib/lesson-player/spec'
 import {
   engineKeywords,
   engineStepFor,
-  type EngineVocabularyCard,
   type LessonEngine15,
 } from '@/lib/lesson-player/engine'
 import { KeywordChip, KeywordPopup } from './keyword-popup'

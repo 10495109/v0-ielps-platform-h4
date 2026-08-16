@@ -31,6 +31,15 @@
   --color-soft: var(--soft);
   --color-success: var(--success);
 
+  /* Token names used by the approved Access Panel design (15 Aug 2026).
+     Aliases only — they point at the palette values already defined above, so
+     the canonical Pearson colours stay defined in exactly one place and no
+     existing surface changes. */
+  --color-yellow: var(--gold);
+  --color-purple: var(--primary);
+  --color-blue: var(--secondary);
+  --color-lavender: var(--muted);
+
   --font-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
   --font-display: var(--font-bricolage), 'Inter', system-ui, sans-serif;
 
@@ -105,4 +114,59 @@
   .animate-rise {
     animation: rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
+}
+
+/* ── PiP ──────────────────────────────────────────────────────────────────
+   PiP's stylesheet, recovered verbatim from the release running in
+   production (/learner/_next/static/chunks/0_-tfzb9hexwb.css, rules 20-42
+   and 45 of that file).
+
+   The PiP component was carried into this release on 14 August so that a
+   promotion could not silently remove the assistant, but its stylesheet was
+   not carried with it. Every rule here is a plain class name, not a Tailwind
+   utility, so nothing regenerated it: PiP was mounting on all 59 routes with
+   no styling at all - an unpositioned mascot at natural size, in the page
+   flow, adding height to the bottom of every page. The visual conformance
+   check that signed off that release compared the routes with PiP hidden,
+   which is exactly why it did not show up.
+
+   Nothing here is new work or a redesign. It is the appearance PiP has in
+   production today, restored so it survives the promotion. The launcher
+   stays fixed at bottom-right, clear of any button in the pages it sits
+   over. Recovered and re-tested 16 August 2026.
+   ───────────────────────────────────────────────────────────────────── */
+
+.ielps-pip-agent{--pip-navy:#0d004d;--pip-soft-blue:#f4f4fa;--pip-blue:#3860be;--pip-gold:#ffce00;--pip-line:#cdcddb;--pip-ink:#0d004d;--pip-muted:#555;--pip-white:#fff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Arial,sans-serif}
+.ielps-pip-launcher{z-index:80;background:var(--pip-navy);color:var(--pip-white);cursor:pointer;border:0;border-radius:999px;align-items:center;gap:10px;padding:10px 14px 10px 10px;font-weight:900;display:inline-flex;position:fixed;bottom:20px;right:20px;box-shadow:0 18px 44px #0d004d3d}
+.ielps-pip-launcher img{background:var(--pip-white);object-fit:cover;border-radius:50%;width:46px;height:46px}
+.ielps-pip-panel{z-index:80;border:1px solid var(--pip-line);background:var(--pip-white);width:min(390px,100vw - 32px);max-height:min(680px,100vh - 32px);color:var(--pip-ink);border-radius:22px;position:fixed;bottom:20px;right:20px;overflow:auto;box-shadow:0 24px 70px #0d004d33}
+.ielps-pip-header{background:linear-gradient(135deg, var(--pip-soft-blue), #f9f9fc);border-bottom:1px solid var(--pip-line);grid-template-columns:58px 1fr 38px;align-items:center;gap:12px;padding:14px;display:grid}
+.ielps-pip-header img{object-fit:cover;background:var(--pip-white);border-radius:18px;width:58px;height:58px}
+.ielps-pip-header strong{font-size:18px;display:block}
+.ielps-pip-header span{color:var(--pip-muted);font-size:13px;font-weight:800}
+.ielps-pip-header button{border:1px solid var(--pip-line);background:var(--pip-white);width:38px;height:38px;color:var(--pip-ink);cursor:pointer;border-radius:50%;font-size:22px}
+.ielps-pip-language-row{gap:6px;padding:12px 14px 0;display:flex;overflow-x:auto}
+.ielps-pip-language-row button,.ielps-pip-actions button,.ielps-pip-audio,.ielps-pip-form button{border:1px solid var(--pip-line);background:var(--pip-white);color:var(--pip-ink);cursor:pointer;border-radius:999px;padding:8px 10px;font-weight:850}
+.ielps-pip-language-row button.active,.ielps-pip-actions button.primary,.ielps-pip-form button{background:var(--pip-blue);border-color:var(--pip-blue);color:var(--pip-white)}
+.ielps-pip-caption{border:1px solid var(--pip-line);background:#f9f9fc;border-radius:18px;margin:14px;padding:14px}
+.ielps-pip-caption p{margin:0;font-size:15px;line-height:1.5}
+.ielps-pip-caption small{color:var(--pip-muted);margin-top:10px;line-height:1.45;display:block}
+.ielps-pip-steps{color:var(--pip-muted);margin:0 14px 14px 36px}
+.ielps-pip-audio{background:#f4f4fa;border-color:#d6d5fb;margin:0 14px 12px}
+.ielps-pip-actions{flex-wrap:wrap;gap:8px;padding:0 14px 14px;display:flex}
+.ielps-pip-form{border-top:1px solid var(--pip-line);grid-template-columns:1fr auto;gap:8px;padding:14px;display:grid}
+.ielps-pip-form input{border:1px solid var(--pip-line);border-radius:999px;min-width:0;padding:10px 12px}
+.ielps-pip-agent[data-state=thinking] .ielps-pip-header img{animation:1.4s ease-in-out infinite pip-float}
+@keyframes pip-float {
+  0%,to{transform:translateY(0)}
+  50%{transform:translateY(-4px)}
+}
+@media (max-width:520px) {
+  .ielps-pip-launcher{bottom:14px;right:14px}
+  .ielps-pip-panel{bottom:12px;right:12px}
+}
+@media (max-width:640px) {
+  .ielps-pip-launcher span{display:none}
+  .ielps-pip-launcher{gap:0;padding:8px}
+  .ielps-pip-launcher img{width:44px;height:44px}
 }

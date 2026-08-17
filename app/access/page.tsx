@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Plus_Jakarta_Sans } from 'next/font/google'
 import { AccessHeader } from '@/components/access/access-header'
 import { CefrPanel } from '@/components/access/cefr-panel'
 
@@ -14,15 +15,15 @@ import { CefrPanel } from '@/components/access/cefr-panel'
  * markup, classes, copy and spacing are unchanged. The only edits made while
  * bringing it into this app are the ones that turn a static preview into a
  * working page: the palette tokens it uses are aliased onto the Pearson values
- * this app already defines, and every control that arrived as href="#" now
- * points at an address that already exists here.
- *
- * Typography, 17 August 2026: the design package shipped with Plus Jakarta
- * Sans. This is an interface page, so under the typography standardisation it
- * now takes the canonical public landing's interface face like every other
- * interface page. That is the one deliberate departure from the package as
- * supplied, and it is raised for approval rather than assumed.
+ * this app already defines, its typeface is loaded, and every control that
+ * arrived as href="#" now points at an address that already exists here.
  */
+
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  variable: '--font-jakarta',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'IELPS Learning — Choose your English level',
@@ -32,7 +33,10 @@ export const metadata: Metadata = {
 
 export default function AccessPage() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-indigo">
+    <main
+      className={`relative min-h-screen overflow-hidden bg-indigo ${jakarta.variable}`}
+      style={{ fontFamily: 'var(--font-jakarta), var(--font-inter), system-ui, sans-serif' }}
+    >
       {/* subtle gold glow accent */}
       <div
         aria-hidden="true"

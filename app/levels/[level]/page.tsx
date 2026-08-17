@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { Plus_Jakarta_Sans } from 'next/font/google'
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react'
 import {
   CEFR_LEVELS,
@@ -21,6 +22,12 @@ import { StartLevelButton } from '@/components/access/start-level-button'
  *    of that level. See start-level-button.tsx for how that is resolved and
  *    what happens when it cannot be.
  */
+
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  variable: '--font-jakarta',
+  display: 'swap',
+})
 
 const NODE_BG: Record<CefrLevel['accent'], string> = {
   turquoise: 'bg-turquoise text-indigo',
@@ -62,7 +69,10 @@ export default async function LevelPage({
   const next = CEFR_LEVELS[index + 1]
 
   return (
-    <main className="min-h-dvh bg-indigo">
+    <main
+      className={`min-h-dvh bg-indigo ${jakarta.variable}`}
+      style={{ fontFamily: 'var(--font-jakarta), var(--font-inter), system-ui, sans-serif' }}
+    >
       <AccessHeader />
 
       <section className="mx-auto max-w-4xl px-4 pb-20 pt-28 sm:px-6 lg:pt-32">

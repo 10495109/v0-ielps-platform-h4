@@ -100,11 +100,7 @@ function Section({ title, note, children }: { title: string; note: string; child
     <section className="border-t border-border py-10 first:border-t-0">
       <h2 className="font-display text-2xl font-black tracking-tight text-foreground">{title}</h2>
       <p className="mt-1.5 max-w-3xl text-sm leading-relaxed text-muted-foreground">{note}</p>
-      {/* The heading and the note above are this page's own chrome and take the
-          interface face. The screens below are the authored-content screens, so
-          they keep the curriculum typography exactly as the lesson player shows
-          them (17 Aug 2026 typography standardisation). */}
-      <div className="mt-6 font-content">{children}</div>
+      <div className="mt-6">{children}</div>
     </section>
   )
 }

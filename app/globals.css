@@ -40,33 +40,8 @@
   --color-blue: var(--secondary);
   --color-lavender: var(--muted);
 
-  /* Typography standardisation, 17 August 2026.
-
-     --font-sans and --font-display are now exactly what the canonical public
-     landing loads: Hanken Grotesk for interface text, Bricolage Grotesque for
-     display. Bricolage was already the display face here, so the interface
-     face is the only thing that moves.
-
-     --font-content is the other half of the same instruction. Authored
-     learning material — curriculum, lessons, readings, activities, assessment
-     copy — keeps the typography it has today, which is Inter. It is a separate
-     token rather than a hard-coded family so that the two can never drift, and
-     so the boundary between "interface" and "authored content" is one grep
-     away rather than scattered through the components.
-
-     The boundary itself is applied in exactly two places, both of which are
-     where this app stops drawing chrome and starts drawing the curriculum:
-       components/lesson-player/lesson-player.tsx  (the StepScreen handover)
-       app/preview/lesson-interactions/page.tsx    (the same screens, previewed)
-     Everything inside those — reading and writing windows, keyword pop-ups,
-     quizzes, the verified activity runner — is a descendant, so it inherits.
-
-     font-serif is untouched. The lesson titles, vocabulary words and audio
-     model sentences that use it were serif before this change and are serif
-     after it. */
-  --font-sans: var(--font-hanken), 'Hanken Grotesk', system-ui, sans-serif;
-  --font-display: var(--font-bricolage), 'Hanken Grotesk', system-ui, sans-serif;
-  --font-content: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --font-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --font-display: var(--font-bricolage), 'Inter', system-ui, sans-serif;
 
   --radius-sm: calc(var(--radius) * 0.55);
   --radius-md: calc(var(--radius) * 0.75);

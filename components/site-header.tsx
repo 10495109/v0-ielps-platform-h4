@@ -1,7 +1,16 @@
 import { IELPS_API_BASE } from '@/lib/ielps-api'
 
+/**
+ * The 'Placement' item was removed on 17 August 2026. It pointed only at the
+ * generic diagnostic-description section on this page, and the Access Panel
+ * answers one question — "How are you using IELPS?". It owns pathway
+ * identification, not generic placement orientation, so the explanation moved
+ * into the learner flows that actually run placement.
+ *
+ * This is the Access Panel's own navigation. The Public Landing's navigation is
+ * separate, canonical and untouched.
+ */
 const NAV = [
-  { label: 'Placement', href: '#placement' },
   { label: 'Pathways', href: '#pathways' },
   { label: 'Adult flow', href: '#adult-flow' },
 ]

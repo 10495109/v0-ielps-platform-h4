@@ -5,7 +5,6 @@ import { LevelBand } from '@/components/level-band'
 import { WelcomeSection } from '@/components/welcome-section'
 import { PathwaysSection } from '@/components/pathways-section'
 import { AdultFlowSection } from '@/components/adult-flow-section'
-import { PlacementSection } from '@/components/placement-section'
 import { SiteFooter } from '@/components/site-footer'
 
 export default function Page() {
@@ -21,7 +20,11 @@ export default function Page() {
       <WelcomeSection />
       <PathwaysSection />
       <AdultFlowSection />
-      <PlacementSection />
+      {/* The generic placement/diagnostic section was removed here on
+          17 August 2026. The Access Panel answers "How are you using IELPS?" —
+          it owns pathway identification, not placement orientation. The
+          explanation moved to the learner placement flow as
+          <PlacementExplainer />. */}
       <SiteFooter />
     </main>
   )

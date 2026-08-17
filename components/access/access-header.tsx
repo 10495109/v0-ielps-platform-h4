@@ -10,17 +10,22 @@ import { IELPS_API_BASE } from '@/lib/ielps-api'
  * points at the address that already exists on this platform, so no control in
  * the approved design is a dead end:
  *
- *   Placement / Pathways / Adult flow → the three sections of the Access Panel
- *     home, which are the surfaces those words already name there.
+ *   Pathways / Adult flow → the sections of the Access Panel home, which are
+ *     the surfaces those words already name there.
  *   Sign in → the same destination the Access Panel home's own Sign in button
  *     uses, so there is one sign-in address and not two.
  *
  * The panel's existing light header is deliberately not reused: this design
  * sits on indigo and carries its own approved header, and swapping one in would
  * be a visual change to something already approved.
+ *
+ * 'Placement' was removed on 17 August 2026 with the same instruction that
+ * removed it from the panel home's own header. It pointed at /#placement — the
+ * generic diagnostic section — and that section no longer exists, so leaving it
+ * would have made it a dead anchor as well as a placement control ahead of
+ * pathway identification.
  */
 const NAV = [
-  { label: 'Placement', href: '/#placement' },
   { label: 'Pathways', href: '/#pathways' },
   { label: 'Adult flow', href: '/#adult-flow' },
 ]

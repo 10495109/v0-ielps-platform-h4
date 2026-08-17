@@ -8,6 +8,7 @@ import { ACCENT } from '@/lib/apps/accent'
 import { placementApi } from '@/lib/adapters'
 import { useEilps } from '@/lib/use-eilps'
 import { SourceBadge } from '@/components/app/source-badge'
+import { PlacementExplainer } from '@/components/placement-explainer'
 
 type PlacementItem = {
   id: string
@@ -68,7 +69,18 @@ export function PlacementTest({ slug }: { slug: 'adult' | 'junior' }) {
   }
 
   if (source !== 'live') {
-    return <main className="min-h-dvh bg-background p-5"><div className="mx-auto max-w-2xl rounded-3xl border border-border bg-card p-6"><div className="flex justify-between gap-3"><h1 className="font-display text-2xl font-bold">IELPS placement</h1><SourceBadge source={source} /></div><p className="mt-3 text-sm text-muted-foreground">Sign in with a learner account to load the operational placement diagnostic. No sample questions are shown.</p><Link href={`/app/${slug}/onboarding`} className="mt-6 inline-flex text-sm font-semibold text-primary underline">Return to learner access</Link></div></main>
+    // The explanation of what this diagnostic covers sits here, at the entry to
+    // the flow that runs it — relocated from the Access Panel home on
+    // 17 Aug 2026. It is orientation, not the test: nothing below begins until
+    // a learner signs in and the server sends real items.
+    return (
+      <main className="min-h-dvh bg-background p-5">
+        <div className="mx-auto grid max-w-2xl gap-5">
+          <div className="rounded-3xl border border-border bg-card p-6"><div className="flex justify-between gap-3"><h1 className="font-display text-2xl font-bold">IELPS placement</h1><SourceBadge source={source} /></div><p className="mt-3 text-sm text-muted-foreground">Sign in with a learner account to load the operational placement diagnostic. No sample questions are shown.</p><Link href={`/app/${slug}/onboarding`} className="mt-6 inline-flex text-sm font-semibold text-primary underline">Return to learner access</Link></div>
+          <PlacementExplainer />
+        </div>
+      </main>
+    )
   }
 
   if (result) {

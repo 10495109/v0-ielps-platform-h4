@@ -118,25 +118,25 @@ export function LevelBand() {
                     : '')}
             </p>
             <div className="mt-5 flex flex-wrap items-center gap-3">
-              {/* Corrected 17 Aug 2026 by the canonical routing decision.
-                  This sent every visitor — junior, parent, teacher, school —
-                  straight into the Adult Lesson Player, which is exactly the
-                  generic Start behaviour the decision rules out. Pathway is
-                  chosen first; the level stays in the address so the band above
-                  keeps showing it. Copy and appearance are untouched: this is a
-                  routing change only. */}
+              {/* Corrected 17 Aug 2026 by the canonical routing decision, in two
+                  steps. First the destination: this sent every visitor — junior,
+                  parent, teacher, school — straight into the Adult Lesson Player,
+                  which is the generic Start behaviour the decision rules out.
+                  Then the copy, approved the same day: "Continue with {level}"
+                  says what actually happens. The level is retained as context and
+                  the pathway is identified first; it does not mean IELPS has
+                  diagnosed this visitor at this level, and it does not start or
+                  unlock a lesson.
+
+                  The secondary "Choose a pathway instead" button was removed in
+                  the same instruction: once both actions led here, "instead" no
+                  longer described a different action. One primary action only. */}
               <Link
                 href="#pathways"
                 className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-gold px-5 py-2.5 text-sm font-black text-indigo shadow-sm transition-transform hover:-translate-y-0.5"
               >
-                Start the first {level} lesson
+                Continue with {level}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-              <Link
-                href="#pathways"
-                className="inline-flex min-h-11 items-center rounded-lg border border-border bg-background px-5 py-2.5 text-sm font-bold text-foreground transition-colors hover:border-turquoise"
-              >
-                Choose a pathway instead
               </Link>
             </div>
           </div>

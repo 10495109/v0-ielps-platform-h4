@@ -39,6 +39,15 @@ export function Hero() {
             English skills at your own pace, with learning that adapts to you.
           </p>
 
+          {/* 'Preview placement' was removed on 17 August 2026. The Access
+              Panel hero asks one question and offers one answer to it: choose
+              your pathway. A second action inviting a visitor to look at a
+              generic diagnostic sat ahead of pathway identification, which the
+              canonical flow rules out. The explanation now lives inside the
+              learner flows that run placement.
+
+              This is the Access Panel hero. The Public Landing hero is separate,
+              canonical, visually locked and untouched. */}
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <a
               href="#pathways"
@@ -46,12 +55,6 @@ export function Hero() {
             >
               Choose your pathway
               <ArrowRight className="h-4 w-4" />
-            </a>
-            <a
-              href="#placement"
-              className="inline-flex min-h-12 items-center rounded-lg border border-white/20 bg-white/[0.04] px-6 py-3 text-sm font-bold text-primary-foreground transition-colors hover:bg-white/10"
-            >
-              Preview placement
             </a>
           </div>
 

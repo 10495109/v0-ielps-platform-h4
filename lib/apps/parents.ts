@@ -161,9 +161,12 @@ export const parents: AccountApp = {
           endpoint: { method: 'GET', path: '/api/school/parent/dashboard' },
           transform: parentAttention,
           emptyNote: 'Nothing needs your attention right now.',
+          // Sample lines must be the same *kind* of statement the transform can
+          // produce from the server: a value stated back, never a judgement.
+          // "Listening dipped" was invented — no server value supports it.
           sample: [
-            { title: 'Max: listening dipped', subtitle: 'Suggest a listening booster', status: 'alert' },
-            { title: 'Ellie: streak at risk', subtitle: 'No lesson today yet', status: 'pending' },
+            { title: 'Max: 8 review items are due', subtitle: 'From the review memory', status: 'pending' },
+            { title: 'Ellie: streak of 4 at risk', subtitle: 'No lesson today yet', status: 'alert' },
           ],
           span: 1,
         },

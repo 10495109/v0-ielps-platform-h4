@@ -98,6 +98,22 @@ export function KeywordPopup({
   const picture = resolveKeywordImage(card)
   const panel = useRef<HTMLDivElement | null>(null)
 
+  /**
+   * Truthfulness, per the 17 August instruction. Until a word carries approval
+   * or version metadata from the permanent 2,976-entry vocabulary programme,
+   * what the pop-up can show is runtime content, not reviewed IELPS content.
+   * The window says so rather than letting the learner assume otherwise. The
+   * moment a word is authored and approved, the notice disappears on its own.
+   */
+  const meta = card as unknown as Record<string, unknown>
+  const authored = Boolean(meta.approvedAt || meta.approvalStatus || meta.version || meta.reviewedAt)
+  const pendingParts: string[] = []
+  if (picture.kind === 'brief') pendingParts.push('no approved picture yet')
+  if (card.definition || card.usageExample) {
+    pendingParts.push('the meaning and example come from the lesson runtime')
+  }
+  if (!audioSrc) pendingParts.push('the pronunciation is your device’s voice, not a supplied recording')
+
   useEffect(() => {
     panel.current?.focus()
     const previous = document.body.style.overflow
@@ -181,6 +197,13 @@ export function KeywordPopup({
             </p>
           ) : null}
         </div>
+
+        {authored || pendingParts.length === 0 ? null : (
+          <p className="border-t border-border bg-soft px-5 py-3 text-xs leading-5 text-muted-foreground">
+            Pending IELPS vocabulary authoring: {pendingParts.join(', ')}. This word does not yet
+            carry reviewed permanent IELPS vocabulary content.
+          </p>
+        )}
       </div>
     </div>
   )

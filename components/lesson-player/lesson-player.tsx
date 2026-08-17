@@ -360,25 +360,32 @@ export function LessonPlayer({ slug }: { slug: string }) {
                 </span>
                 <span className="hidden text-[11px] text-muted-foreground sm:block">{activeStep.stateRule}</span>
               </div>
-              <StepScreen
-                step={activeStep}
-                lesson={lesson}
-                engine={engine}
-                accent={app.accent}
-                juniorReadability={variant.juniorReadability}
-                aiHelpEnabled={variant.aiHelpEnabled}
-                supportLanguage={supportLanguage}
-                setSupportLanguage={setSupportLanguage}
-                onDone={completeStep}
-                activity={activity}
-                activitySource={activitySource}
-                submission={submission}
-                onVerified={(value) => {
-                  setSubmission(value)
-                  setCompleted((previous) => new Set(previous).add(14))
-                  setCurrent(15)
-                }}
-              />
+              {/* Everything below this line is authored learning material, so
+                  it keeps the curriculum typography rather than taking the
+                  interface face (17 Aug 2026 typography standardisation). The
+                  wrapper carries no layout of its own — StepScreen's own root
+                  is still the element that lays the step out. */}
+              <div className="font-content">
+                <StepScreen
+                  step={activeStep}
+                  lesson={lesson}
+                  engine={engine}
+                  accent={app.accent}
+                  juniorReadability={variant.juniorReadability}
+                  aiHelpEnabled={variant.aiHelpEnabled}
+                  supportLanguage={supportLanguage}
+                  setSupportLanguage={setSupportLanguage}
+                  onDone={completeStep}
+                  activity={activity}
+                  activitySource={activitySource}
+                  submission={submission}
+                  onVerified={(value) => {
+                    setSubmission(value)
+                    setCompleted((previous) => new Set(previous).add(14))
+                    setCurrent(15)
+                  }}
+                />
+              </div>
               {completionError ? <p role="alert" className="mt-4 rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-sm text-foreground">{completionError}</p> : null}
               {/* Endpoint wiring for this step */}
               <div className="mt-6 flex flex-wrap gap-1.5 border-t border-border pt-4">

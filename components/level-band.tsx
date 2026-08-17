@@ -118,8 +118,15 @@ export function LevelBand() {
                     : '')}
             </p>
             <div className="mt-5 flex flex-wrap items-center gap-3">
+              {/* Corrected 17 Aug 2026 by the canonical routing decision.
+                  This sent every visitor — junior, parent, teacher, school —
+                  straight into the Adult Lesson Player, which is exactly the
+                  generic Start behaviour the decision rules out. Pathway is
+                  chosen first; the level stays in the address so the band above
+                  keeps showing it. Copy and appearance are untouched: this is a
+                  routing change only. */}
               <Link
-                href={`/app/adult/player?level=${level}`}
+                href="#pathways"
                 className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-gold px-5 py-2.5 text-sm font-black text-indigo shadow-sm transition-transform hover:-translate-y-0.5"
               >
                 Start the first {level} lesson

@@ -79,11 +79,16 @@ export function CefrPanel() {
 
           <p className="px-4 pb-3 pt-5 text-sm text-primary-foreground/60 sm:px-5">
             Not sure which fits?{' '}
-            {/* The design arrived with href="#". This is the platform's real
-                placement test — the same 144-item diagnostic the Access Panel
-                home describes — not a new route made for this page. */}
+            {/* The design arrived with href="#". It pointed at the adult
+                placement diagnostic until 17 Aug 2026, when the canonical
+                routing decision ruled out exposing a generic placement funnel
+                before the pathway is known — placement belongs inside the
+                learner pathways that use it, and teachers, tutors, school
+                administrators and studio authors do not take it at all. It now
+                enters the pathway gateway, which decides whether placement is
+                the next step. Copy unchanged: routing only. */}
             <Link
-              href="/app/adult/placement/"
+              href="/#pathways"
               className="font-semibold text-yellow hover:underline"
             >
               Take the 5-minute placement test

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { ArrowRight } from 'lucide-react'
 import { ielpsFetch } from '@/lib/eilps-http'
+import { getLevelBySlug } from '@/lib/cefr-levels'
 
 /**
  * The band shown when a visitor arrives having already chosen a CEFR level.
@@ -17,6 +18,12 @@ import { ielpsFetch } from '@/lib/eilps-http'
  *    was actually chosen.
  *  - Every figure comes from the server. Nothing is typed in here and nothing
  *    is counted at build time where it could drift from the curriculum.
+ *
+ * Corrected 18 Aug 2026 by the canonical CEFR decision. The heading used to be
+ * the course title the server returns ("A1 — Foundation English"), which put a
+ * curriculum title where the level name belongs. The two are now separate, as
+ * the decision requires: the level is named from the canonical table, and the
+ * course title is stated as a course title. Nothing else about the band moved.
  *
  * It reads GET /api/curriculum/deep-catalog because that is the only route that
  * carries per-level units and lessons — /api/curriculum/deep-summary returns
@@ -56,6 +63,14 @@ function summarise(raw: CatalogLevel): Summary {
   }
 }
 
+/** The course title on its own. Some titles the server returns already begin
+ *  with the level id ("C1 Advanced English for…"); the id is printed beside the
+ *  heading now, so repeating it here would say it twice. */
+function courseTitle(s: Summary): string {
+  const stripped = s.title.replace(new RegExp(`^${s.id}\\s*[—–-]?\\s*`, 'i'), '')
+  return stripped || s.title
+}
+
 export function LevelBand() {
   const searchParams = useSearchParams()
   const [summary, setSummary] = useState<State>(null)
@@ -64,6 +79,7 @@ export function LevelBand() {
   // an effect, so there is no second pass and nothing to keep in sync.
   const asked = (searchParams.get('level') ?? '').toUpperCase()
   const level = LEVEL_IDS.includes(asked as (typeof LEVEL_IDS)[number]) ? asked : null
+  const named = level ? getLevelBySlug(level) : undefined
 
   useEffect(() => {
     if (!level) return
@@ -98,23 +114,19 @@ export function LevelBand() {
               Your chosen level
             </span>
             <h2 className="mt-1.5 text-balance font-display text-2xl font-black tracking-tight text-foreground sm:text-3xl">
-              {/* Some level titles the server returns already begin with the
-                  level id ("C1 Advanced English for…"), so prefixing blindly
-                  would print it twice. */}
-              {summary
-                ? summary.title.toUpperCase().startsWith(summary.id)
-                  ? summary.title
-                  : `${summary.id} — ${summary.title}`
-                : level}
+              {/* The level name comes from the canonical table, not the server,
+                  so it is right the moment the page paints and cannot drift. */}
+              {named ? `${named.code} ${named.name}` : level}
             </h2>
             <p className="mt-2.5 text-pretty text-base leading-relaxed text-muted-foreground">
+              {named && `${named.summary}. `}
               {summary === null && 'Reading this level from the curriculum…'}
               {summary === false &&
-                'The curriculum is not answering right now, so the size of this level is not shown.'}
+                'The curriculum is not answering right now, so the course at this level is not shown.'}
               {summary &&
-                `${summary.units} units and ${summary.lessons} lessons at this level.` +
+                `Course: ${courseTitle(summary)} — ${summary.units} units and ${summary.lessons} lessons.` +
                   (summary.firstLessonTitle
-                    ? ` The first one is “${summary.firstLessonTitle}”.`
+                    ? ` The first lesson is “${summary.firstLessonTitle}”.`
                     : '')}
             </p>
             <div className="mt-5 flex flex-wrap items-center gap-3">

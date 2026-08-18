@@ -4,6 +4,7 @@ import { getApp, getScreen } from '@/lib/apps'
 import { AppShell } from './app-shell'
 import { Panel } from './panel'
 import { WiringDrawer } from './wiring-drawer'
+import { SHOW_ENDPOINT_LABELS } from '@/lib/developer-surface'
 import { notFound } from 'next/navigation'
 
 export function ScreenView({
@@ -30,7 +31,10 @@ export function ScreenView({
               {screen.description}
             </p>
           </div>
-          <WiringDrawer app={app} />
+          {/* The wiring drawer lists this mini-app's routes. That is developer
+              detail, so from 18 August 2026 it is only offered when the build
+              asks for endpoint labels. The routes themselves are unchanged. */}
+          {SHOW_ENDPOINT_LABELS && <WiringDrawer app={app} />}
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">

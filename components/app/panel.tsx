@@ -20,6 +20,7 @@ import type {
 } from '@/lib/apps/types'
 import { ACCENT } from '@/lib/apps/accent'
 import { SourceBadge, EndpointChip } from './source-badge'
+import { SHOW_ENDPOINT_LABELS } from '@/lib/developer-surface'
 import { cn } from '@/lib/utils'
 
 const SPAN: Record<number, string> = {
@@ -72,7 +73,10 @@ export function Panel({
           <h3 className="font-display text-sm font-semibold text-foreground">
             {panel.title}
           </h3>
-          {panel.endpoint && (
+          {/* The route this panel hydrates from. Hidden from learner surfaces
+              from 18 August 2026; the wrapper is gated with it so the heading
+              does not keep the space it used to occupy. */}
+          {SHOW_ENDPOINT_LABELS && panel.endpoint && (
             <div className="mt-1.5">
               <EndpointChip method={panel.endpoint.method} path={panel.endpoint.path} />
             </div>

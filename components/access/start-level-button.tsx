@@ -30,14 +30,18 @@ import { ArrowRight } from 'lucide-react'
  * then identify the pathway. It is not a diagnosis of the visitor at that level
  * and it does not unlock or begin a lesson.
  *
- * The design's markup and classes are unchanged.
+ * Restyled on 18 August 2026 when the level pages were rebuilt through the
+ * learner system. It is now the same primary action the panel home's level band
+ * already uses — same surface, radius, size, weight and lift on hover — rather
+ * than the pill from the revoked package. Where it goes and what it says are
+ * unchanged.
  */
 
 export function StartLevelButton({ code }: { code: string }) {
   return (
     <Link
       href={`/?level=${encodeURIComponent(code)}#pathways`}
-      className="inline-flex items-center gap-2 rounded-full bg-yellow px-6 py-3 text-sm font-bold text-indigo transition-transform hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow focus-visible:ring-offset-2 focus-visible:ring-offset-indigo"
+      className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-gold px-5 py-2.5 text-sm font-black text-indigo shadow-sm transition-transform hover:-translate-y-0.5"
     >
       Continue with {code}
       <ArrowRight className="size-4" aria-hidden="true" />

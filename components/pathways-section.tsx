@@ -6,6 +6,7 @@ import { ArrowUpRight } from 'lucide-react'
 import { PATHWAYS, type Pathway } from '@/lib/ielps-data'
 import { useEilps } from '@/lib/use-eilps'
 import { SourceBadge } from '@/components/app/source-badge'
+import { SHOW_ENDPOINT_LABELS } from '@/lib/developer-surface'
 
 const ACCENT: Record<Pathway['accent'], { badge: string; bar: string; text: string }> = {
   primary: { badge: 'bg-primary text-primary-foreground', bar: 'bg-primary', text: 'text-primary' },
@@ -119,25 +120,32 @@ function PathwayCard({
           {blurb}
         </p>
 
-        {/* Compact endpoint strip — same data, denser presentation */}
-        <div className="mt-3 flex flex-wrap gap-1">
-          {pathway.backend.slice(0, 2).map((ep) => (
-            <span
-              key={ep.method + ep.path}
-              className="inline-flex items-center gap-1 rounded border border-border bg-background px-1.5 py-0.5"
-            >
-              <MethodBadge method={ep.method} />
-              <code className="max-w-[9rem] truncate font-mono text-[10px] text-muted-foreground">
-                {ep.path}
-              </code>
-            </span>
-          ))}
-          {pathway.backend.length > 2 && (
-            <span className="inline-flex items-center rounded border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] font-bold text-muted-foreground">
-              +{pathway.backend.length - 2}
-            </span>
-          )}
-        </div>
+        {/* The endpoint strip that sat here until 18 August 2026 printed the
+            routes each card hydrates from — "POST /api/auth/register" and the
+            rest — on a card a learner reads. The conformance correction that
+            day removed that from learner-facing surfaces. The card still
+            hydrates from exactly the same routes; only the label is gone.
+            pathway.backend is unchanged and remains the integration record. */}
+        {SHOW_ENDPOINT_LABELS && (
+          <div className="mt-3 flex flex-wrap gap-1">
+            {pathway.backend.slice(0, 2).map((ep) => (
+              <span
+                key={ep.method + ep.path}
+                className="inline-flex items-center gap-1 rounded border border-border bg-background px-1.5 py-0.5"
+              >
+                <MethodBadge method={ep.method} />
+                <code className="max-w-[9rem] truncate font-mono text-[10px] text-muted-foreground">
+                  {ep.path}
+                </code>
+              </span>
+            ))}
+            {pathway.backend.length > 2 && (
+              <span className="inline-flex items-center rounded border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] font-bold text-muted-foreground">
+                +{pathway.backend.length - 2}
+              </span>
+            )}
+          </div>
+        )}
 
         <Link
           href={`/app/${pathway.slug}`}
@@ -174,9 +182,14 @@ export function PathwaysSection() {
             </h2>
           </div>
           <div className="flex items-center gap-2">
-            <span className="hidden items-center rounded-full border border-border bg-card px-3 py-1 text-[11px] font-bold text-muted-foreground sm:inline-flex">
-              GET /api/auth/pathways
-            </span>
+            {SHOW_ENDPOINT_LABELS && (
+              <span className="hidden items-center rounded-full border border-border bg-card px-3 py-1 text-[11px] font-bold text-muted-foreground sm:inline-flex">
+                GET /api/auth/pathways
+              </span>
+            )}
+            {/* The Live / Empty / Unavailable badge stays. It is not an
+                endpoint label — it tells a reader whether what they are looking
+                at came from the server, which the truthfulness rules require. */}
             <SourceBadge source={source} />
           </div>
         </div>

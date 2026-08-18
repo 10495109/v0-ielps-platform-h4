@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { getApp } from '@/lib/apps'
 import { ACCENT } from '@/lib/apps/accent'
+import { SHOW_ENDPOINT_LABELS } from '@/lib/developer-surface'
 import { getVariant } from '@/lib/lesson-player/variants'
 import {
   LESSON_STEPS,
@@ -380,18 +381,23 @@ export function LessonPlayer({ slug }: { slug: string }) {
                 }}
               />
               {completionError ? <p role="alert" className="mt-4 rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-sm text-foreground">{completionError}</p> : null}
-              {/* Endpoint wiring for this step */}
-              <div className="mt-6 flex flex-wrap gap-1.5 border-t border-border pt-4">
-                {activeStep.endpoints.map((e) => (
-                  <span
-                    key={`${e.method}${e.path}`}
-                    className="inline-flex items-center gap-1.5 rounded-md bg-soft px-2 py-1 font-mono text-[11px] text-muted-foreground"
-                  >
-                    <span className={`font-semibold ${a.text}`}>{e.method}</span>
-                    {e.path}
-                  </span>
-                ))}
-              </div>
+              {/* Endpoint wiring for this step. Hidden from the learner from
+                  18 August 2026 by the conformance correction — a learner in a
+                  lesson should not be reading the routes the step calls. The
+                  step still calls exactly the same ones. */}
+              {SHOW_ENDPOINT_LABELS && (
+                <div className="mt-6 flex flex-wrap gap-1.5 border-t border-border pt-4">
+                  {activeStep.endpoints.map((e) => (
+                    <span
+                      key={`${e.method}${e.path}`}
+                      className="inline-flex items-center gap-1.5 rounded-md bg-soft px-2 py-1 font-mono text-[11px] text-muted-foreground"
+                    >
+                      <span className={`font-semibold ${a.text}`}>{e.method}</span>
+                      {e.path}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </main>

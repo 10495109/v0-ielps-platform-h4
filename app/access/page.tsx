@@ -1,29 +1,22 @@
 import type { Metadata } from 'next'
-import { Plus_Jakarta_Sans } from 'next/font/google'
-import { AccessHeader } from '@/components/access/access-header'
+import { SiteHeader } from '@/components/site-header'
+import { SiteFooter } from '@/components/site-footer'
 import { CefrPanel } from '@/components/access/cefr-panel'
 
 /**
- * The Access Panel, as approved on 16 August 2026.
+ * The CEFR ladder.
  *
- * This replaces the seven-card "Choose your access route" gateway that was
- * previously at this address and that was declared NOT APPROVED. Nothing of
- * that version survives — the file it lived in has been removed rather than
- * left dormant.
+ * Rebuilt on 18 August 2026. The 6 August package this page was reproduced
+ * from — its dark indigo shell, its own header and its own typeface — was
+ * revoked that day, and only that. The page is now the same page as the rest of
+ * the learner system: the same document shell, the same header, the same
+ * background, the same width, the same footer, and the typography the layout
+ * already supplies. No typeface is loaded here, because there is no longer one
+ * of its own to load.
  *
- * The design is reproduced from the package supplied with that approval. Its
- * markup, classes, copy and spacing are unchanged. The only edits made while
- * bringing it into this app are the ones that turn a static preview into a
- * working page: the palette tokens it uses are aliased onto the Pearson values
- * this app already defines, its typeface is loaded, and every control that
- * arrived as href="#" now points at an address that already exists here.
+ * What it says is unchanged. The approved CEFR content lives on inside the
+ * canonical system, which is what the instruction asked for.
  */
-
-const jakarta = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  variable: '--font-jakarta',
-  display: 'swap',
-})
 
 export const metadata: Metadata = {
   title: 'IELPS Learning — Choose your English level',
@@ -33,23 +26,10 @@ export const metadata: Metadata = {
 
 export default function AccessPage() {
   return (
-    <main
-      className={`relative min-h-screen overflow-hidden bg-indigo ${jakarta.variable}`}
-      style={{ fontFamily: 'var(--font-jakarta), var(--font-inter), system-ui, sans-serif' }}
-    >
-      {/* subtle gold glow accent */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-32 -top-40 size-96 rounded-full bg-yellow/10 blur-3xl"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -left-24 top-1/3 size-80 rounded-full bg-purple/25 blur-3xl"
-      />
-      <AccessHeader />
-      <div className="relative">
-        <CefrPanel />
-      </div>
+    <main className="min-h-screen bg-background">
+      <SiteHeader away />
+      <CefrPanel />
+      <SiteFooter />
     </main>
   )
 }

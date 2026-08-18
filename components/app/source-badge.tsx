@@ -10,7 +10,6 @@ import {
   Settings,
 } from 'lucide-react'
 import type { DataSource } from '@/lib/use-eilps'
-import { SHOW_ENDPOINT_LABELS } from '@/lib/developer-surface'
 import { cn } from '@/lib/utils'
 
 export function SourceBadge({ source }: { source: DataSource }) {
@@ -52,18 +51,7 @@ export function SourceBadge({ source }: { source: DataSource }) {
   )
 }
 
-/**
- * The route an area of the screen is wired to.
- *
- * From 18 August 2026 this draws nothing unless the build explicitly asks for
- * endpoint labels. A learner reading "POST /api/auth/register" on a card is
- * being shown implementation, not content. The gate is here, at the one place
- * every caller goes through, so no surface can reintroduce it by accident.
- * The request the annotated area makes is unaffected either way.
- */
 export function EndpointChip({ method, path }: { method: string; path: string }) {
-  if (!SHOW_ENDPOINT_LABELS) return null
-
   const tone: Record<string, string> = {
     GET: 'bg-secondary/10 text-secondary',
     POST: 'bg-primary/10 text-primary',

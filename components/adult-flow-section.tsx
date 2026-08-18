@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import { ADULT_FLOW } from '@/lib/ielps-data'
-import { SHOW_ENDPOINT_LABELS } from '@/lib/developer-surface'
 import { ArrowRight } from 'lucide-react'
 
 export function AdultFlowSection() {
@@ -40,16 +39,7 @@ export function AdultFlowSection() {
             >
               <span className="font-display text-2xl font-black text-gold">{s.step}</span>
               <h3 className="mt-2 font-display text-lg font-bold">{s.title}</h3>
-              {/* Each step's route — "/dashboard", "/api/progress/lesson" —
-                  was printed here until 18 August 2026. That is the platform's
-                  own address for the step, not something a learner reads, and
-                  the conformance correction that day took technical route and
-                  endpoint labels off learner-facing surfaces. The step, its
-                  name and what it does are unchanged, and so is every route
-                  the flow actually uses. ADULT_FLOW keeps them as the record. */}
-              {SHOW_ENDPOINT_LABELS && (
-                <code className="mt-1 block font-mono text-xs text-turquoise">{s.route}</code>
-              )}
+              <code className="mt-1 block font-mono text-xs text-turquoise">{s.route}</code>
               <p className="mt-2 text-sm leading-relaxed text-white/70">{s.detail}</p>
               {i < ADULT_FLOW.length - 1 && (
                 <ArrowRight className="absolute -right-3 top-1/2 hidden h-5 w-5 -translate-y-1/2 text-white/30 lg:block" />

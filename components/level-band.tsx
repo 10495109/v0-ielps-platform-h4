@@ -23,7 +23,16 @@ import { getLevelBySlug } from '@/lib/cefr-levels'
  * the course title the server returns ("A1 — Foundation English"), which put a
  * curriculum title where the level name belongs. The two are now separate, as
  * the decision requires: the level is named from the canonical table, and the
- * course title is stated as a course title. Nothing else about the band moved.
+ * course title is stated as a course title.
+ *
+ * Corrected again 18 Aug 2026 (evening) by the crossed-message resolution. The
+ * standalone CEFR ladder and the six standalone level pages are retired, and
+ * this band is now the level-selection surface. Its information is ordered
+ * canonically — code, reference descriptor, learner-facing name, then the
+ * course title and its real unit and lesson counts — and it carries the
+ * approved definition of the chosen level, that one alone. It did not become a
+ * six-level catalogue and the retired Basic / Independent / Proficient grouping
+ * was deliberately not brought across.
  *
  * It reads GET /api/curriculum/deep-catalog because that is the only route that
  * carries per-level units and lessons — /api/curriculum/deep-summary returns
@@ -113,13 +122,31 @@ export function LevelBand() {
             <span className="text-xs font-black uppercase tracking-[0.08em] text-secondary">
               Your chosen level
             </span>
-            <h2 className="mt-1.5 text-balance font-display text-2xl font-black tracking-tight text-foreground sm:text-3xl">
+            {/* Corrected 18 Aug 2026 to the canonical information hierarchy:
+                the CEFR code, then the reference descriptor, then the
+                learner-facing name, then the course title and its real counts —
+                four separate things, in that order, never collapsed into one
+                another. The code and descriptor lead because they are the
+                reference identity of the level; the name is what the learner
+                reads. Only this level is described. */}
+            <p className="mt-1.5 flex items-baseline gap-2 font-display">
+              <span className="text-xl font-black tracking-tight text-secondary">
+                {named ? named.code : level}
+              </span>
+              {named && (
+                <span className="text-sm font-bold text-muted-foreground">{named.summary}</span>
+              )}
+            </p>
+            <h2 className="mt-1 text-balance font-display text-2xl font-black tracking-tight text-foreground sm:text-3xl">
               {/* The level name comes from the canonical table, not the server,
                   so it is right the moment the page paints and cannot drift. */}
-              {named ? `${named.code} ${named.name}` : level}
+              {named ? named.name : level}
             </h2>
             <p className="mt-2.5 text-pretty text-base leading-relaxed text-muted-foreground">
-              {named && `${named.summary}. `}
+              {/* The approved definition of the chosen level, and only that one.
+                  The six are never shown together — that was the retired
+                  ladder's job, and the ladder is retired. */}
+              {named && `${named.canDo} `}
               {summary === null && 'Reading this level from the curriculum…'}
               {summary === false &&
                 'The curriculum is not answering right now, so the course at this level is not shown.'}

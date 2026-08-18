@@ -119,6 +119,16 @@ export const PATHWAYS: Pathway[] = [
     next: ['/school', 'roster', 'licenses', 'reports'],
     backend: [
       { method: 'GET', path: '/api/school/admin/overview' },
+      // STOPPED AND REPORTED 18 Aug 2026, not guessed and not removed.
+      // GET /api/roster/providers is not registered by the running backend.
+      // backend/src/index.js mounts roster_provider.js at /api/roster, and that
+      // router registers only POST /organizations/:id/connections/:provider/
+      // exchange, POST /organizations/:id/sync/:provider and GET
+      // /organizations/:id/connections. The provider list itself is a literal
+      // array inside the exchange handler and is not exposed by any route.
+      // Nothing anywhere else in the 266 registered routes serves it. The card
+      // is display-only, so this label makes no request and nothing fails; it
+      // is left exactly as declared until the correct route is confirmed.
       { method: 'GET', path: '/api/roster/providers' },
       { method: 'GET', path: '/api/billing/subscription' },
     ],
@@ -136,7 +146,11 @@ export const PATHWAYS: Pathway[] = [
     next: ['/studio', '/studio/project/:id', '/studio/coursebook', '/studio/starpath'],
     backend: [
       { method: 'POST', path: '/api/authoring/projects' },
-      { method: 'POST', path: '/api/studio/coursebook/projects/:id/uploads' },
+      // Corrected 18 Aug 2026: the backend registers GET .../uploads (list) and
+      // POST .../uploads/pdf and .../uploads/text (create). There is no plain
+      // POST .../uploads. This card is about putting a coursebook into a
+      // project, so it names the route that really does it.
+      { method: 'POST', path: '/api/studio/coursebook/projects/:id/uploads/pdf' },
       { method: 'GET', path: '/api/addons/starpath/resources' },
     ],
     image: '/pathways/studio.png',

@@ -15,20 +15,11 @@ const NAV = [
   { label: 'Adult flow', href: '#adult-flow' },
 ]
 
-/**
- * `away` is set by the pages that are not the panel home — the CEFR ladder and
- * the six level pages, which joined this header on 18 August 2026. Those
- * sections live on the home page, so from anywhere else the same items have to
- * be addressed as "/#pathways" or they scroll to nothing. The home page renders
- * exactly what it rendered before: same markup, same classes, same hrefs.
- */
-export function SiteHeader({ away = false }: { away?: boolean }) {
-  const base = away ? '/' : ''
-
+export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/70 bg-background/95 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 lg:px-8">
-        <a href={away ? '/' : '#top'} className="flex items-center gap-2.5">
+        <a href="#top" className="flex items-center gap-2.5">
           <span className="grid h-10 w-10 place-items-center rounded-[12px_5px_12px_5px] bg-primary font-display text-xl font-black text-gold">
             i
           </span>
@@ -44,7 +35,7 @@ export function SiteHeader({ away = false }: { away?: boolean }) {
           {NAV.map((item) => (
             <a
               key={item.href}
-              href={`${base}${item.href}`}
+              href={item.href}
               className="text-sm font-bold text-foreground transition-colors hover:text-primary"
             >
               {item.label}

@@ -211,9 +211,16 @@ export const studio: AccountApp = {
       title: 'AI governance',
       description: 'Review Studio-safe quota, providers and moderation. Prompt administration remains administrator-only.',
       panels: [
-        { id: 'quota', title: 'Quota and usage', kind: 'stat', endpoint: { method: 'GET', path: '/api/studio/ai/quota' }, sample: [], span: 1 },
+        // Corrected 18 Aug 2026 against the running backend. There is one
+        // Studio-safe governance route, GET /api/studio/ai/governance in
+        // backend/src/studio_ai_governance.js, and its reply carries the
+        // quotas, prompts and moderation sections. /api/studio/ai/quota and
+        // /api/studio/ai/moderation are not registered anywhere and returned
+        // not_found. These three panels are wired to the route that really
+        // serves them; no backend route was added, renamed or duplicated.
+        { id: 'quota', title: 'Quota and usage', kind: 'stat', endpoint: { method: 'GET', path: '/api/studio/ai/governance' }, sample: [], span: 1 },
         { id: 'governance', title: 'Provider readiness', kind: 'list', endpoint: { method: 'GET', path: '/api/studio/ai/governance' }, sample: [], span: 1 },
-        { id: 'moderation', title: 'Moderation queues', kind: 'table', endpoint: { method: 'GET', path: '/api/studio/ai/moderation' }, sample: { columns: [], rows: [] }, span: 1 },
+        { id: 'moderation', title: 'Moderation queues', kind: 'table', endpoint: { method: 'GET', path: '/api/studio/ai/governance' }, sample: { columns: [], rows: [] }, span: 1 },
         { id: 'admin', title: 'Prompt versions and evaluation runs', kind: 'list', endpoint: { method: 'GET', path: '/api/tutor/admin/prompts' }, sample: [], span: 3 },
       ],
     },
@@ -228,9 +235,7 @@ export const studio: AccountApp = {
     { method: 'POST', path: '/api/studio/coursebook/projects/:projectId/generations' },
     { method: 'GET', path: '/api/addons/starpath/resources' },
     { method: 'POST', path: '/api/addons/starpath/assignments' },
-    { method: 'GET', path: '/api/studio/ai/quota' },
     { method: 'GET', path: '/api/studio/ai/governance' },
-    { method: 'GET', path: '/api/studio/ai/moderation' },
     { method: 'GET', path: '/api/tutor/admin/prompts' },
   ],
 }

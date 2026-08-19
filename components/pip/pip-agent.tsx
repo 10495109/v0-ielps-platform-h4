@@ -2,6 +2,8 @@
 
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
+import { usePipSettle } from './use-pip-settle'
+
 type PipLanguage = "en" | "es" | "ar" | "zh" | "fr" | "pt";
 
 type PipRole =
@@ -117,6 +119,27 @@ export function PipAgent({
   const [audioPlaying, setAudioPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  // Collision avoidance runs only for the closed launcher. An open panel is a
+  // deliberate interaction the learner just started, and it carries its own
+  // close button, so it is left where it was approved.
+  const { rootRef, settle } = usePipSettle(!open);
+
+  // While the page is moving PiP keeps its approved anchor and size. Once the
+  // page is still and the approved anchor turns out to cover a control, the
+  // launcher becomes a compact circle parked in the nearest clear slot.
+  const launcherStyle: React.CSSProperties | undefined =
+    settle.moved && !settle.scrolling
+      ? {
+          left: settle.left,
+          top: settle.top,
+          right: 'auto',
+          bottom: 'auto',
+          width: settle.size,
+          height: settle.size,
+          padding: 0,
+        }
+      : undefined;
+
   const currentRoute = useMemo(() => {
     if (route) return route;
     if (typeof window !== "undefined") return window.location.pathname;
@@ -191,9 +214,28 @@ export function PipAgent({
   }
 
   return (
-    <div className="ielps-pip-agent" data-state={state}>
+    <div
+      className="ielps-pip-agent"
+      data-state={state}
+      data-pip-motion={settle.scrolling ? "scrolling" : "settled"}
+      data-pip-placement={
+        settle.moved && !settle.scrolling
+          ? settle.tucked
+            ? "tucked"
+            : "cleared"
+          : "anchored"
+      }
+      data-pip-obstructed={settle.obstructed ? "true" : undefined}
+      ref={rootRef}
+    >
       {!open && (
-        <button className="ielps-pip-launcher" type="button" onClick={() => { setOpen(true); setState("opening"); }} aria-label="Open PiP assistant">
+        <button
+          className="ielps-pip-launcher"
+          type="button"
+          style={launcherStyle}
+          onClick={() => { setOpen(true); setState("opening"); }}
+          aria-label="Open PiP assistant"
+        >
           {/* eslint-disable-next-line @next/next/no-img-element -- PiP's mascot is a
               fixed-size local asset that swaps to an inline SVG fallback on error;
               next/image would add a loader for no benefit. Approved component,

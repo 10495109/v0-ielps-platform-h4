@@ -49,6 +49,12 @@ export type Panel = {
   sample: unknown
   /** Static supporting copy for `note` panels. */
   note?: string
+  /**
+   * Optional bullets for a `note` panel. Used where the copy is a boundary or
+   * a sequence rather than a sentence — role separation, for instance — and a
+   * paragraph would bury it. Never carries live or sample data.
+   */
+  noteItems?: string[]
   /** Override the wording shown when the server answered with no records. */
   emptyNote?: string
   span?: 1 | 2 | 3

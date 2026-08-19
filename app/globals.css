@@ -170,3 +170,29 @@
   .ielps-pip-launcher{gap:0;padding:8px}
   .ielps-pip-launcher img{width:44px;height:44px}
 }
+/* Settled-state collision clearance, 19 Aug 2026.
+   PiP keeps its approved appearance in the anchored state, which is the state
+   it is in nearly all of the time. `cleared` is only reached when the approved
+   resting position was found to be covering a control once the page went
+   still; the launcher then becomes a compact circle in a slot that covers
+   nothing. Position and size arrive as inline values from the measurement, so
+   only the presentation lives here. */
+.ielps-pip-agent[data-pip-placement=cleared] .ielps-pip-launcher,
+.ielps-pip-agent[data-pip-placement=tucked] .ielps-pip-launcher{
+  justify-content:center;border-radius:50%;padding:0;gap:0;
+  transition:left .28s cubic-bezier(.22,1,.36,1),top .28s cubic-bezier(.22,1,.36,1),width .2s ease,height .2s ease;
+  box-shadow:0 10px 26px #0d004d47
+}
+.ielps-pip-agent[data-pip-placement=cleared] .ielps-pip-launcher span,
+.ielps-pip-agent[data-pip-placement=tucked] .ielps-pip-launcher span{display:none}
+.ielps-pip-agent[data-pip-placement=cleared] .ielps-pip-launcher img,
+.ielps-pip-agent[data-pip-placement=tucked] .ielps-pip-launcher img{width:100%;height:100%}
+/* `tucked` is the last resort, used where a stacked full-width card list
+   leaves no clear square on either edge. PiP keeps its whole hit area but
+   slides most of it past the edge of the screen, so the part still on screen
+   sits in the page gutter and covers nothing. One tap brings it back. */
+.ielps-pip-agent[data-pip-placement=tucked] .ielps-pip-launcher{opacity:.94}
+@media (prefers-reduced-motion:reduce){
+  .ielps-pip-agent[data-pip-placement=cleared] .ielps-pip-launcher,
+  .ielps-pip-agent[data-pip-placement=tucked] .ielps-pip-launcher{transition:none}
+}

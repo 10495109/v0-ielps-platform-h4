@@ -139,6 +139,21 @@ function PathwayCard({
           )}
         </div>
 
+        {/* A chip whose route is real but not yet callable says so, rather than
+            reading as a ready call. Added 19 Aug 2026 for the School roster
+            connections endpoint, which needs the signed-in organisation id. */}
+        {pathway.backend.slice(0, 2).some((ep) => ep.state === 'parameter-required') && (
+          <p className="mt-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+            Parameter required
+            <span className="ml-1 font-normal normal-case tracking-normal">
+              {
+                pathway.backend.find((ep) => ep.state === 'parameter-required')
+                  ?.stateNote
+              }
+            </span>
+          </p>
+        )}
+
         <Link
           href={`/app/${pathway.slug}`}
           aria-disabled={disabled}

@@ -241,7 +241,19 @@ function PanelBody({
       return (
         <div className={cn('flex gap-3 rounded-xl p-4', a.soft)}>
           <ShieldCheck className="size-5 shrink-0" aria-hidden />
-          <p className="text-sm leading-relaxed">{panel.note}</p>
+          <div className="min-w-0">
+            {panel.note && <p className="text-sm leading-relaxed">{panel.note}</p>}
+            {panel.noteItems?.length ? (
+              <ul className={cn('flex flex-col gap-1.5 text-sm leading-relaxed', panel.note && 'mt-2.5')}>
+                {panel.noteItems.map((item) => (
+                  <li key={item} className="flex gap-2">
+                    <span aria-hidden>·</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
         </div>
       )
     default:

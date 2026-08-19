@@ -9,7 +9,19 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 
-export type Endpoint = { method: string; path: string }
+export type Endpoint = {
+  method: string
+  path: string
+  /**
+   * A truthful state for a chip that cannot yet be exercised as declared.
+   * `parameter-required` means the route is real but needs a value that only
+   * the signed-in context can supply, so the card says so instead of implying
+   * the call is ready to fire.
+   */
+  state?: 'parameter-required'
+  /** Short plain-English reason shown beside the strip. */
+  stateNote?: string
+}
 
 export type Pathway = {
   slug: string
@@ -119,17 +131,29 @@ export const PATHWAYS: Pathway[] = [
     next: ['/school', 'roster', 'licenses', 'reports'],
     backend: [
       { method: 'GET', path: '/api/school/admin/overview' },
-      // STOPPED AND REPORTED 18 Aug 2026, not guessed and not removed.
-      // GET /api/roster/providers is not registered by the running backend.
-      // backend/src/index.js mounts roster_provider.js at /api/roster, and that
-      // router registers only POST /organizations/:id/connections/:provider/
-      // exchange, POST /organizations/:id/sync/:provider and GET
-      // /organizations/:id/connections. The provider list itself is a literal
-      // array inside the exchange handler and is not exposed by any route.
-      // Nothing anywhere else in the 266 registered routes serves it. The card
-      // is display-only, so this label makes no request and nothing fails; it
-      // is left exactly as declared until the correct route is confirmed.
-      { method: 'GET', path: '/api/roster/providers' },
+      // Resolved 19 Aug 2026 against the instruction of the same date.
+      //
+      // This chip previously read GET /api/roster/providers, which is not
+      // registered by the running backend and was reported rather than guessed.
+      // The semantic question was which of two different things the card means.
+      // The card sits alongside /api/school/admin/overview and
+      // /api/billing/subscription, both scoped to one organisation, and the
+      // blurb describes bulk rostering at organisation scale. So it means this
+      // organisation's configured roster connections, not a catalogue of every
+      // provider IELPS supports.
+      //
+      // That is a real route: roster_provider.js registers
+      // GET /organizations/:id/connections under the /api/roster mount. The
+      // organisation id comes from signed-in School context, which the public
+      // Access Panel card does not have, so the chip carries PARAMETER REQUIRED
+      // rather than implying a call that is ready to fire. No provider-list
+      // route was invented, and the card was not removed.
+      {
+        method: 'GET',
+        path: '/api/roster/organizations/:id/connections',
+        state: 'parameter-required',
+        stateNote: 'Organisation id comes from signed-in School context.',
+      },
       { method: 'GET', path: '/api/billing/subscription' },
     ],
     image: '/pathways/schools.png',

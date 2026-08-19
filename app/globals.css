@@ -116,21 +116,21 @@
   }
 }
 
-/* ── PiP ──────────────────────────────────────────────────────────────────
-   PiP's stylesheet, recovered verbatim from the release running in
+/* ── Pip ──────────────────────────────────────────────────────────────────
+   Pip's stylesheet, recovered verbatim from the release running in
    production (/learner/_next/static/chunks/0_-tfzb9hexwb.css, rules 20-42
    and 45 of that file).
 
-   The PiP component was carried into this release on 14 August so that a
+   The Pip component was carried into this release on 14 August so that a
    promotion could not silently remove the assistant, but its stylesheet was
    not carried with it. Every rule here is a plain class name, not a Tailwind
-   utility, so nothing regenerated it: PiP was mounting on all 59 routes with
+   utility, so nothing regenerated it: Pip was mounting on all 59 routes with
    no styling at all - an unpositioned mascot at natural size, in the page
    flow, adding height to the bottom of every page. The visual conformance
-   check that signed off that release compared the routes with PiP hidden,
+   check that signed off that release compared the routes with Pip hidden,
    which is exactly why it did not show up.
 
-   Nothing here is new work or a redesign. It is the appearance PiP has in
+   Nothing here is new work or a redesign. It is the appearance Pip has in
    production today, restored so it survives the promotion. The launcher
    stays fixed at bottom-right, clear of any button in the pages it sits
    over. Recovered and re-tested 16 August 2026.
@@ -170,8 +170,8 @@
   .ielps-pip-launcher{gap:0;padding:8px}
   .ielps-pip-launcher img{width:44px;height:44px}
 }
-/* Settled-state collision clearance, 19 Aug 2026.
-   PiP keeps its approved appearance in the anchored state, which is the state
+/* Settled-state collision clearance, 19 Aug 2026 (tuck refined after review).
+   Pip keeps its approved appearance in the anchored state, which is the state
    it is in nearly all of the time. `cleared` is only reached when the approved
    resting position was found to be covering a control once the page went
    still; the launcher then becomes a compact circle in a slot that covers
@@ -179,19 +179,54 @@
    only the presentation lives here. */
 .ielps-pip-agent[data-pip-placement=cleared] .ielps-pip-launcher,
 .ielps-pip-agent[data-pip-placement=tucked] .ielps-pip-launcher{
-  justify-content:center;border-radius:50%;padding:0;gap:0;
+  justify-content:center;padding:0;gap:0;
   transition:left .28s cubic-bezier(.22,1,.36,1),top .28s cubic-bezier(.22,1,.36,1),width .2s ease,height .2s ease;
   box-shadow:0 10px 26px #0d004d47
 }
 .ielps-pip-agent[data-pip-placement=cleared] .ielps-pip-launcher span,
 .ielps-pip-agent[data-pip-placement=tucked] .ielps-pip-launcher span{display:none}
-.ielps-pip-agent[data-pip-placement=cleared] .ielps-pip-launcher img,
-.ielps-pip-agent[data-pip-placement=tucked] .ielps-pip-launcher img{width:100%;height:100%}
+.ielps-pip-agent[data-pip-placement=cleared] .ielps-pip-launcher{border-radius:50%}
+.ielps-pip-agent[data-pip-placement=cleared] .ielps-pip-launcher img{width:100%;height:100%}
+
 /* `tucked` is the last resort, used where a stacked full-width card list
-   leaves no clear square on either edge. PiP keeps its whole hit area but
+   leaves no clear square on either edge. Pip keeps its whole hit area but
    slides most of it past the edge of the screen, so the part still on screen
-   sits in the page gutter and covers nothing. One tap brings it back. */
-.ielps-pip-agent[data-pip-placement=tucked] .ielps-pip-launcher{opacity:.94}
+   sits in the page gutter and covers nothing.
+
+   The first attempt showed a sliver of the circle, which cleared everything
+   but did not read as Pip. The handle is now a tall tab: the visible width is
+   whatever the gutter allows, but it runs 64-72px down the edge, carries the
+   mascot inside the visible strip and a light grip rule beside it, and one tap
+   restores the full launcher. `--pip-peek` is the measured visible width and
+   `data-pip-tuck-side` says which edge the handle is against, so the mascot is
+   placed inside the strip rather than off the screen. */
+.ielps-pip-agent[data-pip-placement=tucked] .ielps-pip-launcher{
+  border-radius:16px;opacity:.97;overflow:visible
+}
+.ielps-pip-agent[data-pip-placement=tucked][data-pip-tuck-side=right] .ielps-pip-launcher{
+  border-top-right-radius:0;border-bottom-right-radius:0
+}
+.ielps-pip-agent[data-pip-placement=tucked][data-pip-tuck-side=left] .ielps-pip-launcher{
+  border-top-left-radius:0;border-bottom-left-radius:0
+}
+.ielps-pip-agent[data-pip-placement=tucked] .ielps-pip-launcher img{
+  position:absolute;top:50%;transform:translateY(-50%);
+  /* Twice the visible width, so the strip shows a slice of the mascot at a
+     size it can be recognised at rather than a whole mascot too small to read.
+     The other half sits past the screen edge, which is the point: Pip is
+     peeking out of the gutter. */
+  width:calc(var(--pip-peek) * 2);height:calc(var(--pip-peek) * 2);
+  border-radius:50%;box-shadow:0 0 0 2px var(--pip-white)
+}
+.ielps-pip-agent[data-pip-placement=tucked][data-pip-tuck-side=right] .ielps-pip-launcher img{left:0}
+.ielps-pip-agent[data-pip-placement=tucked][data-pip-tuck-side=left] .ielps-pip-launcher img{right:0}
+/* A two-bar grip below the mascot, so the handle reads as something to pull
+   even at the narrowest gutter the page allows. */
+.ielps-pip-agent[data-pip-placement=tucked] .ielps-pip-launcher:after{
+  content:"";position:absolute;left:50%;transform:translateX(-50%);
+  bottom:8px;width:4px;height:14px;border-radius:2px;
+  background:var(--pip-gold,#f6c14b);opacity:.9
+}
 @media (prefers-reduced-motion:reduce){
   .ielps-pip-agent[data-pip-placement=cleared] .ielps-pip-launcher,
   .ielps-pip-agent[data-pip-placement=tucked] .ielps-pip-launcher{transition:none}

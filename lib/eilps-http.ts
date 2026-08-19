@@ -38,7 +38,11 @@ function classify(status: number, payload: unknown): ApiState {
   const message = messageFrom(payload, '').toLowerCase()
   if (status === 401) return 'authentication'
   if (status === 402) return 'entitlement'
-  if (status === 403 && message.includes('administrator')) return 'admin'
+  // The platform administration router answers `Admin access required.`, and
+  // the AI governance routes answer with the word `administrator`. Both are the
+  // same condition and must reach the same message, so both spellings are
+  // matched rather than only the longer one.
+  if (status === 403 && (message.includes('administrator') || message.includes('admin '))) return 'admin'
   if (status === 403) return 'permission'
   if (status === 404) return 'not_implemented'
   if (
@@ -143,6 +147,84 @@ export async function ielpsFetch<T = unknown>(path: string, init: RequestInit = 
     )
   }
   return payload as T
+}
+
+/**
+ * A request whose successful response is a file rather than JSON.
+ *
+ * Certificate issuance is the case this exists for. It is a POST, it is
+ * authenticated, and on success it answers with a PDF — so it needs the same
+ * expired-token behaviour as every other authenticated call, but it cannot go
+ * through `ielpsFetch`, which parses the body as text and would consume the
+ * stream before the caller ever saw a Blob.
+ *
+ * The flow is the one the instruction specifies: send, and on 401 refresh the
+ * bearer once and send again. Exactly once — a second 401 after a fresh token
+ * is an authentication failure, not a retryable condition.
+ *
+ * What matters as much as the happy path is that nothing else is allowed to
+ * look like a download. A 402 is an entitlement answer, a 403 is a permission
+ * answer, a 4xx validation error is a validation answer and a 5xx is a server
+ * error; every one of them throws with the classified state, and none of them
+ * ever reaches `.blob()`. A 200 that is not actually a file is refused too:
+ * the server sends `application/pdf`, so a JSON error body arriving with a 200
+ * status would otherwise be handed to the browser as a PDF and download as a
+ * corrupt file.
+ */
+export async function ielpsFetchBlob(path: string, init: RequestInit = {}) {
+  const requestPath = path.startsWith('/') ? path : `/${path}`
+
+  const send = async (bearer: string | null) => {
+    const headers = new Headers(init.headers)
+    headers.set('accept', 'application/pdf')
+    if (bearer) headers.set('authorization', `Bearer ${bearer}`)
+    if (init.body && !headers.has('content-type')) headers.set('content-type', 'application/json')
+    return fetch(`${IELPS_API_BASE}${requestPath}`, { ...init, credentials: 'include', headers })
+  }
+
+  let response: Response
+  try {
+    let token = accessToken
+    if (!token) token = await refreshAccessToken()
+    response = await send(token)
+
+    if (response.status === 401) {
+      accessToken = null
+      const renewed = await refreshAccessToken()
+      // Only retry when a genuinely new bearer arrived; repeating the same
+      // request with no token would just produce the same 401.
+      if (renewed) response = await send(renewed)
+    }
+  } catch (error) {
+    throw new IelpsHttpError(
+      error instanceof Error ? error.message : 'IELPS API unavailable',
+      0,
+      'unavailable',
+      null,
+    )
+  }
+
+  if (!response.ok) {
+    const payload = await parseResponse(response)
+    throw new IelpsHttpError(
+      messageFrom(payload, `IELPS API ${response.status}`),
+      response.status,
+      classify(response.status, payload),
+      payload,
+    )
+  }
+
+  const blob = await response.blob()
+  const contentType = response.headers.get('content-type') || blob.type || ''
+  if (!contentType.toLowerCase().includes('pdf')) {
+    throw new IelpsHttpError(
+      `Expected a PDF, received ${contentType || 'an unknown content type'}`,
+      response.status,
+      'unavailable',
+      null,
+    )
+  }
+  return blob
 }
 
 export function clearIelpsSession() {

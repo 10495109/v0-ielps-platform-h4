@@ -19,7 +19,10 @@ import type {
   AccentToken,
 } from '@/lib/apps/types'
 import { ACCENT } from '@/lib/apps/accent'
+import { useSchoolOrganisation } from '@/lib/use-school-context'
+import { withParams } from '@/lib/adapters'
 import { SourceBadge, EndpointChip } from './source-badge'
+import { ActionPanel } from './action-panel'
 import { cn } from '@/lib/utils'
 
 const SPAN: Record<number, string> = {
@@ -39,14 +42,23 @@ export function Panel({
   panel: PanelType
   accent: AccentToken
 }) {
+  // An organisation-scoped panel gets its identifier from the signed-in School
+  // context. Until that resolves the panel does not fetch at all, which is why
+  // the placeholder check below still holds for it.
+  const { organisationId } = useSchoolOrganisation()
+  const rawPath = panel.fetchPath || panel.endpoint?.path || ''
+  const resolvedPath =
+    panel.pathParam === 'organisation' && organisationId
+      ? withParams(rawPath, { id: organisationId })
+      : rawPath
+
   const canFetch =
     panel.kind !== 'note' &&
+    panel.kind !== 'action' &&
     panel.endpoint?.method === 'GET' &&
-    !hasPlaceholder(panel.fetchPath || panel.endpoint.path)
+    !hasPlaceholder(resolvedPath)
 
-  const fetchPath = canFetch
-    ? panel.fetchPath || panel.endpoint!.path
-    : null
+  const fetchPath = canFetch ? resolvedPath : null
 
   const { data, source, error } = useEilps<unknown>(
     fetchPath,
@@ -58,7 +70,9 @@ export function Panel({
     },
   )
 
-  const displaySource = panel.kind === 'note' ? undefined : source
+  // An action panel writes; it has no read state to badge and no live payload
+  // to hydrate, so it shows its endpoint chip and nothing else.
+  const displaySource = panel.kind === 'note' || panel.kind === 'action' ? undefined : source
 
   return (
     <section
@@ -82,7 +96,15 @@ export function Panel({
       </header>
 
       <div className="flex-1">
-        {displaySource && !['live', 'sample'].includes(displaySource) ? (
+        {panel.pathParam === 'organisation' && !organisationId ? (
+          <div className="rounded-xl border border-border bg-soft p-4 text-sm text-muted-foreground">
+            <p className="text-[10px] font-semibold uppercase tracking-wide">Parameter required</p>
+            <p className="mt-1">
+              {panel.emptyNote ||
+                'The organisation identifier comes from the signed-in School context and has not resolved for this account.'}
+            </p>
+          </div>
+        ) : displaySource && !['live', 'sample'].includes(displaySource) ? (
           <OperationalState source={displaySource} message={error} emptyNote={panel.emptyNote} />
         ) : (
           <PanelBody panel={panel} data={data} accent={accent} />
@@ -93,7 +115,7 @@ export function Panel({
 }
 
 function isPanelShape(kind: PanelType['kind'], value: unknown) {
-  if (kind === 'note') return typeof value === 'string' || (value != null && typeof value === 'object')
+  if (kind === 'note' || kind === 'action') return true
   if (kind === 'table') {
     const table = value as Partial<TableData> | null
     return Boolean(table && Array.isArray(table.columns) && Array.isArray(table.rows))
@@ -227,6 +249,8 @@ function PanelBody({
 }) {
   const a = ACCENT[accent]
   switch (panel.kind) {
+    case 'action':
+      return panel.action ? <ActionPanel spec={panel.action} accent={accent} /> : null
     case 'stat':
       return <StatGrid items={coerceArray<StatItem>(data, panel.sample)} accent={accent} />
     case 'list':
@@ -237,25 +261,46 @@ function PanelBody({
       return <TableView data={coerceTable(data, panel.sample)} />
     case 'timeline':
       return <Timeline items={coerceArray<TimelineItem>(data, panel.sample)} accent={accent} />
-    case 'note':
+    case 'note': {
+      const body = (
+        <>
+          {panel.note && <p className="text-sm leading-relaxed">{panel.note}</p>}
+          {panel.noteItems?.length ? (
+            <ul className={cn('flex flex-col gap-1.5 text-sm leading-relaxed', panel.note && 'mt-2.5')}>
+              {panel.noteItems.map((item) => (
+                <li key={item} className="flex gap-2">
+                  <span aria-hidden>·</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </>
+      )
+      // Progressive disclosure for secondary explanation. `details` keeps the
+      // material one keystroke away for a keyboard or screen-reader user
+      // without it counting towards what is on screen by default.
+      if (panel.collapsible) {
+        return (
+          <details className={cn('group rounded-xl px-4 py-3', a.soft)}>
+            <summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-medium">
+              <ChevronRight
+                className="size-4 shrink-0 transition-transform group-open:rotate-90"
+                aria-hidden
+              />
+              {panel.summary || 'Read more'}
+            </summary>
+            <div className="mt-2.5 pl-6">{body}</div>
+          </details>
+        )
+      }
       return (
         <div className={cn('flex gap-3 rounded-xl p-4', a.soft)}>
           <ShieldCheck className="size-5 shrink-0" aria-hidden />
-          <div className="min-w-0">
-            {panel.note && <p className="text-sm leading-relaxed">{panel.note}</p>}
-            {panel.noteItems?.length ? (
-              <ul className={cn('flex flex-col gap-1.5 text-sm leading-relaxed', panel.note && 'mt-2.5')}>
-                {panel.noteItems.map((item) => (
-                  <li key={item} className="flex gap-2">
-                    <span aria-hidden>·</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : null}
-          </div>
+          <div className="min-w-0">{body}</div>
         </div>
       )
+    }
     default:
       return null
   }

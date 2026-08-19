@@ -165,6 +165,43 @@ export const adult: AccountApp = {
           ],
           span: 1,
         },
+        // Wired 19 Aug 2026 to the registered live-session response route.
+        //
+        // POST /api/authoring/live-sessions/:id/responses is what a learner's
+        // answer goes to during a teacher-run live lesson. The session id is
+        // the real one the learner joined and is typed in or carried from the
+        // join step; there is no alternate response endpoint anywhere in this
+        // build, and no wrapper that is declared but never called.
+        //
+        // The server stores the response against the signed-in account and
+        // answers 201 with the stored record. That record is what is shown. A
+        // failure is shown as a failure — an answer is never displayed as sent
+        // because the request left the browser.
+        {
+          id: 'live-response',
+          title: 'Live lesson answer',
+          kind: 'action',
+          endpoint: { method: 'POST', path: '/api/authoring/live-sessions/:id/responses' },
+          sample: null,
+          action: {
+            endpoint: { method: 'POST', path: '/api/authoring/live-sessions/:id/responses' },
+            note: 'Sends your answer to the live lesson your teacher is running. The session code is the one shown when you joined.',
+            params: [
+              {
+                name: 'id',
+                label: 'Live session code',
+                hint: 'Shown when you joined the live lesson.',
+              },
+            ],
+            fields: [
+              { name: 'blockId', label: 'Activity', hint: 'The block your teacher is on.' },
+              { name: 'response', label: 'Your answer', type: 'textarea' },
+            ],
+            cta: 'Send answer',
+            successNote: 'Your answer reached the live session. The stored record is below.',
+          },
+          span: 3,
+        },
       ],
     },
     {
@@ -305,7 +342,7 @@ export const adult: AccountApp = {
           id: 'certs',
           title: 'Certificates',
           kind: 'list',
-          endpoint: { method: 'GET', path: '/api/certificates/eligibility/B1' },
+          endpoint: { method: 'GET', path: '/api/certificates/eligibility/:level' },
           sample: [
             { title: 'A2 completion', meta: 'Issued', status: 'ok' },
             { title: 'B1 completion', meta: '46% — in progress', status: 'pending' },
@@ -322,6 +359,7 @@ export const adult: AccountApp = {
     { method: 'GET', path: '/api/curriculum/deep-summary' },
     { method: 'GET', path: '/api/engine/schedule' },
     { method: 'GET', path: '/api/engine/next' },
+    { method: 'POST', path: '/api/authoring/live-sessions/:id/responses' },
     { method: 'GET', path: '/api/engine/mastery' },
     { method: 'GET', path: '/api/discovery/catalogue' },
     { method: 'GET', path: '/api/review/due' },

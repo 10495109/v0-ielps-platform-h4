@@ -76,13 +76,16 @@ const LANGUAGE_LABELS: Record<PipLanguage, string> = {
 };
 
 const FALLBACK_CAPTIONS: Record<PipLanguage, string> = {
-  en: "Hi, I’m PiP. I can help you find the right IELPS pathway and your next learning step.",
-  es: "Hola, soy PiP. Puedo ayudarte a encontrar tu ruta de IELPS y tu próximo paso de aprendizaje.",
-  ar: "مرحباً، أنا PiP. يمكنني مساعدتك في العثور على مسارك في IELPS وخطوتك التعليمية التالية.",
-  zh: "你好，我是 PiP。我可以帮助你找到 IELPS 路径和下一步学习任务。",
-  fr: "Bonjour, je suis PiP. Je peux vous aider à trouver votre parcours IELPS et votre prochaine étape.",
-  pt: "Olá, sou o PiP. Posso ajudar você a encontrar o caminho IELPS e o próximo passo de aprendizagem.",
+  en: "Hi, I’m Pip. I can help you find the right IELPS pathway and your next learning step.",
+  es: "Hola, soy Pip. Puedo ayudarte a encontrar tu ruta de IELPS y tu próximo paso de aprendizaje.",
+  ar: "مرحباً، أنا Pip. يمكنني مساعدتك في العثور على مسارك في IELPS وخطوتك التعليمية التالية.",
+  zh: "你好，我是 Pip。我可以帮助你找到 IELPS 路径和下一步学习任务。",
+  fr: "Bonjour, je suis Pip. Je peux vous aider à trouver votre parcours IELPS et votre prochaine étape.",
+  pt: "Olá, sou o Pip. Posso ajudar você a encontrar o caminho IELPS e o próximo passo de aprendizagem.",
 };
+
+/** Upper bound on a single question, applied before the request is built. */
+const MAX_MESSAGE_CHARS = 400;
 
 function normalizeLanguage(value?: string | null): PipLanguage {
   const raw = String(value || "").toLowerCase();
@@ -122,23 +125,29 @@ export function PipAgent({
   // Collision avoidance runs only for the closed launcher. An open panel is a
   // deliberate interaction the learner just started, and it carries its own
   // close button, so it is left where it was approved.
-  const { rootRef, settle } = usePipSettle(!open);
+  const { rootRef, settle, restore } = usePipSettle(!open);
 
-  // While the page is moving PiP keeps its approved anchor and size. Once the
+  // While the page is moving Pip keeps its approved anchor and size. Once the
   // page is still and the approved anchor turns out to cover a control, the
-  // launcher becomes a compact circle parked in the nearest clear slot.
-  const launcherStyle: React.CSSProperties | undefined =
-    settle.moved && !settle.scrolling
-      ? {
-          left: settle.left,
-          top: settle.top,
-          right: 'auto',
-          bottom: 'auto',
-          width: settle.size,
-          height: settle.size,
-          padding: 0,
-        }
-      : undefined;
+  // launcher becomes a compact circle parked in the nearest clear slot — or,
+  // where the page leaves no clear slot at all, a tall handle in the gutter.
+  const adapted = settle.moved && !settle.scrolling;
+  const launcherStyle: React.CSSProperties | undefined = adapted
+    ? {
+        left: settle.left,
+        top: settle.top,
+        right: 'auto',
+        bottom: 'auto',
+        width: settle.width,
+        height: settle.height,
+        padding: 0,
+        // How much of the handle is on screen. The stylesheet uses it to place
+        // the mascot inside the visible strip rather than off the edge.
+        ['--pip-peek' as string]: `${settle.peek ?? settle.width ?? 0}px`,
+      }
+    : undefined;
+
+  const tucked = adapted && settle.tucked;
 
   const currentRoute = useMemo(() => {
     if (route) return route;
@@ -153,7 +162,13 @@ export function PipAgent({
   }, [open]);
 
   async function askPip(text: string) {
-    const trimmed = text.trim();
+    // Public navigation stays on the cheap path by construction. Pip only ever
+    // calls /api/agent/chat, which answers from the shipped manifest and never
+    // reaches a paid provider; it plays whatever cached clip that response
+    // names and never asks /api/agent/voice for dynamic speech. The length
+    // bound keeps a single request small so no caller can turn free navigation
+    // into a large upstream workload.
+    const trimmed = text.trim().slice(0, MAX_MESSAGE_CHARS);
     setState("thinking");
     try {
       const res = await fetch(`${apiBaseUrl}/agent/chat`, {
@@ -169,7 +184,7 @@ export function PipAgent({
           context: { accountPathway, cefrLevel, lessonId, juniorSafeMode },
         }),
       });
-      if (!res.ok) throw new Error(`PiP chat failed: ${res.status}`);
+      if (!res.ok) throw new Error(`Pip chat failed: ${res.status}`);
       const json = (await res.json()) as AgentResponse;
       setResponse(json);
       setLanguage(json.language || language);
@@ -225,6 +240,7 @@ export function PipAgent({
             : "cleared"
           : "anchored"
       }
+      data-pip-tuck-side={tucked ? settle.side : undefined}
       data-pip-obstructed={settle.obstructed ? "true" : undefined}
       ref={rootRef}
     >
@@ -233,28 +249,35 @@ export function PipAgent({
           className="ielps-pip-launcher"
           type="button"
           style={launcherStyle}
-          onClick={() => { setOpen(true); setState("opening"); }}
-          aria-label="Open PiP assistant"
+          // A tucked handle is a "bring Pip back" control, not a shortcut into
+          // the conversation: one tap restores the full launcher, and the
+          // second opens it. Settling re-arms on the next scroll or resize.
+          onClick={() => {
+            if (tucked) return restore();
+            setOpen(true);
+            setState("opening");
+          }}
+          aria-label={tucked ? "Show Pip" : "Open Pip assistant"}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element -- PiP's mascot is a
+          {/* eslint-disable-next-line @next/next/no-img-element -- Pip's mascot is a
               fixed-size local asset that swaps to an inline SVG fallback on error;
               next/image would add a loader for no benefit. Approved component,
               carried across unchanged apart from this comment. */}
           <img src={mascotSrc} alt="" />
-          <span>Hi, I’m PiP!</span>
+          <span>Hi, I’m Pip!</span>
         </button>
       )}
 
       {open && (
-        <section className="ielps-pip-panel" aria-label="PiP assistant" dir={response?.dir || (language === "ar" ? "rtl" : "ltr")}>
+        <section className="ielps-pip-panel" aria-label="Pip assistant" dir={response?.dir || (language === "ar" ? "rtl" : "ltr")}>
           <header className="ielps-pip-header">
             {/* eslint-disable-next-line @next/next/no-img-element -- see above */}
             <img src={mascotSrc} alt="" />
             <div>
-              <strong>PiP</strong>
+              <strong>Pip</strong>
               <span>{state === "thinking" ? "Thinking..." : "IELPS guide"}</span>
             </div>
-            <button type="button" onClick={() => { setOpen(false); setState("closed"); }} aria-label="Close PiP">×</button>
+            <button type="button" onClick={() => { setOpen(false); setState("closed"); }} aria-label="Close Pip">×</button>
           </header>
 
           <div className="ielps-pip-language-row">
@@ -304,7 +327,12 @@ export function PipAgent({
               setMessage("");
             }}
           >
-            <input value={message} onChange={(event) => setMessage(event.target.value)} placeholder="Ask PiP..." />
+            <input
+              value={message}
+              onChange={(event) => setMessage(event.target.value)}
+              maxLength={MAX_MESSAGE_CHARS}
+              placeholder="Ask Pip..."
+            />
             <button type="submit">Send</button>
           </form>
         </section>

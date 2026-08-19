@@ -8,9 +8,17 @@ import { getApp } from '@/lib/apps'
 import type { OnboardingField } from '@/lib/apps/types'
 import { ACCENT } from '@/lib/apps/accent'
 import { useEilpsAction } from '@/lib/use-eilps'
+import { attributeReferralAfterSignIn } from '@/lib/referral'
 import { EndpointChip } from './source-badge'
 import { cn } from '@/lib/utils'
 import { notFound } from 'next/navigation'
+
+/** The steps after which an account exists and a referral can be attributed. */
+const AUTH_STEPS = new Set([
+  '/api/auth/register',
+  '/api/auth/login',
+  '/api/auth/student-login',
+])
 
 export function OnboardingFlow({ slug }: { slug: string }) {
   const resolvedApp = getApp(slug)
@@ -37,6 +45,14 @@ export function OnboardingFlow({ slug }: { slug: string }) {
     try {
       if (step.endpoint) {
         await submit(step.endpoint.path, body, step.endpoint.method)
+        // A referral captured before sign-in is submitted here and nowhere
+        // else: after the server has accepted the authentication step, so the
+        // account is known, and once, because the carried code is cleared as
+        // it is handed over. The browser awards nothing; the server scores the
+        // attribution and holds it for review when it needs to.
+        if (AUTH_STEPS.has(step.endpoint.path)) {
+          void attributeReferralAfterSignIn()
+        }
       }
       if (isLast) {
         setDone(true)

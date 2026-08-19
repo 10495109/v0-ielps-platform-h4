@@ -1,4 +1,4 @@
-import { ielpsFetch } from './eilps-http'
+import { ielpsFetch, ielpsFetchBlob } from './eilps-http'
 
 type JsonInit = Omit<RequestInit, 'body'> & { body?: unknown }
 
@@ -76,6 +76,15 @@ export const practiceApi = {
   next: (query = '') => get(`/api/practice/next${query ? `?${query}` : ''}`),
   grade: (body: unknown) => post('/api/practice/grade', body),
   selfReport: () => get('/api/practice/reports/self'),
+  classReport: (id: string) => get(withParams('/api/practice/reports/classes/:id', { id })),
+  /**
+   * The organisation identifier is the signed-in School's own, read from the
+   * School context. There is no sample id anywhere in this path: with no
+   * organisation resolved the report is not requested at all and the panel
+   * says so, which is the honest state rather than a request made to look
+   * successful.
+   */
+  schoolReport: (id: string) => get(withParams('/api/practice/reports/schools/:id', { id })),
 }
 
 export const discoveryApi = {
@@ -127,6 +136,17 @@ export const schoolApi = {
     post(withParams('/api/school/classes/:id/assignments', { id }), body),
   classReport: (id: string) => get(withParams('/api/school/classes/:id/report', { id })),
   classExport: (id: string) => get(withParams('/api/school/classes/:id/export', { id })),
+  /**
+   * Approving a parent's relationship to an organisation. The route is
+   * organisation-scoped and the server decides whether the caller may approve
+   * for that organisation; nothing about the decision is taken in the browser,
+   * so a Parent, Tutor, learner or Studio creator who reaches this call is
+   * refused by the server and shown the refusal.
+   */
+  approveParentLink: (id: string, body: unknown) =>
+    post(withParams('/api/school/organizations/:id/parent-links/approve', { id }), body),
+  liveSessionParticipation: (id: string) =>
+    get(withParams('/api/school/live-sessions/:id/participation', { id })),
 }
 
 export const tutoringApi = {
@@ -155,9 +175,59 @@ export const studioApi = {
   coursebookSequence: () => get('/api/studio/coursebook/sequence/default'),
   coursebookUploads: (id: string) => get(withParams('/api/studio/coursebook/projects/:id/uploads', { id })),
   coursebookGenerations: (id: string) => get(withParams('/api/studio/coursebook/projects/:id/generations', { id })),
+  // Removed 19 Aug 2026 (second pass): `quota` called GET /api/studio/ai/quota
+  // and `moderation` called GET /api/studio/ai/moderation. Neither route is
+  // registered anywhere in the backend — studio_ai_governance.js mounts one
+  // Studio-safe route, /api/studio/ai/governance, and its reply already carries
+  // the quota and moderation sections. The chips were corrected on 18 August
+  // but these adapters survived the correction, which is exactly the kind of
+  // stale declaration a chip-only audit cannot see.
   governance: () => get('/api/studio/ai/governance'),
-  quota: () => get('/api/studio/ai/quota'),
-  moderation: () => get('/api/studio/ai/moderation'),
+  createLiveSession: (body: unknown) => post('/api/authoring/live-sessions', body),
+  liveSessionReport: (id: string) =>
+    get(withParams('/api/authoring/live-sessions/:id/report', { id })),
+  /**
+   * A learner's answer inside a running live session. The session id is the
+   * real one the learner joined and travels through the interaction; the
+   * rendered result is whatever the server answers, success or refusal alike.
+   */
+  submitLiveSessionResponse: (id: string, body: unknown) =>
+    post(withParams('/api/authoring/live-sessions/:id/responses', { id }), body),
+}
+
+/**
+ * Rebuilding the content index. Registered as POST /api/engine/refresh.
+ *
+ * This belongs to protected platform administration and nowhere else. It is
+ * not on the public Access Panel and not on any ordinary role dashboard, and
+ * the surface that offers it renders whatever the server answers — including a
+ * refusal — rather than deciding for itself who may run it.
+ */
+export const engineAdminApi = {
+  refresh: () => post('/api/engine/refresh'),
+}
+
+/**
+ * Protected platform administration. Every route below is registered under the
+ * backend's /api/admin router, which gates on authentication and then on an
+ * administrator role in the database, so an ordinary role reaching any of them
+ * receives a refusal and sees it. No privileged payload is rendered for a
+ * caller the server has refused.
+ */
+export const platformAdminApi = {
+  stats: () => get('/api/admin/stats'),
+  users: () => get('/api/admin/users'),
+  updateUser: (id: string, body: unknown) => patch(withParams('/api/admin/users/:id', { id }), body),
+  content: () => get('/api/admin/content'),
+  contentItem: (id: string) => get(withParams('/api/admin/content/:id', { id })),
+  createContent: (body: unknown) => post('/api/admin/content', body),
+  tutors: () => get('/api/admin/tutors'),
+  createTutor: (body: unknown) => post('/api/admin/tutors', body),
+  certificates: () => get('/api/admin/certificates'),
+  tutorApplications: () => get('/api/admin/tutor-applications'),
+  tutorApplication: (id: string) => get(withParams('/api/admin/tutor-applications/:id', { id })),
+  tutorApplicationDecision: (id: string, body: unknown) =>
+    post(withParams('/api/admin/tutor-applications/:id/decision', { id }), body),
 }
 
 export const billingApi = {
@@ -171,7 +241,15 @@ export const billingApi = {
 
 export const certificateApi = {
   eligibility: (level: string) => get(`/api/certificates/eligibility/${encodeURIComponent(level)}`),
-  issue: (level: string) => post(`/api/certificates/${encodeURIComponent(level)}`),
+  /**
+   * Issuance answers `application/pdf`, not JSON, so it goes through the binary
+   * path. That path keeps the refresh-and-retry behaviour of every other
+   * authenticated request and refuses to treat a 402, 403, validation error or
+   * server error as a download. Eligibility and entitlement rules are the
+   * server's and are untouched here.
+   */
+  issue: (level: string) =>
+    ielpsFetchBlob(`/api/certificates/${encodeURIComponent(level)}`, { method: 'POST' }),
   verify: (code: string) => get(`/api/certificates/verify/${encodeURIComponent(code)}`),
 }
 
@@ -179,12 +257,36 @@ export const partnersApi = {
   dashboard: () => get('/api/partners/dashboard'),
   createLink: (body: unknown) => post('/api/partners/links', body),
   withdrawal: (body: unknown) => post('/api/partners/withdrawals', body),
+  /**
+   * Referral attribution, in the order the server requires.
+   *
+   * `track` is the public click handler. It is unauthenticated by design, it
+   * records the click and sets the visitor cookie, and it creates no
+   * commercial record of any kind. `attribute` is the authenticated step: the
+   * server resolves the code, writes the referral attribution, scores it for
+   * risk and holds it for review when the score is high.
+   *
+   * The browser therefore never awards a commission and never computes one. It
+   * carries the code across sign-in and hands it over once, afterwards.
+   */
+  track: (code: string) => get(withParams('/api/partners/track/:code', { code })),
+  attribute: (code: string) => post('/api/partners/attribute', { code }),
+  // Individual link and payout detail records were requested, but there is no
+  // canonical backend route for either: the registered partner surface is
+  // /track/:code, /attribute, /dashboard, /links (POST), /withdrawals,
+  // /fraud-reviews and /simulate-conversion. Adding GET /api/partners/links/:id
+  // or GET /api/partners/payouts/:id here would be a declaration for something
+  // that does not exist, and adding them to the backend would be a duplicate
+  // route created to satisfy a frontend declaration. Both are reported instead.
 }
 
 export const studioGovernanceAdminApi = {
   prompts: () => get('/api/tutor/admin/prompts'),
   evaluate: (id: string, body: unknown) => post(withParams('/api/tutor/admin/prompts/:id/evaluate', { id }), body),
   activate: (id: string) => post(withParams('/api/tutor/admin/prompts/:id/activate', { id })),
-  moderation: () => get('/api/studio/ai/moderation'),
-  moderate: (id: string, body: unknown) => patch(withParams('/api/studio/ai/moderation/:id', { id }), body),
+  // `moderation` and `moderate` were removed for the same reason: PATCH
+  // /api/studio/ai/moderation/:id is not a registered route either. Moderation
+  // is read from the governance reply; there is no separate write route to
+  // declare, and inventing one on the backend to satisfy this file would be a
+  // duplicate route created for a stale declaration.
 }

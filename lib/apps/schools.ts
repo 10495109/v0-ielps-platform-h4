@@ -124,6 +124,54 @@ export const schools: AccountApp = {
           },
           span: 3,
         },
+        // Wired 19 Aug 2026 to the registered organisation-scoped routes.
+        //
+        // Both use the organisation identifier from the signed-in School
+        // context — GET /api/school/admin/overview is the only place that
+        // identifier honestly comes from — and neither is requested until it
+        // resolves. No sample organisation id appears anywhere in this file.
+        //
+        // The approval route is protected in the backend by an organisation
+        // role check (owner, school_admin or safeguarding_lead) and then by a
+        // membership check on both accounts. A Parent, Tutor, learner or Studio
+        // creator who reaches it is refused by the server, and the refusal is
+        // what is rendered.
+        {
+          id: 'approve-parent-link',
+          title: 'Approve a parent relationship',
+          kind: 'action',
+          endpoint: {
+            method: 'POST',
+            path: '/api/school/organizations/:id/parent-links/approve',
+          },
+          sample: null,
+          action: {
+            endpoint: {
+              method: 'POST',
+              path: '/api/school/organizations/:id/parent-links/approve',
+            },
+            note: 'Approves a parent-child relationship inside this organisation. The server checks the organisation role and that both accounts are active members before it approves anything.',
+            params: [{ name: 'id', label: 'Organisation', source: 'organisation' }],
+            fields: [
+              { name: 'parentUserId', label: 'Parent account id' },
+              { name: 'childUserId', label: 'Child account id' },
+            ],
+            cta: 'Approve relationship',
+            successNote: 'The server approved this relationship. Its record is below.',
+          },
+          span: 2,
+        },
+        {
+          id: 'practice-report',
+          title: 'Practice report',
+          kind: 'table',
+          endpoint: { method: 'GET', path: '/api/practice/reports/schools/:id' },
+          pathParam: 'organisation',
+          sample: { columns: [], rows: [] },
+          emptyNote:
+            'The organisation identifier comes from the signed-in School context and has not resolved for this account.',
+          span: 1,
+        },
       ],
     },
     {
@@ -197,6 +245,8 @@ export const schools: AccountApp = {
     { method: 'GET', path: '/api/school/classes' },
     { method: 'POST', path: '/api/school/classes/:id/bulk-import' },
     { method: 'GET', path: '/api/school/organizations/:id/export' },
+    { method: 'POST', path: '/api/school/organizations/:id/parent-links/approve' },
+    { method: 'GET', path: '/api/practice/reports/schools/:id' },
     { method: 'GET', path: '/api/billing/subscription' },
     { method: 'GET', path: '/api/billing/plans' },
     { method: 'GET', path: '/api/integrations/status' },

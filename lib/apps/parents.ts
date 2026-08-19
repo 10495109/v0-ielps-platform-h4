@@ -203,6 +203,40 @@ export const parents: AccountApp = {
           ],
           span: 1,
         },
+        // Wired 19 Aug 2026 to the registered confirmation route.
+        //
+        // POST /api/school/parent/links/confirm takes the consent token from
+        // the invitation and activates the link. Two properties of the real
+        // route are worth stating rather than hiding: it activates only for the
+        // account the invitation was issued to, matching on child_user_id, so a
+        // caller it was not issued to gets 404 link_not_found_or_expired; and a
+        // missing token is 422, not a silent no-op.
+        //
+        // Nothing here marks a relationship confirmed on its own. The pending
+        // list above continues to read from the server, and this panel reports
+        // only what the server returned.
+        {
+          id: 'confirm',
+          title: 'Confirm a pending link',
+          kind: 'action',
+          endpoint: { method: 'POST', path: '/api/school/parent/links/confirm' },
+          sample: null,
+          action: {
+            endpoint: { method: 'POST', path: '/api/school/parent/links/confirm' },
+            note: 'Paste the consent token from the invitation. The server activates the link only for the account it was issued to, and a relationship stays pending here until the server confirms it.',
+            fields: [
+              {
+                name: 'token',
+                label: 'Consent token',
+                placeholder: 'From the invitation email or message',
+                hint: 'Sent when the school or tutor created the link request.',
+              },
+            ],
+            cta: 'Confirm link',
+            successNote: 'The server activated this link. Its record is below.',
+          },
+          span: 1,
+        },
       ],
     },
     {

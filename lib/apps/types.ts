@@ -16,6 +16,44 @@ export type PanelKind =
   | 'table'
   | 'timeline'
   | 'note'
+  | 'action'
+
+/**
+ * A real write against a real route.
+ *
+ * Three rules hold for every action panel and are enforced by the component
+ * rather than by each caller. Nothing is reported as done until the server
+ * says so — there is no optimistic state anywhere. Nothing is sent until every
+ * value the route needs is present, so no sample or placeholder identifier is
+ * ever substituted to make a request succeed. And whatever the server answers,
+ * including a refusal, is what the learner is shown.
+ */
+export type ActionField = {
+  name: string
+  label: string
+  hint?: string
+  type?: 'text' | 'textarea'
+  placeholder?: string
+  /**
+   * Where a path parameter comes from when it is not typed. `organisation`
+   * resolves from the signed-in School context; the field is not shown and the
+   * action stays in PARAMETER REQUIRED until it resolves.
+   */
+  source?: 'organisation'
+}
+
+export type ActionSpec = {
+  endpoint: Endpoint
+  /** Values substituted into `:name` placeholders in the endpoint path. */
+  params?: ActionField[]
+  /** Values sent in the request body. */
+  fields?: ActionField[]
+  cta: string
+  /** What the action does, and any server-side rule worth stating first. */
+  note?: string
+  /** Wording for a successful response. The server payload is shown beneath it. */
+  successNote?: string
+}
 
 /** Normalised shapes each panel kind renders. Samples are authored in these shapes. */
 export type StatItem = { label: string; value: string; hint?: string }
@@ -55,6 +93,22 @@ export type Panel = {
    * paragraph would bury it. Never carries live or sample data.
    */
   noteItems?: string[]
+  /**
+   * Render a `note` panel as progressive disclosure: the title stays visible
+   * and the explanation opens on request. Used for secondary material that has
+   * to be available but should not add to what is on screen by default.
+   */
+  collapsible?: boolean
+  /** Label on the disclosure control when `collapsible` is set. */
+  summary?: string
+  /** Definition for an `action` panel. */
+  action?: ActionSpec
+  /**
+   * Resolve the `:id` in this panel's path from the signed-in School context
+   * before fetching. Until it resolves the panel makes no request and reports
+   * PARAMETER REQUIRED, so no sample identifier is ever sent.
+   */
+  pathParam?: 'organisation'
   /** Override the wording shown when the server answered with no records. */
   emptyNote?: string
   span?: 1 | 2 | 3
@@ -105,4 +159,10 @@ export type AccountApp = {
   screens: Screen[]
   /** Full endpoint group from the server map, shown in the wiring drawer. */
   endpoints: Endpoint[]
+  /**
+   * Not one of the public account pathways. A protected app has a route and is
+   * reachable when the server grants the role, but it is never offered as a
+   * choice on the public Access Panel.
+   */
+  protectedSurface?: boolean
 }

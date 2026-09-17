@@ -23,21 +23,22 @@ export function Hero() {
         <div className="animate-rise">
           <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3 py-1 text-[11px] font-black uppercase tracking-widest text-gold">
             <span className="h-1.5 w-1.5 rounded-full bg-gold" aria-hidden />
-            Live EILPS overlay
+            Integrated English Learning Platform Studio
           </span>
 
-          <h1 className="mt-5 text-balance font-display text-4xl font-black leading-[1.03] tracking-tight sm:text-5xl lg:text-6xl">
-            One pathway.
-            <br />
-            One placement.
-            <br />
-            <span className="text-turquoise">One clear route in.</span>
+          <h1 className="mt-5 text-balance font-display text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-[3.4rem]">
+            Welcome to IELPS, your structured path to{' '}
+            <span className="text-turquoise">confident English.</span>
           </h1>
 
-          <p className="mt-6 max-w-lg text-pretty text-base leading-relaxed text-white/70 lg:text-lg">
-            A brand-faithful shell over the live platform. Pick the pathway that fits you, take the
-            expanded placement diagnostic, and continue straight into the correct lesson player —
-            every route wired to the live server.
+          <p className="mt-5 max-w-xl text-pretty font-display text-lg font-bold text-white/90 lg:text-xl">
+            Your English. Your level. Your learning journey.
+          </p>
+
+          <p className="mt-4 max-w-xl text-pretty text-base leading-relaxed text-white/70 lg:text-lg">
+            Intelligent English Learning &amp; Progress System — designed to help you build real
+            English skills at your own pace, with learning that adapts to you. Whether you start at
+            A1 Beginner or progress towards C2 Advanced, your pathway guides you step by step.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">

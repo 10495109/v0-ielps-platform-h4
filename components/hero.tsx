@@ -1,111 +1,90 @@
 import Image from 'next/image'
-import { ArrowRight, BarChart3, Users, Award } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 
-/** Secondary rail — BBC-style "more from this hub" tile list beside the lead story. */
-const SECONDARY = [
-  {
-    eyebrow: 'PATHWAYS',
-    title: 'Seven account types, seven mini-apps',
-    meta: '7 pathways · live',
-    href: '#pathways',
-    Icon: Users,
-  },
-  {
-    eyebrow: 'ADULT FLOW',
-    title: 'From My Course to the adult lesson player',
-    meta: '4 steps',
-    href: '#adult-flow',
-    Icon: BarChart3,
-  },
-  {
-    eyebrow: 'EVIDENCE',
-    title: 'Verified certificates on every CEFR level',
-    meta: 'A1 – C2',
-    href: '#placement',
-    Icon: Award,
-  },
+/** Fact ribbon — quiet, load-bearing proof points that sit under the lead. */
+const FACTS = [
+  { value: '7', label: 'Account pathways' },
+  { value: '144', label: 'Diagnostic items' },
+  { value: 'A1–C2', label: 'CEFR levels' },
+  { value: '1', label: 'Lesson route' },
 ]
 
 export function Hero() {
   return (
-    <section id="top" className="relative overflow-hidden border-b border-border bg-background">
-      <div className="mx-auto max-w-7xl px-5 py-8 lg:px-8 lg:py-10">
-        <div className="grid gap-8 lg:grid-cols-[1.5fr_1fr]">
-          {/* ── Lead story ── */}
-          <article className="animate-rise">
-            <span className="inline-flex items-center gap-1.5 rounded-sm bg-primary px-2.5 py-1 text-[11px] font-black uppercase tracking-wider text-primary-foreground">
-              Featured · Placement
-            </span>
+    <section
+      id="top"
+      className="relative overflow-hidden border-b border-border bg-indigo text-primary-foreground"
+    >
+      {/* Signature: a single gold hairline sweeping across the top edge */}
+      <div className="absolute inset-x-0 top-0 h-1 bg-gold" aria-hidden />
 
-            <h1 className="mt-4 text-balance font-display text-3xl font-black leading-[1.05] tracking-tight text-foreground sm:text-4xl lg:text-[2.75rem]">
-              One account pathway. One placement route. One clear lesson continuation.
-            </h1>
+      <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-8 lg:py-20">
+        {/* ── Lead ── */}
+        <div className="animate-rise">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3 py-1 text-[11px] font-black uppercase tracking-widest text-gold">
+            <span className="h-1.5 w-1.5 rounded-full bg-gold" aria-hidden />
+            Live EILPS overlay
+          </span>
 
-            <p className="mt-4 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground lg:text-lg">
-              A clean, brand-faithful shell that overlays the live EILPS platform. Choose the
-              pathway that fits you, take the expanded placement diagnostic, and continue straight
-              into the correct lesson player — every route wired to the live server.
-            </p>
+          <h1 className="mt-5 text-balance font-display text-4xl font-black leading-[1.03] tracking-tight sm:text-5xl lg:text-6xl">
+            One pathway.
+            <br />
+            One placement.
+            <br />
+            <span className="text-turquoise">One clear route in.</span>
+          </h1>
 
-            <div className="relative mt-6 overflow-hidden rounded-xl border border-border bg-muted shadow-[0_20px_44px_-28px_rgba(13,0,77,0.4)]">
-              <Image
-                src="/hero-learning.png"
-                alt="Diverse English learners connected to one IELPS learning platform with a placement compass and CEFR level ladder"
-                width={900}
-                height={520}
-                priority
-                className="h-full max-h-[360px] w-full object-cover"
-              />
-            </div>
+          <p className="mt-6 max-w-lg text-pretty text-base leading-relaxed text-white/70 lg:text-lg">
+            A brand-faithful shell over the live platform. Pick the pathway that fits you, take the
+            expanded placement diagnostic, and continue straight into the correct lesson player —
+            every route wired to the live server.
+          </p>
 
-            <div className="mt-5 flex flex-wrap items-center gap-3">
-              <a
-                href="#pathways"
-                className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-sm transition-transform hover:-translate-y-0.5"
-              >
-                Choose your pathway
-                <ArrowRight className="h-4 w-4" />
-              </a>
-              <a
-                href="#placement"
-                className="inline-flex min-h-11 items-center rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-bold text-foreground transition-colors hover:bg-muted"
-              >
-                Preview placement
-              </a>
-            </div>
-          </article>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <a
+              href="#pathways"
+              className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-gold px-6 py-3 text-sm font-black text-indigo shadow-sm transition-transform hover:-translate-y-0.5"
+            >
+              Choose your pathway
+              <ArrowRight className="h-4 w-4" />
+            </a>
+            <a
+              href="#placement"
+              className="inline-flex min-h-12 items-center rounded-lg border border-white/20 bg-white/[0.04] px-6 py-3 text-sm font-bold text-primary-foreground transition-colors hover:bg-white/10"
+            >
+              Preview placement
+            </a>
+          </div>
 
-          {/* ── Secondary rail ── */}
-          <aside
-            aria-label="More from this hub"
-            className="animate-rise flex flex-col gap-0 [animation-delay:120ms] lg:border-l lg:border-border lg:pl-8"
-          >
-            <p className="pb-3 text-[11px] font-black uppercase tracking-wider text-muted-foreground">
-              More from IELPS
-            </p>
-            {SECONDARY.map((item, i) => (
-              <a
-                key={item.title}
-                href={item.href}
-                className={`group flex items-start gap-3 py-4 transition-colors ${
-                  i > 0 ? 'border-t border-border' : ''
-                }`}
-              >
-                <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-secondary/12 text-secondary">
-                  <item.Icon className="h-4 w-4" />
-                </span>
-                <div className="min-w-0">
-                  <p className="text-[10px] font-black uppercase tracking-wider text-secondary">
-                    {item.eyebrow}
-                  </p>
-                  <p className="mt-1 font-display text-sm font-bold leading-snug text-foreground group-hover:text-primary">
-                    {item.title}
-                  </p>
-                  <p className="mt-1 text-xs font-semibold text-muted-foreground">{item.meta}</p>
-                </div>
-              </a>
+          {/* Fact ribbon */}
+          <dl className="mt-10 grid max-w-lg grid-cols-2 gap-x-6 gap-y-5 border-t border-white/12 pt-6 sm:grid-cols-4">
+            {FACTS.map((fact) => (
+              <div key={fact.label}>
+                <dt className="font-display text-2xl font-black text-turquoise">{fact.value}</dt>
+                <dd className="mt-1 text-[11px] font-bold uppercase tracking-wider text-white/55">
+                  {fact.label}
+                </dd>
+              </div>
             ))}
-          </aside>
+          </dl>
+        </div>
+
+        {/* ── Image panel ── */}
+        <div className="animate-rise relative [animation-delay:120ms]">
+          <div className="relative overflow-hidden rounded-2xl border border-white/12 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.7)]">
+            <Image
+              src="/hero-learning.png"
+              alt="Diverse English learners connected to one IELPS learning platform with a placement compass and CEFR level ladder"
+              width={900}
+              height={620}
+              priority
+              className="h-full w-full object-cover"
+            />
+            <div
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-indigo/50 to-transparent"
+              aria-hidden
+            />
+          </div>
         </div>
       </div>
     </section>

@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { ADULT_FLOW } from '@/lib/ielps-data'
 import { ArrowRight } from 'lucide-react'
 
@@ -5,17 +6,29 @@ export function AdultFlowSection() {
   return (
     <section id="adult-flow" className="scroll-mt-20 bg-indigo py-16 text-primary-foreground">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <div className="max-w-2xl">
-          <span className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-bold text-white/85">
-            Adult learner flow
-          </span>
-          <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-balance sm:text-4xl">
-            From My Course to the correct adult lesson player
-          </h2>
-          <p className="mt-3 text-lg leading-relaxed text-white/70 text-pretty">
-            Adult scholars continue from their dashboard straight into the authoritative
-            integrated lesson player — no detours, no duplicate routes.
-          </p>
+        <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="max-w-2xl">
+            <span className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-bold text-white/85">
+              Adult learner flow
+            </span>
+            <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-balance sm:text-4xl">
+              From My Course to the correct adult lesson player
+            </h2>
+            <p className="mt-3 text-lg leading-relaxed text-white/70 text-pretty">
+              Adult scholars continue from their dashboard straight into the authoritative
+              integrated lesson player — no detours, no duplicate routes.
+            </p>
+          </div>
+
+          <div className="relative overflow-hidden rounded-2xl border border-white/12 bg-white/[0.06] shadow-[0_24px_60px_-30px_rgba(0,0,0,0.6)]">
+            <Image
+              src="/adult-lesson.png"
+              alt="An adult learner continuing an English lesson on a laptop at a bright desk"
+              width={720}
+              height={480}
+              className="h-full max-h-[320px] w-full object-cover"
+            />
+          </div>
         </div>
 
         <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
